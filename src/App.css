@@ -1,38 +1,165 @@
-.App {
-  text-align: center;
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Set up Website */
+* {
+    margin: 0;
+    padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+    font-family: "Lato", sans-serif;
+    font-size: 14px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+:root {
+    --white-color: #fff;
+    --black-color: #000;
+    --primary-color: #233a95;
+    --second-color: #2bbef9;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
+.bg-blue {
+    background-color: var(--primary-color);
 }
 
-.App-link {
-  color: #61dafb;
+/* Header start */
+
+/* Dropdown */
+.headerWrapper .top-strip {
+    padding: 8px 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.headerWrapper .top-strip p {
+    color: var(--white-color);
+    font-size: 12px;
+    font-weight: 500;
 }
+
+.headerWrapper .header {
+    width: 100%;
+    height: auto;
+    padding: 15px 0;
+}
+
+.logoWrapper img {
+    width: 50%;
+}
+
+.countryDrop {
+    padding: 10px 15px !important;
+    width: 170px;
+    height: 60px;
+    min-width: 170px;
+    text-align: left;
+    justify-content: flex-start !important;
+    color: var(--black-color) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 7px !important;
+}
+
+.countryDrop .label {
+    font-size: 12px !important;
+    text-transform: capitalize !important;
+    color: rgba(0, 0, 0, 0.4) !important;
+    line-height: 16px;
+}
+
+.countryDrop .name {
+    font-size: 14px !important;
+    text-transform: capitalize !important;
+    color: var(--primary-color) !important;
+    font-weight: 700;
+    line-height: 16px;
+}
+
+.countryDrop span.ms-auto svg {
+    opacity: 0.7;
+}
+
+/* Search */
+header .headerSearch {
+    width: 60%;
+    height: 60px;
+    background: #f3f4f7;
+    padding: 7px;
+    border-radius: 7px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+header .headerSearch input {
+    padding: 0 20px !important;
+    background: transparent !important;
+    outline: none !important;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    height: 45px;
+    border: 0px !important;
+}
+
+header .headerSearch input::-webkit-input-placeholder {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+header .headerSearch button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    z-index: 100;
+    min-width: 40px !important;
+    height: 40px !important;
+    width: 40px !important;
+    border-radius: 50% !important;
+}
+
+header .headerSearch button svg {
+    font-size: 30px;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+/* User */
+header .part3 .circle {
+    align-items: center;
+    justify-content: center;
+    color: var(--black-color);
+    min-width: 40px !important;
+    height: 40px !important;
+    width: 40px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+header .part3 .circle svg {
+    font-size: 20px;
+}
+
+/* Cart */
+.cartTab .price {
+    font-size: 15px;
+    color: rgba(0, 0, 0, 0.8);
+    font-weight: 700;
+}
+
+.cartTab button {
+    background: #fff1ee !important;
+}
+
+.cartTab button svg {
+    color: #ea2b0f !important;
+}
+
+.cartTab .count {
+    position: absolute;
+    top: -6px;
+    right: -4px;
+    background-color: #ea2b0f;
+    border-radius: 50% !important;
+    color: var(--white-color);
+    width: 20px;
+    height: 20px;
+}
+
+/* Header end */
