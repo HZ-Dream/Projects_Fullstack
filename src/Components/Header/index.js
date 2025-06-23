@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
-import { IoIosSearch } from "react-icons/io";
 import { FiUser } from "react-icons/fi";
 import { IoBagOutline } from "react-icons/io5";
 import Button from '@mui/material/Button';
 
 import Logo from "../../assets/images/logo.png"
 import CountryDropdown from "../CountryDropdown";
+import SearchBox from "./SearchBox";
+import Navigation from "./Navigations";
 
 const Header = () => {
     return (
@@ -28,12 +29,7 @@ const Header = () => {
                         <div className="col-sm-10 d-flex align-items-center part2">
                             <CountryDropdown />
 
-                            {/* Header Search Start here */}
-                            <div className="headerSearch ms-3 me-3">
-                                <input type="text" placeholder="Search for products..." spellCheck="false"/>
-                                <Button><IoIosSearch /></Button>
-                            </div>
-                            {/* Header Search End here */}
+                            <SearchBox />
 
                             <div className="d-flex align-items-center part3 ms-auto">
                                 <Button className="circle"><FiUser /></Button>
@@ -50,6 +46,8 @@ const Header = () => {
                     </div>
                 </div>
             </header>
+
+            <Navigation />
         </div>
     )
 }
