@@ -7,10 +7,14 @@ import Logo from "../../assets/images/logo.png"
 import CountryDropdown from "../CountryDropdown";
 import SearchBox from "./SearchBox";
 import Navigation from "./Navigations";
+import { useContext } from "react";
+import { MyContext } from "../../App";
 
 const Header = () => {
+    const context = useContext(MyContext);
+
     return (
-        <div>
+        <div className="headerWrapper-container">
             <div className="headerWrapper">
                 <div className="top-strip bg-blue">
                     <div className="container">
@@ -27,7 +31,9 @@ const Header = () => {
                         </div>
 
                         <div className="col-sm-10 d-flex align-items-center part2">
-                            <CountryDropdown />
+                            {
+                                context.countryList.length !== 0 && <CountryDropdown />
+                            }
 
                             <SearchBox />
 

@@ -6,8 +6,10 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import { useContext } from "react";
+import { MyContext } from "../../App";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -15,15 +17,45 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 const CountryDropdown = () => {
+    const context = useContext(MyContext);
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [countryList, setCountryList] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
+    const handleSelectCountry = (country) => {
+        context.setSelectedCountry(country);
+        setSearchTerm("");
+        setIsOpenModal(false);
+    }
+
+    useEffect(() => {
+        if (searchTerm === "") {
+            setCountryList(context.countryList);
+        } else {
+            const keyWord = searchTerm.toLowerCase();
+            const newList = context.countryList.filter(item =>
+                item.country.toLowerCase().includes(keyWord)
+            );
+            setCountryList(newList);    
+        }
+    }, [context.countryList, searchTerm]);
+
+    const filterList = (e) => {
+        setSearchTerm(e.target.value);
+    };
 
     return (
         <div>
             <Button onClick={() => setIsOpenModal(true)} className="countryDrop">
                 <div className="info d-flex flex-column">
                     <span className='label'>Your Location</span>
-                    <span className='name'>Select a location</span>
+                    <span className='name'>
+                        {context.selectedCountry
+                            ? context.selectedCountry.length > 10
+                            ? context.selectedCountry.substring(0, 10) + '...'
+                            : context.selectedCountry
+                            : "Select a location"}
+                    </span>
                 </div>
                 <span className='ms-auto'><FaAngleDown /></span>
             </Button>
@@ -41,20 +73,21 @@ const CountryDropdown = () => {
 
                 <div className="headerSearch w-100">
                     <Button><IoIosSearch /></Button>
-                    <input type="text" placeholder="Search your area..." spellCheck="false"/>
+                    <input onChange={filterList} type="text" placeholder="Search your area..." spellCheck="false"/>
                 </div>
 
                 <ul className="countryList mt-3">
-                    <li><Button>VietNam</Button></li>
-                    <li><Button>USA</Button></li>
-                    <li><Button>UK</Button></li>
-                    <li><Button>China</Button></li>
-                    <li><Button>Japan</Button></li>
-                    <li><Button>Korea</Button></li>
-                    <li><Button>Taiwan</Button></li>
-                    <li><Button>India</Button></li>
-                    <li><Button>Russia</Button></li>
-                    <li><Button>Germany</Button></li>
+                    {
+                        countryList.length !== 0 &&
+                        countryList?.map( item => (
+                            <li key={item.iso3}>
+                                <Button className={`${item.country === context.selectedCountry ? 'active' : ''}`} 
+                                        onClick={() => handleSelectCountry(item.country)}>
+                                    {item.country}
+                                </Button>
+                            </li>
+                        ))
+                    }
                 </ul>
             </Dialog>   
         </div>
