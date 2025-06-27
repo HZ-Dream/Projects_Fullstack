@@ -1,5 +1,6 @@
 import { IoIosMenu } from "react-icons/io";
 import { FaAngleDown } from "react-icons/fa6";
+import { FaAngleRight } from "react-icons/fa6";
 import Button from '@mui/material/Button';
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -22,10 +23,28 @@ const Navigation = () => {
 
                             <div className={`sidebarNav ${isOpenSidebarNav ? "open" : ""}`}>
                                 <ul>
-                                    <li><Link to="/"><Button>Fruits &amp; Vegetables</Button></Link></li>
+                                    <li><Link to="/">
+                                        <Button>Fruits &amp; Vegetables <FaAngleRight className="ms-auto"/></Button></Link>
+                                        <div className="submenu">
+                                            <Link to="/"><Button>Cuts &amp; Sprouts</Button></Link>
+                                            <Link to="/"><Button>Exotic Fruits &amp; Veggies</Button></Link>
+                                            <Link to="/"><Button>Fresh Fruits</Button></Link>
+                                            <Link to="/"><Button>Fresh Vegetables</Button></Link>
+                                            <Link to="/"><Button>Packaged Produce</Button></Link>
+                                        </div>
+                                    </li>
                                     <li><Link to="/"><Button>Meats &amp; Seafood</Button></Link></li>
                                     <li><Link to="/"><Button>Breakfast &amp; Dairy</Button></Link></li>
-                                    <li><Link to="/"><Button>Beverages</Button></Link></li>
+                                    <li><Link to="/">
+                                        <Button>Beverages <FaAngleRight className="ms-auto"/></Button></Link>
+                                        <div className="submenu">
+                                            <Link to="/"><Button>Coffee</Button></Link>
+                                            <Link to="/"><Button>Drink Boxes &amp; Pouches</Button></Link>
+                                            <Link to="/"><Button>Craft Beer</Button></Link>
+                                            <Link to="/"><Button>Water</Button></Link>
+                                            <Link to="/"><Button>Wine</Button></Link>
+                                        </div>
+                                    </li>
                                     <li><Link to="/"><Button>Frozen Foods</Button></Link></li>
                                 </ul>
                             </div>
