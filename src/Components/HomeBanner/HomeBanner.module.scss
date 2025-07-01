@@ -1,0 +1,40 @@
+.homeBannerSection {
+    * {
+        outline: none !important;
+    }
+
+    position: relative;
+    overflow: hidden;
+    padding: 40px 50px 15px;
+
+    img {
+        height: 400px;
+        border-radius: 10px;
+    }
+
+    :global(.slick-list) {
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    :global(.slick-arrow) {
+        position: absolute;
+        top: 45%;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px !important;
+        height: 40px !important;
+        background-color: var(--black-color);
+        border-radius: 100%;
+    }
+
+    :global(.slick-prev) {
+        left: -19px !important;
+    }
+
+    :global(.slick-next) {
+        right: -19px !important;
+    }
+}

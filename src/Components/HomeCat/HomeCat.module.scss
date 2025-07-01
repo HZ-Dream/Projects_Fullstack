@@ -1,0 +1,45 @@
+.homeCat {
+    padding: 25px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.item {
+    padding: 15px;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+
+    img {
+        width: 80%;
+    }
+}
+
+.homeCat_naviBtn {
+    position: absolute;
+    top: 30px !important;
+    right: 92px !important;
+    z-index: 999;
+}
+
+.homeCat_prevBtn,
+.homeCat_nextBtn {
+    min-width: 30px !important;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50% !important;
+    background-color: var(--white-color);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--black-color) !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+.homeCat_prevBtn:hover,
+.homeCat_nextBtn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.homeCat_prevBtn {
+    margin-right: 10px !important;
+}

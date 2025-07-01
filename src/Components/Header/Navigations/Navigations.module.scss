@@ -1,0 +1,200 @@
+nav {
+    & .navPart1 {
+        max-width: 20%;
+        flex: 0 0 20%;
+    }
+
+    & .navPart2 {
+        max-width: 80%;
+        flex: 0 0 80%;
+    }
+}
+
+.catWrapper {
+    position: relative;
+    min-width: 255px;
+
+    & .sidebarNav {
+        padding: 10px;
+        width: 100%;
+        max-height: 0px;
+        background-color: var(--white-color);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s;
+        z-index: 999;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+
+        &.open {
+            opacity: 1;
+            max-height: 500px;
+            visibility: inherit;
+        }
+    }
+}
+
+.allCatTab {
+    * {
+        color: var(--white-color);
+    }
+
+    background-color: var(--second-color) !important;
+    padding: 12px 15px !important;
+    border-radius: 30px !important;
+
+    & .text {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+
+    & .icon1 {
+        * svg {
+            font-size: 20px !important;
+        }
+    }
+
+    & .icon2 {
+        * svg {
+            font-size: 15px !important;
+        }
+    }
+
+    &:hover {
+        background-color: var(--second-color);
+    }
+}
+
+.sidebarNav {
+    & ul {
+        margin-bottom: 0 !important;
+
+        & li {
+            width: 100%;
+            list-style: none;
+            padding: 5px 0;
+            position: static;
+
+            &:hover {
+                & .submenu {
+                    left: 100%;
+                    opacity: 1;
+                    visibility: inherit;
+                }
+            }
+        }
+    }
+
+    & button {
+        color: var(--black-color);
+        justify-content: flex-start;
+        width: 100%;
+        text-transform: capitalize;
+        border-radius: 0;
+
+        &:hover {
+            background-color: transparent;
+            color: var(--second-color);
+        }
+    }
+}
+
+.submenu {
+    position: absolute;
+    top: 0;
+    left: 105%;
+    width: 250px;
+    height: auto;
+    background-color: var(--white-color);
+    z-index: 999;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom-right-radius: 10px;
+    border-top: none;
+    padding: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease-in-out;
+
+    & button {
+        border-radius: 0px !important;
+    }
+}
+
+.navPart2 {
+    & ul {
+        margin-bottom: 0px;
+
+        & li {
+            position: relative;
+
+            & a {
+                text-decoration: none;
+
+                & button {
+                    display: flex;
+                    align-items: center;
+                    padding: 8px 13px;
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: rgba(0, 0, 0, 0.7);
+                    text-decoration: none;
+                    text-transform: uppercase;
+                    transition: all 0.2s ease-in-out;
+                    border-radius: 25px !important;
+                }
+
+                & svg {
+                    font-size: 20px;
+                }
+
+                &:hover {
+                    background-color: #f0faff;
+                    color: var(--second-color);
+                }
+            }
+
+            & .submenu {
+                position: absolute;
+                margin-top: 14px;
+                top: 30%;
+                left: 0;
+                min-width: 250px;
+                background-color: var(--white-color);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease-in-out;
+                z-index: 999;
+
+                & a {
+                    width: 100%;
+                    display: block;
+
+                    & button {
+                        width: 100%;
+                        justify-content: flex-start !important;
+                        border-radius: 0 !important;
+                        text-transform: capitalize;
+
+                        &:hover {
+                            background-color: #f1f1f1;
+                        }
+                    }
+                }
+            }
+
+            &:hover {
+                & .submenu {
+                    opacity: 1;
+                    visibility: inherit;
+                    top: 100%;
+                }
+            }
+        }
+    }
+}
