@@ -1,8 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// Components
 import Home from './Pages/Home';
 import Header from './Components/Header';
+import Footer from './Components/Footer';
 
 function App() {
     return (
@@ -11,6 +14,7 @@ function App() {
             <Routes>
                 <Route path="/" exact={true} element={<Home />} />
             </Routes>
+            <Footer />
         </BrowserRouter>
     );
 }

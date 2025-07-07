@@ -13,6 +13,7 @@ body {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.8);
     overflow-x: hidden;
+    background: #fdfdfd;
 }
 
 ul {
@@ -23,8 +24,9 @@ ul {
     --white-color: #fff;
     --black-color: #000;
     --gray-color: #8b8b8b;
-    --primary-color: #00aeef;
-    --second-color: #6ae34b;
+    --primary-color: #7a55c1;
+    --second-color: #6d4aae;
+    --footer-color: #f7f8fd;
 }
 
 ::-webkit-scrollbar {
@@ -57,12 +59,56 @@ ul {
     color: #8b8b8b !important;
 }
 
+.text-gray {
+    color: #e4e5ee !important;
+}
+
 .textOne_line {
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     line-clamp: 1;
     -webkit-box-orient: vertical;
+}
+
+.btn-big {
+    font-size: 15px !important;
+    padding: 8px 30px !important;
+}
+
+.btn-round {
+    border-radius: 30px !important;
+}
+
+.btn-sml {
+    font-size: 12px !important;
+}
+
+.btn-sml svg {
+    font-size: 18px !important;
+}
+
+.borderRight {
+    border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.fz13 {
+    font-size: 13px !important;
+}
+
+.close_ {
+    position: absolute !important;
+    color: var(--black-color) !important;
+    top: 10px;
+    right: 10px;
+    min-width: 40px !important;
+    height: 40px !important;
+    width: 40px !important;
+    border-radius: 50% !important;
+}
+
+.close_ svg {
+    font-size: 22px;
 }
 
 @media (min-width: 1300px) {

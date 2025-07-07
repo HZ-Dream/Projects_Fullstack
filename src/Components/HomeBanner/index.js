@@ -19,23 +19,25 @@ const HomeBanner = () => {
     };
 
     return (
-        <div className={cx('homeBannerSection')}>
-            <Slider {...settings}>
-                <div className={cx('item')}>
-                    <img
-                        className="w-100"
-                        src="https://img.freepik.com/premium-vector/yellow-quiz-time-banner-with-comic-style-background-suitable-use-promotional-designs_626143-308.jpg"
-                        alt="Slider"
-                    />
-                </div>
-                <div className={cx('item')}>
-                    <img
-                        className="w-100"
-                        src="https://images.unsplash.com/photo-1744848279507-f6e20e647792?q=80&w=1363&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="Slider"
-                    />
-                </div>
-            </Slider>
+        <div className="container">
+            <div className={cx('homeBannerSection')}>
+                <Slider {...settings}>
+                    <div className={cx('item')}>
+                        <img
+                            className="w-100"
+                            src="https://img.freepik.com/premium-vector/yellow-quiz-time-banner-with-comic-style-background-suitable-use-promotional-designs_626143-308.jpg"
+                            alt="Slider"
+                        />
+                    </div>
+                    <div className={cx('item')}>
+                        <img
+                            className="w-100"
+                            src="https://static.vecteezy.com/system/resources/thumbnails/007/343/548/small/memphis-style-yellow-quiz-time-banner-design-for-promotion-vector.jpg"
+                            alt="Slider"
+                        />
+                    </div>
+                </Slider>
+            </div>
         </div>
     );
 };

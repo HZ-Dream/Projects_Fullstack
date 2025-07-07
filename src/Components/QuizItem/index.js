@@ -2,7 +2,7 @@
 import { RiNumbersFill } from 'react-icons/ri';
 import { MdQuiz } from 'react-icons/md';
 import { FaHeart } from 'react-icons/fa';
-import { MdNoteAdd } from 'react-icons/md';
+import { LuScanEye } from 'react-icons/lu';
 import { FaUserEdit } from 'react-icons/fa';
 import { FaClock } from 'react-icons/fa';
 import Button from '@mui/material/Button';
@@ -13,13 +13,31 @@ import AvatarImg from '../../assets/images/avatar.jpg';
 // Rating
 import Rating from '@mui/material/Rating';
 
+// React
+import { useState } from 'react';
+
+// Components
+import QuizModal from '../QuizModal';
+
 // CSS
-import styles from './ProductItem.module.scss';
+import styles from './QuizItem.module.scss';
 import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
 const ProductItem = ({ className }) => {
+    const [isOpenModal, setIsOpenModal] = useState(false);
+
+    const viewQuizDetails = (id) => {
+        console.log('open');
+
+        setIsOpenModal(true);
+    };
+
+    const closeQuizModal = () => {
+        setIsOpenModal(false);
+    };
+
     return (
         <div className={`item ${cx('productItem', className)}`}>
             <div className={cx('imgWrapper')}>
@@ -34,8 +52,8 @@ const ProductItem = ({ className }) => {
                 <Button>
                     <FaHeart />
                 </Button>
-                <Button>
-                    <MdNoteAdd />
+                <Button onClick={() => viewQuizDetails(1)}>
+                    <LuScanEye />
                 </Button>
             </div>
 
@@ -69,6 +87,8 @@ const ProductItem = ({ className }) => {
                     <span className="textOne_line">Dream</span>
                 </div>
             </div>
+
+            {isOpenModal === true && <QuizModal closeQuizModal={closeQuizModal} />}
         </div>
     );
 };

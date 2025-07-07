@@ -1,0 +1,39 @@
+.quizModal {
+    h4 {
+        font-size: 20px;
+        color: rgba(0, 0, 0, 0.7) !important;
+    }
+
+    p {
+        color: rgba(0, 0, 0, 0.7) !important;
+    }
+
+    & .fieldQuiz {
+        padding: 0 24px;
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        margin: 0 24px;
+    }
+
+    & .actions {
+        button {
+            color: var(--gray-color) !important;
+            border: 1px solid rgba(0, 0, 0, 0.2) !important;
+        }
+    }
+
+    :global(.MuiPaper-elevation) {
+        padding: 25px;
+        position: relative;
+        width: 900px !important;
+        max-width: 1000px !important;
+    }
+}
+
+.quizItem {
+    padding: 0 40px;
+
+    ul {
+        padding-left: 18px;
+    }
+}

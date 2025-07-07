@@ -1,5 +1,6 @@
 // Icons, Button
 import { IoIosArrowRoundForward } from 'react-icons/io';
+import { IoMailOutline } from 'react-icons/io5';
 import Button from '@mui/material/Button';
 
 // Img
@@ -7,13 +8,14 @@ import banner1 from '../../assets/images/banner1.png';
 import banner2 from '../../assets/images/banner2.png';
 import banner3 from '../../assets/images/banner3.png';
 import banner4 from '../../assets/images/banner4.png';
+import couponImg from '../../assets/images/coupon.png';
 
 // React
 import Slider from 'react-slick';
 
 // Components
 import HomeBanner from '../../Components/HomeBanner';
-import ProductItem from '../../Components/ProductItem/ProductItem';
+import QuizItem from '../../Components/QuizItem';
 import HomeCat from '../../Components/HomeCat';
 
 // CSS
@@ -23,7 +25,7 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
 const Home = () => {
-    var productItemSettings = {
+    var quizItemSettings = {
         dots: false,
         infinite: true,
         speed: 500,
@@ -65,12 +67,12 @@ const Home = () => {
                             </div>
 
                             <div className={`${cx('product_row')} w-100 mt-4`}>
-                                <Slider {...productItemSettings}>
-                                    <ProductItem />
-                                    <ProductItem />
-                                    <ProductItem />
-                                    <ProductItem />
-                                    <ProductItem />
+                                <Slider {...quizItemSettings}>
+                                    <QuizItem />
+                                    <QuizItem />
+                                    <QuizItem />
+                                    <QuizItem />
+                                    <QuizItem />
                                 </Slider>
                             </div>
 
@@ -86,14 +88,14 @@ const Home = () => {
                             </div>
 
                             <div className={`${cx('productNew_row')} w-100 mt-4 d-flex`}>
-                                <ProductItem className="itemRow_4" />
-                                <ProductItem className="itemRow_4" />
-                                <ProductItem className="itemRow_4" />
-                                <ProductItem className="itemRow_4" />
-                                <ProductItem className="itemRow_4" />
-                                <ProductItem className="itemRow_4" />
-                                <ProductItem className="itemRow_4" />
-                                <ProductItem className="itemRow_4" />
+                                <QuizItem className="itemRow_4" />
+                                <QuizItem className="itemRow_4" />
+                                <QuizItem className="itemRow_4" />
+                                <QuizItem className="itemRow_4" />
+                                <QuizItem className="itemRow_4" />
+                                <QuizItem className="itemRow_4" />
+                                <QuizItem className="itemRow_4" />
+                                <QuizItem className="itemRow_4" />
                             </div>
 
                             <div className={`${cx('bannerSec')} d-flex mt-4 mb-5`}>
@@ -105,6 +107,36 @@ const Home = () => {
                                     <img className="w-100" src={banner4} alt="banner" />
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className={`${cx('newsLetterSection')} mt-3 d-flex align-items-center`}>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-6">
+                            <p className="text-white mb-1">$20 discount for your first order</p>
+                            <h3 className="text-white">Join our newsletter and get...</h3>
+                            <p className="text-gray fz13">
+                                Join our email subscription now to get updates <br /> on promotions and coupons.
+                            </p>
+
+                            <form action="">
+                                <IoMailOutline />
+                                <input
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    placeholder="Your email address"
+                                    spellCheck="false"
+                                />
+                                <Button>Subscribe</Button>
+                            </form>
+                        </div>
+
+                        <div className="col-md-6">
+                            <img src={couponImg} alt="coupon" />
                         </div>
                     </div>
                 </div>
