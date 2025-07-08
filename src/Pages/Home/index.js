@@ -9,7 +9,7 @@ import banner3 from '../../assets/images/banner3.png';
 import banner4 from '../../assets/images/banner4.png';
 import couponImg from '../../assets/images/coupon.png';
 
-import ProductItem from '../../Components/ProductItem/ProductItem';
+import ProductItem from '../../Components/ProductItem';
 import HomeCat from '../../Components/HomeCat';
 import Slider from 'react-slick';
 

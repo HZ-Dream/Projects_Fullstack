@@ -11,7 +11,7 @@ import { useState } from 'react';
 // Components
 import ProductModal from '../ProductModal';
 
-const ProductItem = () => {
+const ProductItem = (props) => {
     const [isOpenModal, setIsOpenModal] = useState(false);
 
     const viewProductDetails = (id) => {
@@ -23,7 +23,7 @@ const ProductItem = () => {
     };
 
     return (
-        <div className="item productItem">
+        <div className={`item productItem ${props.itemView}`}>
             <div className="imgWrapper">
                 <img
                     className="w-100"

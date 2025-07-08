@@ -8,7 +8,7 @@ import { FaYoutube } from 'react-icons/fa';
 
 import { Link } from 'react-router-dom';
 
-const Foorter = () => {
+const Footer = () => {
     return (
         <footer>
             <div className="container">
@@ -201,4 +201,4 @@ const Foorter = () => {
     );
 };
 
-export default Foorter;
+export default Footer;
