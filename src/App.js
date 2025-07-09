@@ -3,9 +3,10 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Components
-import Home from './Pages/Home';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
+import Home from './Pages/Home';
+import Quiz from './Pages/Quiz';
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
             <Header />
             <Routes>
                 <Route path="/" exact={true} element={<Home />} />
+                <Route path="/quiz" exact={true} element={<Quiz />} />
             </Routes>
             <Footer />
         </BrowserRouter>

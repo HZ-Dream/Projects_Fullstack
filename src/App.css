@@ -13,7 +13,7 @@ body {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.8);
     overflow-x: hidden;
-    background: #fdfdfd;
+    background: #fbfbfb;
 }
 
 ul {
@@ -111,6 +111,10 @@ ul {
     font-size: 22px;
 }
 
+.paddingHeader {
+    padding-top: 193px;
+}
+
 @media (min-width: 1300px) {
     .container,
     .container-lg,
@@ -120,3 +124,40 @@ ul {
         max-width: 1200px;
     }
 }
+
+/* Sidebar Range Input start */
+.css-1rju2q6-MuiButtonBase-root-MuiMenuItem-root {
+    width: 200px !important;
+}
+
+.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
+    padding: 2px !important;
+}
+
+.MuiTypography-root {
+    font-size: 13px !important;
+}
+
+.css-1umw9bq-MuiSvgIcon-root {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.range-slider {
+    height: 4px !important;
+}
+
+.range-slider .range-slider__range,
+.range-slider .range-slider__thumb {
+    background: var(--black-color) !important;
+}
+
+.range-slider .range-slider__range {
+    height: 4px !important;
+}
+
+.range-slider .range-slider__thumb {
+    width: 15px !important;
+    height: 15px !important;
+}
+/* Sidebar Range Input end */

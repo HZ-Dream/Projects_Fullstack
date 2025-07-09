@@ -20,6 +20,31 @@
             right: 10px;
         }
     }
+
+    &.four,
+    &.three,
+    &.one {
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    &.four {
+        width: 24%;
+    }
+
+    &.three {
+        width: 32.4%;
+    }
+
+    &.one {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        background: var(--white-color) !important;
+
+        & .imgWrapper {
+            width: 25%;
+        }
+    }
 }
 
 .productItem.itemRow_4 {
@@ -81,6 +106,7 @@
 
 .info {
     padding: 15px;
+    background: var(--white-color);
 
     h4 {
         font-size: 15px;

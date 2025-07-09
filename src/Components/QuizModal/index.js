@@ -20,7 +20,7 @@ const cx = classNames.bind(styles);
 
 const QuizModal = (props) => {
     return (
-        <Dialog className={cx('quizModal')} open={true}>
+        <Dialog className={cx('quizModal')} open={props.isOpen}>
             <Button className="close_" onClick={() => props.closeQuizModal()}>
                 <IoCloseCircleOutline />
             </Button>

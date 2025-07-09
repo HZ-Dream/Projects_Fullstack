@@ -25,7 +25,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const ProductItem = ({ className }) => {
+const QuizItem = (props) => {
     const [isOpenModal, setIsOpenModal] = useState(false);
 
     const viewQuizDetails = (id) => {
@@ -39,7 +39,7 @@ const ProductItem = ({ className }) => {
     };
 
     return (
-        <div className={`item ${cx('productItem', className)}`}>
+        <div className={`item ${cx('productItem', props.className, props.itemView)}`}>
             <div className={cx('imgWrapper')}>
                 <img
                     className="w-100"
@@ -88,9 +88,9 @@ const ProductItem = ({ className }) => {
                 </div>
             </div>
 
-            {isOpenModal === true && <QuizModal closeQuizModal={closeQuizModal} />}
+            {isOpenModal && <QuizModal isOpen={isOpenModal} closeQuizModal={closeQuizModal} />}
         </div>
     );
 };
 
-export default ProductItem;
+export default QuizItem;

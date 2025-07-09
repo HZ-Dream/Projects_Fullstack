@@ -117,7 +117,7 @@ const Navigation = () => {
                                 </Link>
                             </li>
                             <li className="list-inline-item">
-                                <Link to="/">
+                                <Link to="/quiz">
                                     <Button>Quiz</Button>
                                 </Link>
                             </li>
