@@ -12,7 +12,7 @@ const RelatedProducts = () => {
         slidesToShow: 6,
         slidesToScroll: 1,
         arrows: true,
-        autoplay: true,
+        autoplay: false,
     };
 
     return (
@@ -23,7 +23,7 @@ const RelatedProducts = () => {
                 </div>
             </div>
 
-            <div className="product_row w-100 mt-2">
+            <div className="product_row w-100 mt-4">
                 <Slider {...productItemSettings}>
                     <ProductItem />
                     <ProductItem />
