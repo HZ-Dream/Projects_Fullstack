@@ -19,6 +19,11 @@ ul {
     padding-left: 0;
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
 :root {
     --white-color: #fff;
     --black-color: #000;
@@ -42,6 +47,17 @@ ul {
     background-color: transparent;
 }
 
+.dFlexAli-center {
+    display: flex;
+    align-items: center;
+}
+
+.dFlexAliJus-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .bg-blue {
     background-color: var(--primary-color);
 }
@@ -57,7 +73,7 @@ ul {
 .badge {
     display: inline-block;
     padding: 7px 10px;
-    border-radius: 10px;
+    border-radius: 10px !important;
 }
 
 .badge.bg-success {
@@ -71,6 +87,22 @@ ul {
     text-transform: capitalize !important;
 }
 
+.btn-green {
+    background: #16b858 !important;
+    color: var(--white-color) !important;
+    text-transform: capitalize !important;
+}
+
+.btn-gray {
+    background: var(--white-color) !important;
+    color: var(--gray-color) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-gray:hover {
+    color: red !important;
+}
+
 .btn-big {
     font-size: 15px !important;
     padding: 8px 30px !important;
@@ -78,6 +110,11 @@ ul {
 
 .btn-round {
     border-radius: 30px !important;
+}
+
+.btn-circle {
+    border-radius: 50% !important;
+    min-width: auto !important;
 }
 
 .btn-sml {
@@ -643,7 +680,7 @@ nav .navPart2 ul li .submenu a button:hover {
 
 .info .oldPrice,
 .info .netPrice {
-    font-size: 16px;
+    font-size: 16px !important;
     font-weight: bold;
 }
 
@@ -850,7 +887,7 @@ nav .navPart2 ul li .submenu a button:hover {
     color: rgba(0, 0, 0, 0.7) !important;
 }
 
-.productModal .rateProduct {
+.rateProduct {
     padding: 0 24px;
     border-left: 1px solid rgba(0, 0, 0, 0.1);
     border-right: 1px solid rgba(0, 0, 0, 0.1);
@@ -899,6 +936,10 @@ nav .navPart2 ul li .submenu a button:hover {
 
 .zoomSlider .item .iiz {
     overflow: visible;
+}
+
+.iiz {
+    overflow: visible !important;
 }
 
 .zoomSlider .slick-current .item {
@@ -1090,17 +1131,170 @@ nav .navPart2 ul li .submenu a button:hover {
     width: 32.4%;
 }
 
-.productListing .productItem.one {
+.productListing .productItem.one a {
     width: 100%;
     display: flex;
     align-items: center;
 }
 
-.productListing .productItem.one .imgWrapper {
+.productListing .productItem.one a .imgWrapper {
     width: 25%;
 }
 
 /* Listing Page end */
+
+/* Product Detail start */
+.section {
+    padding: 45px 0;
+}
+
+.productDetails h2.hd {
+    font-size: 26px;
+}
+
+.productDetails .oldPrice {
+    font-size: 20px;
+}
+
+.productDetails .netPrice {
+    font-size: 22px;
+}
+
+.productSize {
+    width: 100%;
+    height: auto;
+    padding: 25px 0;
+}
+
+.productSize ul li {
+    margin-right: 10px !important;
+}
+
+.productSize ul li span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px !important;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px !important;
+    cursor: pointer;
+    color: var(--black-color);
+    font-size: 16px !important;
+    transition: all 0.1s ease-in-out;
+}
+
+.productSize ul li span:hover {
+    background: #ececec !important;
+}
+
+.productSize ul li span.active {
+    background: #3bb77e !important;
+    color: var(--white-color) !important;
+}
+
+.detailsPageTabs {
+    border-radius: 25px !important;
+    background: #fafafa !important;
+}
+
+.customTabs ul li {
+    margin-right: 10px !important;
+}
+
+.customTabs ul li button {
+    padding: 6px 25px !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    font-size: 14px !important;
+    text-transform: capitalize !important;
+    border-radius: 30px !important;
+    color: var(--black-color) !important;
+}
+
+.customTabs ul li button.active {
+    background: #3bb77e !important;
+    color: var(--white-color) !important;
+    border: 1px solid #3bb77e !important;
+}
+
+.reviewsCard {
+    margin-bottom: 25px !important;
+}
+
+.reviewsCard .image {
+    width: 100px;
+}
+
+.reviewsCard .rounded-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 100px;
+    height: 100px;
+}
+
+.reviewsCard .rounded-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.table-bordered {
+    border: 1px solid rgba(0, 0, 0, 0.3) !important;
+}
+
+.detailsPageTabs .table th,
+.detailsPageTabs .table td {
+    padding: 12px 0 !important;
+    vertical-align: middle !important;
+    font-size: 14px !important;
+    padding-left: 10px !important;
+}
+
+.detailsPageTabs .table td p {
+    margin-bottom: 0 !important;
+}
+
+.reviewsCard .info {
+    width: 85%;
+}
+
+.reviewsCard .info p {
+    font-size: 14px;
+    line-height: 23px;
+}
+
+.reviewForm h4 {
+    font-size: 20px !important;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.reviewForm .form-group {
+    margin-bottom: 25px;
+}
+
+.reviewForm .form-group .form-control {
+    height: 40px;
+    font-size: 15px;
+    border-radius: 7px !important;
+    padding-left: 20px;
+}
+
+.reviewForm .form-group textarea.form-control {
+    height: 100px;
+    padding-top: 10px;
+}
+
+.progressBarBox {
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    font-size: 16px;
+}
+
+/* Product Detail end */
 
 /* Footer start */
 footer {

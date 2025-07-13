@@ -7,6 +7,7 @@ import Rating from '@mui/material/Rating';
 
 // React
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 // Components
 import ProductModal from '../ProductModal';
@@ -24,16 +25,28 @@ const ProductItem = (props) => {
 
     return (
         <div className={`item productItem ${props.itemView}`}>
-            <div className="imgWrapper">
-                <img
-                    className="w-100"
-                    src="https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image-62-346x310.jpg"
-                    alt="Product"
-                />
+            <Link to="/product/1">
+                <div className="imgWrapper">
+                    <img
+                        className="w-100"
+                        src="https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image-62-346x310.jpg"
+                        alt="Product"
+                    />
 
-                <span className="badge bg-primary">28%</span>
-            </div>
+                    <span className="badge bg-primary">28%</span>
+                </div>
 
+                <div className="info">
+                    <h4>All Natural Italian-Style Chicken Meatballs</h4>
+                    <span className="text-success d-block">In Stock</span>
+                    <Rating className="mt-2 mb-2" name="read-only" value={2} readOnly size="small" precision={0.5} />
+
+                    <div className="d-flex">
+                        <span className="oldPrice">$20.00</span>
+                        <span className="netPrice text-danger ms-2">$14.00</span>
+                    </div>
+                </div>
+            </Link>
             <div className="actions">
                 <Button onClick={() => viewProductDetails(1)}>
                     <BsArrowsFullscreen />
@@ -41,17 +54,6 @@ const ProductItem = (props) => {
                 <Button>
                     <IoMdHeartEmpty style={{ fontSize: '20px' }} />
                 </Button>
-            </div>
-
-            <div className="info">
-                <h4>All Natural Italian-Style Chicken Meatballs</h4>
-                <span className="text-success d-block">In Stock</span>
-                <Rating className="mt-2 mb-2" name="read-only" value={2} readOnly size="small" precision={0.5} />
-
-                <div className="d-flex">
-                    <span className="oldPrice">$20.00</span>
-                    <span className="netPrice text-danger ms-2">$14.00</span>
-                </div>
             </div>
             {isOpenModal === true && <ProductModal closeProductModal={closeProductModal} />}
         </div>

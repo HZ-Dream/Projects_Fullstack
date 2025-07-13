@@ -1,13 +1,15 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './Pages/Home';
-import Header from './Components/Header';
-import Footer from './Components/Footer';
 
 import { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
+
+import Header from './Components/Header';
+import Footer from './Components/Footer';
+import Home from './Pages/Home';
 import Listing from './Pages/Listing';
+import ProductDetails from './Pages/ProductDetails';
 
 const MyContext = createContext();
 
@@ -38,6 +40,7 @@ function App() {
                 <Routes>
                     <Route path="/" exact={true} element={<Home />} />
                     <Route path="/cat" exact={true} element={<Listing />} />
+                    <Route path="/product/:id" exact={true} element={<ProductDetails />} />
                 </Routes>
                 <Footer />
             </MyContext.Provider>
