@@ -7,6 +7,7 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Home from './Pages/Home';
 import Quiz from './Pages/Quiz';
+import QuizDetail from './Pages/QuizDetail';
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
             <Routes>
                 <Route path="/" exact={true} element={<Home />} />
                 <Route path="/quiz" exact={true} element={<Quiz />} />
+                <Route path="/quiz/:id" exact={true} element={<QuizDetail />} />
             </Routes>
             <Footer />
         </BrowserRouter>

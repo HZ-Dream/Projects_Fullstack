@@ -10,7 +10,7 @@ import Dialog from '@mui/material/Dialog';
 import Rating from '@mui/material/Rating';
 
 // React
-import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 // CSS
 import styles from './QuizModal.module.scss';
@@ -49,7 +49,9 @@ const QuizModal = (props) => {
 
                     <div className={`d-flex align-items-center mt-4 ${cx('actions')}`}>
                         <Button className="btn-round text-capitalize btn-sml" variant="outlined">
-                            <FaHandPointRight className="me-2" /> Start Quiz
+                            <Link to="/quiz/1">
+                                <FaHandPointRight className="me-2" /> Quiz Detail
+                            </Link>
                         </Button>
 
                         <Button className="btn-round text-capitalize btn-sml ms-2 me-2" variant="outlined">

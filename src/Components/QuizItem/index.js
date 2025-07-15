@@ -15,6 +15,7 @@ import Rating from '@mui/material/Rating';
 
 // React
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 // Components
 import QuizModal from '../QuizModal';
@@ -29,8 +30,6 @@ const QuizItem = (props) => {
     const [isOpenModal, setIsOpenModal] = useState(false);
 
     const viewQuizDetails = (id) => {
-        console.log('open');
-
         setIsOpenModal(true);
     };
 
@@ -40,13 +39,53 @@ const QuizItem = (props) => {
 
     return (
         <div className={`item ${cx('productItem', props.className, props.itemView)}`}>
-            <div className={cx('imgWrapper')}>
-                <img
-                    className="w-100"
-                    src="https://s3.eduquiz.io.vn/eduquiz/workspace/bi-mat-3/exam/IMG_1749609982.jpg"
-                    alt="Product"
-                />
-            </div>
+            <Link to="quiz/1">
+                <div className={cx('imgWrapper')}>
+                    <img
+                        className="w-100"
+                        src="https://s3.eduquiz.io.vn/eduquiz/workspace/bi-mat-3/exam/IMG_1749609982.jpg"
+                        alt="Product"
+                    />
+                </div>
+
+                <div className={cx('info')}>
+                    <h4 className={cx('nameQuiz')}>Internet of Things - IOT (HUBT 2025)</h4>
+                    <span className="d-flex align-items-center">
+                        <FaClock />
+                        <span className="ms-1">30/06/2025</span>
+                    </span>
+                    <div className="d-flex align-items-center">
+                        <Rating
+                            className="mt-2 mb-2"
+                            name="read-only"
+                            value={4.5}
+                            readOnly
+                            size="small"
+                            precision={0.5}
+                        />
+                        <div className="ms-2 d-flex align-items-center">
+                            <div className="me-1">245</div>
+                            <RiNumbersFill />
+                        </div>
+                    </div>
+
+                    <div className="d-flex">
+                        <div className={`${cx('numberOfQuiz')} d-flex align-items-center`}>
+                            <MdQuiz />
+                            <span className="text ms-1">23</span>
+                        </div>
+                        <span className={`${cx('numberOfUser')} ms-3 d-flex align-items-center`}>
+                            <FaUserEdit />
+                            <span className="text ms-1">456</span>
+                        </span>
+                    </div>
+
+                    <div className="d-flex align-items-center">
+                        <img className={cx('imgAvatar')} src={AvatarImg} alt="Avatar" />
+                        <span className="textOne_line">Dream</span>
+                    </div>
+                </div>
+            </Link>
 
             <div className={cx('actions')}>
                 <Button>
@@ -56,38 +95,6 @@ const QuizItem = (props) => {
                     <LuScanEye />
                 </Button>
             </div>
-
-            <div className={cx('info')}>
-                <h4 className={cx('nameQuiz')}>Internet of Things - IOT (HUBT 2025)</h4>
-                <span className="d-flex align-items-center">
-                    <FaClock />
-                    <span className="ms-1">30/06/2025</span>
-                </span>
-                <div className="d-flex align-items-center">
-                    <Rating className="mt-2 mb-2" name="read-only" value={4.5} readOnly size="small" precision={0.5} />
-                    <div className="ms-2 d-flex align-items-center">
-                        <div className="me-1">245</div>
-                        <RiNumbersFill />
-                    </div>
-                </div>
-
-                <div className="d-flex">
-                    <div className={`${cx('numberOfQuiz')} d-flex align-items-center`}>
-                        <MdQuiz />
-                        <span className="text ms-1">23</span>
-                    </div>
-                    <span className={`${cx('numberOfUser')} ms-3 d-flex align-items-center`}>
-                        <FaUserEdit />
-                        <span className="text ms-1">456</span>
-                    </span>
-                </div>
-
-                <div className="d-flex align-items-center">
-                    <img className={cx('imgAvatar')} src={AvatarImg} alt="Avatar" />
-                    <span className="textOne_line">Dream</span>
-                </div>
-            </div>
-
             {isOpenModal && <QuizModal isOpen={isOpenModal} closeQuizModal={closeQuizModal} />}
         </div>
     );

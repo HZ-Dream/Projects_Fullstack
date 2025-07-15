@@ -1,0 +1,132 @@
+.section {
+    padding: 45px 0;
+}
+
+.detailsPageTabs {
+    border-radius: 25px !important;
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+}
+
+.customTabs {
+    ul {
+        li {
+            margin-right: 10px !important;
+
+            button {
+                padding: 6px 25px !important;
+                border: 1px solid rgba(0, 0, 0, 0.2) !important;
+                font-size: 14px !important;
+                text-transform: capitalize !important;
+                border-radius: 30px !important;
+                color: var(--black-color) !important;
+
+                &.active {
+                    background: #3bb77e !important;
+                    color: var(--white-color) !important;
+                    border: 1px solid #3bb77e !important;
+                }
+            }
+        }
+    }
+}
+
+.reviewsCard {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px !important;
+
+    & .image {
+        width: 100px;
+    }
+
+    & .rounded-circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        width: 100px;
+        height: 100px;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    & .info {
+        width: 85%;
+
+        p {
+            font-size: 14px;
+            line-height: 23px;
+        }
+    }
+}
+
+.reviewForm {
+    h4 {
+        font-size: 20px !important;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    & .form-group {
+        margin-bottom: 25px;
+
+        textarea {
+            &.form-control {
+                height: 100px;
+                padding-top: 10px;
+            }
+        }
+
+        & .form-control {
+            height: 40px;
+            font-size: 15px;
+            border-radius: 7px !important;
+            padding-left: 20px;
+            width: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.5) !important;
+        }
+    }
+}
+
+.progressBarBox {
+    margin-bottom: 10px;
+}
+
+.progress {
+    width: 78% !important;
+    height: 22px !important;
+    background-color: var(--white-color) !important;
+    border-radius: 10px !important;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px !important;
+    font-size: 12px !important;
+    background: gold !important;
+    font-weight: 900 !important;
+    color: var(--gray-color) !important;
+    border-radius: 10px !important;
+}
+
+.imgAvatar {
+    margin-top: 5px;
+    margin-right: 8px;
+    min-width: 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.tabQuizItem {
+    ul {
+        padding-left: 17px;
+    }
+}
