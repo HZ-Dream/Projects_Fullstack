@@ -179,7 +179,7 @@ const Footer = () => {
 
             <div className="copyright mt-3 pt-3 pb-3 d-flex align-items-center">
                 <p className="mb-0">Copyright 2025 ©. All rights reserved. Powered by Dream.</p>
-                <ul className="list list-inline ms-auto mb-0">
+                <ul className="list list-inline ms-auto mb-0 socials">
                     <li className="list-inline-item">
                         <Link to="#">
                             <FaFacebookF />

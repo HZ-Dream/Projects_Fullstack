@@ -24,7 +24,6 @@ const QuantityBox = () => {
             <input
                 type="text"
                 name="quantiy"
-                id="quantity"
                 value={inputValue}
                 onChange={(e) => {
                     const val = Number(e.target.value);
