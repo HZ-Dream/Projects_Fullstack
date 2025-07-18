@@ -7,6 +7,10 @@ import Button from '@mui/material/Button';
 // Img
 import Logo from '../../assets/images/logo.png';
 
+// React
+import { useContext } from 'react';
+import { MyContext } from '../../App';
+
 // Components
 import SearchBox from './SearchBox';
 import Navigation from './Navigations';
@@ -18,6 +22,7 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
 const Header = () => {
+    const context = useContext(MyContext);
     return (
         <div className={cx('headerWrapper-container')}>
             <div className={cx('headerWrapper')}>
@@ -42,12 +47,20 @@ const Header = () => {
                         <SearchBox />
 
                         <div className={`${cx('part3')} d-flex align-items-center`}>
-                            <Button className={`${cx('circle')} d-flex align-items-center`}>
-                                <FaRegBell />
-                            </Button>
-                            <Button className={`${cx('circle')} ms-2`}>
-                                <FiUser />
-                            </Button>
+                            {context.isUserLogin === true ? (
+                                <>
+                                    <Button className={`${cx('circle')} d-flex align-items-center`}>
+                                        <FaRegBell />
+                                    </Button>
+                                    <Button className={`${cx('circle')} ms-2`}>
+                                        <FiUser />
+                                    </Button>
+                                </>
+                            ) : (
+                                <Button className="btn-primary btn-lg btn-big w-100">
+                                    <Link to="/signIn">Login</Link>
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>

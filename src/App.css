@@ -48,6 +48,7 @@ a {
     background-color: transparent;
 }
 
+/* Acronym */
 .dFlexAli-center {
     display: flex;
     align-items: center;
@@ -59,24 +60,9 @@ a {
     justify-content: center;
 }
 
+/* Background css */
 .bg-blue {
     background-color: var(--primary-color);
-}
-
-.btn-green {
-    background: #16b858 !important;
-    color: var(--white-color) !important;
-    text-transform: capitalize !important;
-}
-
-.btn-gray {
-    background: var(--white-color) !important;
-    color: var(--gray-color) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-
-.btn-gray:hover {
-    color: red !important;
 }
 
 .bg-primary {
@@ -85,6 +71,11 @@ a {
 
 .cursor {
     cursor: pointer;
+}
+
+/* Text css */
+.text-red {
+    color: #ed147a !important;
 }
 
 .text-light {
@@ -101,6 +92,38 @@ a {
     -webkit-line-clamp: 1;
     line-clamp: 1;
     -webkit-box-orient: vertical;
+}
+
+/* Button css */
+.btn-red {
+    background: #ea2b0f !important;
+    color: var(--white-color) !important;
+}
+
+.btn-white {
+    color: var(--black-color) !important;
+    text-transform: capitalize !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-white:hover {
+    background: #fafafa !important;
+}
+
+.btn .btn-green {
+    background: #16b858 !important;
+    color: var(--white-color) !important;
+    text-transform: capitalize !important;
+}
+
+.btn-gray {
+    background: var(--white-color) !important;
+    color: var(--gray-color) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-gray:hover {
+    color: red !important;
 }
 
 .btn-primary {
@@ -125,6 +148,11 @@ a {
 
 .btn-sml svg {
     font-size: 18px !important;
+}
+
+/* Other css */
+.section {
+    padding: 45px 0;
 }
 
 .borderRight {
@@ -226,3 +254,7 @@ a {
     border-radius: 50% !important;
 }
 /* Quiz Zoom end */
+
+/* Sign In start */
+
+/* Sign In end */

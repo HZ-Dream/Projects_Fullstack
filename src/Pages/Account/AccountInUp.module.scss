@@ -1,0 +1,128 @@
+.signInPage {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+        position: absolute;
+        content: '';
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        background-image: linear-gradient(var(--primary-color), var(--second-color));
+        opacity: 0.9;
+        z-index: -1;
+    }
+
+    & .shape-bottom {
+        position: absolute;
+        top: auto;
+        bottom: -6px;
+        left: 0;
+        right: 0;
+        z-index: 1;
+    }
+
+    & .box {
+        position: relative;
+        width: 350px;
+        height: auto;
+        background: var(--white-color);
+        margin: auto;
+        z-index: 100;
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        form {
+            padding: 0px 15px;
+        }
+    }
+}
+
+.signInPage .box form .form-group {
+    margin-bottom: 20px;
+}
+
+.signInPage.signUp .box form .form-group {
+    margin-bottom: 10px;
+}
+
+.imgLogo {
+    width: 35% !important;
+}
+
+.signInPage.signUp {
+    & .box {
+        width: 500px !important;
+
+        & .imgLogo {
+            width: 25% !important;
+        }
+    }
+}
+
+.border-effect {
+    position: relative;
+    color: var(--primary-color);
+    text-decoration: none;
+
+    &::after {
+        display: block;
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 0;
+        height: 1px;
+        background-color: #102a44;
+        content: '';
+        -webkit-transition: 0.2s;
+        -moz-transition: 0.2s;
+        -o-transition: 0.2s;
+        transition: 0.2s;
+    }
+
+    &:hover {
+        text-decoration: none;
+        color: var(--black-color);
+    }
+}
+
+.border-effect:hover:after {
+    width: 100%;
+}
+
+.socialSign {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+
+    li {
+        a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+
+            svg {
+                font-size: 25px;
+                color: rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        :hover {
+            opacity: 0.9;
+        }
+
+        &.iconFb a svg {
+            color: #0966ff !important;
+        }
+    }
+}
