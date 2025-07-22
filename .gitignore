@@ -1,0 +1,10 @@
+# Root
+
+# FE
+/client/node_modules
+
+# BE
+/server/node_modules
+/server/.env
+
+# Open check file ignore success: "Ctrl + ," -> "ignore" -> "Exclude Git Ignore" -> Tick
