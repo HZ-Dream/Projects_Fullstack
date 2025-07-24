@@ -73,7 +73,20 @@ a {
     cursor: pointer;
 }
 
+/* Padding css */
+.pl40 {
+    padding-left: 40px !important;
+}
+
 /* Text css */
+.fz17 {
+    font-size: 17px !important;
+}
+
+.fz13 {
+    font-size: 13px !important;
+}
+
 .text-red {
     color: #ed147a !important;
 }
@@ -95,6 +108,26 @@ a {
 }
 
 /* Button css */
+.quizNumber {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white-color);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    width: 28px;
+    height: 30px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.quizNumber.active {
+    background: yellow;
+    color: red;
+    border: 1px solid red;
+    font-weight: bold;
+}
+
 .btn-red {
     background: #ea2b0f !important;
     color: var(--white-color) !important;
@@ -157,10 +190,6 @@ a {
 
 .borderRight {
     border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-
-.fz13 {
-    font-size: 13px !important;
 }
 
 .close_ {

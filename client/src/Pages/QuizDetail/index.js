@@ -15,6 +15,7 @@ import Rating from '@mui/material/Rating';
 
 // React
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 // Components
 import QuizZoom from '../../Components/QuizZoom';
@@ -90,7 +91,7 @@ const QuizDetail = () => {
                             <QuizZoom />
                             <div className="d-flex justify-content-center mt-3">
                                 <Button className="btn-primary btn-round text-capitalize btn-sml px-3">
-                                    START QUIZ
+                                    <Link to="/takeQuiz/1">START QUIZ</Link>
                                 </Button>
                             </div>
                         </div>

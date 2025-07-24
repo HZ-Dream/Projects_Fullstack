@@ -14,6 +14,7 @@ import Quiz from './Pages/Quiz';
 import QuizDetail from './Pages/QuizDetail';
 import SignIn from './Pages/Account/SignIn';
 import SignUp from './Pages/Account/SignUp';
+import TakeQuiz from './Pages/TakeQuiz';
 
 const MyContext = createContext();
 
@@ -38,6 +39,7 @@ function App() {
                     <Route path="/quiz/:id" exact={true} element={<QuizDetail />} />
                     <Route path="/signIn" exact={true} element={<SignIn />} />
                     <Route path="/signUp" exact={true} element={<SignUp />} />
+                    <Route path="/takeQuiz/:id" exact={true} element={<TakeQuiz />} />
                 </Routes>
                 {isHeaderFooterShow && <Footer />}
             </MyContext.Provider>

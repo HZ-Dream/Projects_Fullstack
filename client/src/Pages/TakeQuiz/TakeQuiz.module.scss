@@ -1,0 +1,77 @@
+.quizItem {
+    ul {
+        li {
+            display: flex;
+            align-items: center;
+
+            input {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+            }
+
+            span {
+                margin-left: 5px;
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+.infoProcess {
+    position: sticky;
+    top: 30px;
+}
+
+.listQuiz {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 7px;
+    max-height: 210px;
+    overflow-y: scroll;
+
+    & .listItem {
+        display: inline-flex;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        font-weight: 600;
+        margin-right: 7px;
+        margin-bottom: 8px;
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        &.check {
+            background: #b4ebff;
+            border: 1px solid #00aeef;
+        }
+
+        &.mark {
+            background: yellow;
+            border: 1px solid red;
+        }
+
+        &.correct {
+            background: #ddfbe1;
+            border: 1px solid #3cb46e;
+        }
+
+        &.incorrect {
+            background: #ffe8e8;
+            border: 1px solid #e43a45;
+        }
+    }
+}
+
+.modal {
+    padding: 25px 10px;
+}
+
+.modalBtn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
