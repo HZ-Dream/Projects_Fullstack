@@ -1,5 +1,8 @@
 # Root
 
+# Admin FE
+/admin_fe/node_modules
+
 # FE
 /client/node_modules
 
