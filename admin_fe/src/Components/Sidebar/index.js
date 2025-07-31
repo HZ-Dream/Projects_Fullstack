@@ -1,6 +1,5 @@
 // Icons
 import { FaAngleRight } from 'react-icons/fa6';
-import { FaAngleDown } from 'react-icons/fa6';
 import { MdDashboard } from 'react-icons/md';
 import { FaProductHunt } from 'react-icons/fa6';
 import { FaCartArrowDown } from 'react-icons/fa';
@@ -14,9 +13,13 @@ import Button from '@mui/material/Button';
 
 // React
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+
+// Components
+import { MyContext } from '../../App';
 
 const Sidebar = () => {
+    const context = useContext(MyContext);
     const [actClass, setActClass] = useState();
 
     const setAct = (index) => {

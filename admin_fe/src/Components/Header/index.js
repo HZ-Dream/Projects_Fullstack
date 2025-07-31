@@ -20,13 +20,15 @@ import Logout from '@mui/icons-material/Logout';
 
 // React
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 // Components
 import SearchBox from '../SearchBox';
+import { MyContext } from '../../App';
 
 const Header = () => {
-    const [menuBtn, setMenuBtn] = useState(true);
+    const context = useContext(MyContext);
+
     const [darkModeBtn, setDarkModeBtn] = useState(true);
 
     const [anchorEl, setAnchorEl] = useState(null);
@@ -61,8 +63,11 @@ const Header = () => {
                         </div>
 
                         <div className="part2 col-sm-3 dFlexAli-center me-5">
-                            <Button className="rounded-circle me-3" onClick={() => setMenuBtn(!menuBtn)}>
-                                {menuBtn === true ? <RiMenuUnfold2Fill /> : <RiMenuLine />}
+                            <Button
+                                className="rounded-circle me-3"
+                                onClick={() => context.setMenuBtn(!context.menuBtn)}
+                            >
+                                {context.menuBtn === true ? <RiMenuUnfold2Fill /> : <RiMenuLine />}
                             </Button>
 
                             <SearchBox />

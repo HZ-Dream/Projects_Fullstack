@@ -85,7 +85,7 @@ a {
 header {
     width: 100%;
     height: 70px;
-    background: #fdfdfd;
+    background: var(--white-color);
     position: fixed;
     top: 0;
     left: 0;
@@ -245,7 +245,12 @@ header .searchBox svg {
 .main .sidebarWrapper {
     width: 20%;
     flex: 0 0 20%;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.3s;
+}
+
+.main .sidebarWrapper.toggle {
+    width: 0%;
+    flex: 0 0 0%;
 }
 
 .main .sidebarWrapper .sidebar {
@@ -260,6 +265,11 @@ header .searchBox svg {
     overflow-x: hidden;
     padding-top: 5px;
     padding-bottom: 10px !important;
+    transition: all 0.3s;
+}
+
+.main .sidebarWrapper.toggle .sidebar {
+    left: -100%;
 }
 
 .main .sidebarWrapper .sidebar::-webkit-scrollbar {
@@ -430,10 +440,16 @@ header .searchBox svg {
 .main .content {
     width: 80%;
     flex: 0 0 80%;
+    transition: all 0.3s;
+}
+
+.main .content.toggle {
+    width: 100%;
+    flex: 0 0 100%;
 }
 
 .right-content {
-    padding: 90px 30px;
+    padding: 90px 30px 10px;
 }
 
 .dashboardBoxWrapper {
@@ -550,4 +566,116 @@ header .searchBox svg {
     font-size: 18px;
     font-weight: bold;
     text-transform: uppercase;
+    color: #403e57;
+}
+
+.cardFilters .col-md-3 h4 {
+    font-size: 15px;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: #403e57;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #403e57 !important;
+}
+
+.table .theadDesign th {
+    background: rgb(44, 120, 229) !important;
+    color: var(--white-color);
+    border-color: rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+}
+
+.table tbody td {
+    color: #403e57 !important;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.table tbody .actions button {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    border-radius: 5px;
+}
+
+.table tbody .actions button svg {
+    font-size: 15px !important;
+}
+
+.table tbody .actions button.detail {
+    background: #cb3ce733 !important;
+    color: #9c27b0 !important;
+}
+
+.table tbody .actions button.edit {
+    background: #c7e2d3 !important;
+    color: #2e7d32 !important;
+}
+
+.table tbody .actions button.delete {
+    background: #f2c5cc !important;
+    color: #d32f2f !important;
+}
+
+.table.v-align td {
+    vertical-align: middle !important;
+}
+
+.table td .new,
+.table td .old {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+table td .info h6,
+table td .info p {
+    margin-bottom: 0px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+table td .info h6 {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+table td .info p {
+    font-size: 13px;
+    line-height: 18px;
+}
+
+table td .productBox {
+    width: 180px;
+}
+
+table td .productBox .info {
+    width: 100%;
+}
+
+table td .imgWrapper {
+    width: 20%;
+    flex: 0 0 20%;
+}
+
+table td .info {
+    width: 65%;
+    flex: 0 0 65%;
+}
+
+table td .imgWrapper .card {
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+.tableFooter {
+    padding-bottom: 20px;
 }
