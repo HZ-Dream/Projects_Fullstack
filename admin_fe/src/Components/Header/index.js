@@ -25,11 +25,10 @@ import { useContext, useState } from 'react';
 // Components
 import SearchBox from '../SearchBox';
 import { MyContext } from '../../App';
+import UserAvatarImgComponent from '../UserAvatarImg';
 
 const Header = () => {
     const context = useContext(MyContext);
-
-    const [darkModeBtn, setDarkModeBtn] = useState(true);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [notificationDrop, setNotificationDrop] = useState(null);
@@ -58,24 +57,29 @@ const Header = () => {
                         <div className="part1 col-sm-3 ps-4">
                             <Link to="/" className="dFlexAli-center logo">
                                 <img src={Logo} alt="Logo" />
-                                <span className="ms-2">DREAM</span>
+                                <span className="ms-2">Dream</span>
                             </Link>
                         </div>
 
-                        <div className="part2 col-sm-3 dFlexAli-center me-5">
-                            <Button
-                                className="rounded-circle me-3"
-                                onClick={() => context.setMenuBtn(!context.menuBtn)}
-                            >
-                                {context.menuBtn === true ? <RiMenuUnfold2Fill /> : <RiMenuLine />}
-                            </Button>
+                        {context.windowWidth > 992 && (
+                            <div className="part2 col-sm-3 dFlexAli-center me-5 res-hide">
+                                <Button
+                                    className="rounded-circle me-3"
+                                    onClick={() => context.setMenuBtn(!context.menuBtn)}
+                                >
+                                    {context.menuBtn === true ? <RiMenuUnfold2Fill /> : <RiMenuLine />}
+                                </Button>
 
-                            <SearchBox />
-                        </div>
+                                <SearchBox />
+                            </div>
+                        )}
 
                         <div className="part3 col-sm-5 dFlexAli-center justify-content-end ms-5">
-                            <Button className="rounded-circle me-2" onClick={() => setDarkModeBtn(!darkModeBtn)}>
-                                {darkModeBtn === true ? <IoSunnyOutline /> : <FaMoon />}
+                            <Button
+                                className="rounded-circle me-2"
+                                onClick={() => context.setDarkMode(!context.darkMode)}
+                            >
+                                {context.darkMode === false ? <IoSunnyOutline /> : <FaMoon />}
                             </Button>
 
                             <div className="dropdownWrapper me-3 position-relative">
@@ -100,11 +104,7 @@ const Header = () => {
                                     <div className="scrollList">
                                         <MenuItem onClick={handleCloseNotice}>
                                             <div className="dFlexAli-center">
-                                                <div className="userImg">
-                                                    <span className="rounded-circle">
-                                                        <img src={avatarImg} alt="Avatar" />
-                                                    </span>
-                                                </div>
+                                                <UserAvatarImgComponent Img={avatarImg} />
 
                                                 <div className="dropdownInfo">
                                                     <h4 className="limiTwoLine">
@@ -226,6 +226,15 @@ const Header = () => {
                                 </Menu>
                             </div>
 
+                            {context.windowWidth < 992 && (
+                                <Button
+                                    className="rounded-circle ms-2"
+                                    onClick={() => context.setMenuBtn(!context.menuBtn)}
+                                >
+                                    {context.menuBtn === true ? <RiMenuUnfold2Fill /> : <RiMenuLine />}
+                                </Button>
+                            )}
+
                             <Button onClick={handleClick} className="myAcc dFlexAli-center">
                                 <div className="userImg">
                                     <span className="rounded-circle">
@@ -233,7 +242,7 @@ const Header = () => {
                                     </span>
                                 </div>
 
-                                <div className="userInfo d-flex flex-column ps-2">
+                                <div className="userInfo d-flex flex-column pt-2 ps-2 res-hide">
                                     <h5 className="mb-0">Dream</h5>
                                     <p className="mb-0">@dream1209</p>
                                 </div>
