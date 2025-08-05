@@ -19,8 +19,9 @@ import FormControl from '@mui/material/FormControl';
 import Pagination from '@mui/material/Pagination';
 
 // React
-import { useState } from 'react';
+import { useState, uesEffect, useEffect } from 'react';
 import { Chart } from 'react-google-charts';
+import { Link } from 'react-router-dom';
 
 // Components
 import DashboardBox from './components/dashboardBox';
@@ -55,6 +56,10 @@ const Dashboard = () => {
         setAnchorEl(null);
     };
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <>
             <section className="right-content w-100">
@@ -84,7 +89,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className="col-md-4 ps-0">
+                    <div className="col-md-4 ps-0 topPart2">
                         <div className="box graphBox">
                             <div className="dFlexAli-center bottomEle w-100">
                                 <h6 className="text-white mb-0">Total Sales</h6>
@@ -214,7 +219,9 @@ const Dashboard = () => {
                                     <td>
                                         <div className="actions dFlexAli-center justify-content-around">
                                             <Button className="detail">
-                                                <FaEye />
+                                                <Link to="/product/detail/1">
+                                                    <FaEye />
+                                                </Link>
                                             </Button>
                                             <Button className="edit">
                                                 <MdEdit />
