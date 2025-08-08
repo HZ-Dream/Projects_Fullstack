@@ -107,6 +107,18 @@ body.dark .productDetailSection .productInfo .col-sm-9 .text-danger {
     margin-left: 7px;
 }
 
+.dot {
+    display: block;
+    width: 80px;
+    height: 30px;
+    border-radius: 5px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+body.dark .dot {
+    border: 3px solid #00000078;
+}
+
 /* Header */
 header {
     width: 100%;
@@ -599,6 +611,10 @@ body.dark .main .sidebarWrapper .sidebar ul li button.act .arrow svg {
     text-transform: capitalize !important;
 }
 
+.list .dashboardBoxWrapper .dashboardBox {
+    width: 32%;
+}
+
 .dashboardBoxWrapper .dashboardBox .col1 h4 {
     font-size: 16px !important;
     font-weight: 500;
@@ -850,6 +866,10 @@ table td .productBox .info {
 table td .imgWrapper {
     width: 20%;
     flex: 0 0 20%;
+}
+
+table td .imgWrapper .img img {
+    background: var(--white-color) !important;
 }
 
 table td .info {
@@ -1222,4 +1242,15 @@ body.dark .imgUploadBox .uploadBox {
     font-size: 15px;
     text-align: center;
     opacity: 0.5;
+}
+
+/* Category */
+.MuiCircularProgress-root.loader {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+body.dark .css-113d811-MuiFormLabel-root-MuiInputLabel-root,
+body.dark .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input {
+    color: #fffc !important;
 }

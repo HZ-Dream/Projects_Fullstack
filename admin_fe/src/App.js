@@ -4,6 +4,9 @@ import './Responsive.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+// Material UI
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+
 // React
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState, useEffect, createContext } from 'react';
@@ -14,12 +17,23 @@ import Sidebar from './Components/Sidebar';
 
 // Pages
 import Dashboard from './Pages/Dashboard';
-import ProductDetails from './Pages/ProductDetails';
-import ProductUpload from './Pages/ProductUpload';
+import ProductDetails from './Pages/Product/ProductDetails';
+import ProductUpload from './Pages/Product/ProductUpload';
+import CategoryAdd from './Pages/Category/CategoryAdd';
+import ProductList from './Pages/Product';
+import CategoryList from './Pages/Category';
 
 const MyContext = createContext();
 
 function App() {
+    const { enqueueSnackbar } = useSnackbar();
+
+    const handleClickVariant = (message, variant) => {
+        console.log(`Message: ${message}, Variant: ${variant}`);
+
+        enqueueSnackbar(message, { variant });
+    };
+
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [menuBtn, setMenuBtn] = useState(true);
     const [darkMode, setDarkMode] = useState(() => {
@@ -56,6 +70,7 @@ function App() {
         setMenuBtn,
         darkMode,
         setDarkMode,
+        handleClickVariant,
     };
 
     return (
@@ -76,8 +91,13 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/dashboard" element={<Dashboard />} />
+
+                            <Route path="/product" element={<ProductList />} />
                             <Route path="/product/detail/:id" element={<ProductDetails />} />
                             <Route path="/product/upload" element={<ProductUpload />} />
+
+                            <Route path="/category" element={<CategoryList />} />
+                            <Route path="/category/add" element={<CategoryAdd />} />
                         </Routes>
                     </div>
                 </div>

@@ -14,14 +14,14 @@ import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 
 // Images
-import avatarImg from '../../assets/images/avatar.jpg';
+import avatarImg from '../../../assets/images/avatar.jpg';
 
 // React
 import { useRef, useState } from 'react';
 import Slider from 'react-slick';
 
 // Components
-import UserAvatarImgComponent from '../../Components/UserAvatarImg';
+import UserAvatarImgComponent from '../../../Components/UserAvatarImg';
 
 const ProductDetails = () => {
     var productSlider = {
