@@ -1,4 +1,6 @@
 // Icons
+import { CiCircleRemove } from 'react-icons/ci';
+import { FaRegImages } from 'react-icons/fa';
 import { MdCloudUpload } from 'react-icons/md';
 
 // Material UI
@@ -6,11 +8,13 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import { useState, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 // Other
-import { postData } from '../../../utils';
+import { postData } from '../../../utils/api';
 
 // Context
 import { MyContext } from '../../../App';
@@ -19,11 +23,34 @@ const CategoryAdd = () => {
     const context = useContext(MyContext);
     // Set load
     const [load, isLoad] = useState(false);
+    const [previews, setPreviews] = useState([]);
+    const [files, setFiles] = useState([]);
+    const [imgFiles, setImgFiles] = useState([]);
     const [formFields, setFormFields] = useState({
         name: '',
         images: [],
         color: '',
     });
+
+    const formData = new FormData();
+
+    useEffect(() => {
+        if (!imgFiles) return;
+
+        let tmp = [];
+        for (let i = 0; i < imgFiles.length; i++) {
+            tmp.push(URL.createObjectURL(imgFiles[i]));
+        }
+
+        const objectUrls = tmp;
+        setPreviews(objectUrls);
+
+        for (let i = 0; i < objectUrls.length; i++) {
+            return () => {
+                URL.revokeObjectURL(objectUrls[i]);
+            };
+        }
+    }, [imgFiles]);
 
     const changeInput = (e) => {
         setFormFields(() => ({
@@ -32,26 +59,65 @@ const CategoryAdd = () => {
         }));
     };
 
-    const addImgUrl = (e) => {
-        const arr = [];
-        arr.push(e.target.value);
-        setFormFields(() => ({
-            ...formFields,
-            [e.target.name]: arr,
-        }));
+    const onChangeFile = async (e, url) => {
+        try {
+            const imgArr = [];
+            const files = e.target.files;
+            setImgFiles(e.target.files);
+            for (var i = 0; i < files.length; i++) {
+                const file = files[i];
+                imgArr.push(file);
+                formData.append('images', file);
+            }
+
+            formFields.images = imgArr;
+            setFiles(imgArr);
+            console.log('Files to upload:', imgArr);
+
+            postData(url, formData).then((data) => {
+                if (data?.images) {
+                    setFormFields((prev) => ({
+                        ...prev,
+                        images: data.images,
+                    }));
+                }
+            });
+            context.handleClickVariant('File uploaded successfully!', 'success');
+        } catch (err) {
+            console.error('Error uploading file:', err);
+            context.handleClickVariant('File upload failed!', 'error');
+        }
     };
 
     const addCategory = (e) => {
         e.preventDefault();
-        if (!formFields.name.trim() || !formFields.images[0].trim() || !formFields.color.trim()) {
+        if (!formFields.name.trim() || !formFields.color.trim()) {
             context.handleClickVariant('Please fill all fields!', 'warning');
             return;
         }
+
+        if (formFields.images.length === 0) {
+            context.handleClickVariant('Please upload at least one image!', 'warning');
+            return;
+        }
+
+        formData.append('name', formFields.name);
+        formData.append('color', formFields.color);
+
         isLoad(true);
         postData('/api/category/create', formFields)
             .then((res) => {
                 isLoad(false);
                 context.handleClickVariant('Create new category successful!', 'success');
+
+                setFormFields({
+                    name: '',
+                    images: [],
+                    color: '',
+                });
+                setPreviews([]);
+                setFiles([]);
+                setImgFiles([]);
             })
             .catch((err) => {
                 isLoad(false);
@@ -70,30 +136,66 @@ const CategoryAdd = () => {
                                 <div className="dFlexAli-center mb-3">
                                     <h5>Basic Information</h5>
 
-                                    <Button variant="contained" className="ms-auto">
+                                    <Button variant="contained" className="ms-auto fw-bold">
                                         <Link to="/category">Category List</Link>
                                     </Button>
                                 </div>
 
                                 <div className="form-group">
                                     <h6>Category Name</h6>
-                                    <input type="text" required name="name" onChange={changeInput} />
-                                </div>
-
-                                <div className="form-group">
-                                    <h6>Image Url</h6>
-                                    <input type="text" required name="images" onChange={addImgUrl} />
+                                    <input
+                                        value={formFields.name}
+                                        type="text"
+                                        required
+                                        name="name"
+                                        onChange={changeInput}
+                                    />
                                 </div>
 
                                 <div className="form-group">
                                     <h6>Color</h6>
                                     <input
+                                        value={formFields.color}
                                         type="text"
                                         placeholder="#f1f1f1"
                                         required
                                         name="color"
                                         onChange={changeInput}
                                     />
+                                </div>
+
+                                <div className="form-group">
+                                    <h6 className="mb-3">Image</h6>
+
+                                    <div className="imgUploadBox dFlexAli-center">
+                                        {previews?.length > 0
+                                            ? previews?.map((image, index) => (
+                                                  <div className="uploadBox" key={index}>
+                                                      <div className="box">
+                                                          <LazyLoadImage
+                                                              className="w-100"
+                                                              alt="Image"
+                                                              effect="blur"
+                                                              src={image}
+                                                          />
+                                                      </div>
+                                                  </div>
+                                              ))
+                                            : ''}
+                                        <div className="uploadBox d-flex flex-column">
+                                            <input
+                                                name="images"
+                                                multiple
+                                                className="fileInput"
+                                                type="file"
+                                                onChange={(e) => onChangeFile(e, '/api/category/upload')}
+                                            />
+                                            <div className="info">
+                                                <FaRegImages />
+                                                <h5>Image Upload</h5>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <Button type="submit" className="mt-3 btn-blue w-100 btn-big">

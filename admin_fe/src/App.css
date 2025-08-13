@@ -1098,7 +1098,8 @@ body.dark .reviewForm textarea {
 }
 
 .form .form-group input,
-.form .form-group textarea {
+.form .form-group textarea,
+.card .imagesUploadSec .addImgList input {
     background: #fafafa !important;
     width: 100% !important;
     outline: none !important;
@@ -1114,8 +1115,14 @@ body.dark .reviewForm textarea {
     padding-top: 15px !important;
 }
 
+.form .form-group input.radioBtn {
+    width: 20px !important;
+    margin-right: 5px !important;
+}
+
 body.dark .form .form-group input,
-body.dark .form .form-group textarea {
+body.dark .form .form-group textarea,
+body.dark .card .imagesUploadSec .addImgList input {
     background: #132345 !important;
     border: 1px solid #253557 !important;
     color: var(--white-color) !important;
@@ -1169,6 +1176,7 @@ body.dark .form .form-group textarea {
 
 body.dark .imgUploadBox .uploadBox {
     background: #2b3c5f;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
 }
 
 body.dark .imgUploadBox .uploadBox * {
@@ -1204,10 +1212,6 @@ body.dark .imgUploadBox .uploadBox * {
     background: #f1f1f1;
 }
 
-body.dark .imgUploadBox .uploadBox {
-    border: 1px dashed rgba(255, 255, 255, 0.2);
-}
-
 .imgUploadBox .uploadBox img {
     height: 100%;
     object-fit: cover;
@@ -1222,7 +1226,12 @@ body.dark .imgUploadBox .uploadBox {
 }
 
 .imgUploadBox .uploadBox .fileInput {
-    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
 }
 
 .imgUploadBox .uploadBox .info {

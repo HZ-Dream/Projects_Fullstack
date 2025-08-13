@@ -13,20 +13,88 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Pagination from '@mui/material/Pagination';
 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import CircularProgress from '@mui/material/CircularProgress';
+
 // React
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 // Components
 import DashboardBox from '../Dashboard/components/dashboardBox';
 
+// Utils
+import { fetchDataFromApi, deleteData } from '../../utils/api';
+
+// Context
+import { MyContext } from '../../App';
+
 const ProductList = () => {
+    const context = useContext(MyContext);
+
     const [showBy, setShowBy] = useState('');
     const [catBy, setCatBy] = useState('');
+    // Set Product Data
+    const [proData, setProData] = useState([]);
+    // Delete Modal
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [deleteProductId, setDeleteProductId] = useState('');
+    // Set load
+    const [load, isLoad] = useState(false);
+
+    // Set Page
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const getCategoryData = (page) => {
+        fetchDataFromApi(`/api/product?page=${page}`).then((res) => {
+            setProData(res);
+            setCurrentPage(page);
+        });
+    };
+
+    const handleChangePage = (e, value) => {
+        e.preventDefault();
+        getCategoryData(value);
+    };
 
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        getCategoryData(currentPage);
     }, []);
+
+    const deleteProductModal = (id) => {
+        setDeleteProductId(id);
+        setDeleteModal(true);
+    };
+
+    const handleCloseDel = () => {
+        setDeleteModal(false);
+    };
+
+    const deleteProduct = (e) => {
+        e.preventDefault();
+        isLoad(true);
+
+        deleteData('/api/product/', deleteProductId)
+            .then((res) => {
+                fetchDataFromApi('/api/product').then((res) => {
+                    getCategoryData(currentPage);
+                    setProData(res);
+                    setDeleteModal(false);
+                    isLoad(false);
+                    context.handleClickVariant('Delete product successful!', 'success');
+                });
+            })
+            .catch((err) => {
+                isLoad(false);
+                context.handleClickVariant('Something went wrong!', 'error');
+                console.error(err);
+            });
+    };
 
     return (
         <>
@@ -116,304 +184,95 @@ const ProductList = () => {
                             </thead>
 
                             <tbody>
-                                <tr>
-                                    <td>#1</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
+                                {proData?.productList?.length > 0
+                                    ? proData?.productList?.map((product, index) => (
+                                          <tr key={product.id}>
+                                              <td># {index + 1}</td>
+                                              <td>
+                                                  <div className="dFlexAli-center productBox">
+                                                      <div className="imgWrapper">
+                                                          <div className="img card m-0">
+                                                              <img
+                                                                  className="w-100"
+                                                                  src={`${process.env.REACT_APP_BASE_URL}/uploads/products/${product.images[0]}`}
+                                                                  alt="Image"
+                                                              />
+                                                          </div>
+                                                      </div>
 
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <Link to="/product/detail/1">
-                                                    <FaEye />
-                                                </Link>
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#2</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#3</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#4</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#5</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#6</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                                      <div className="info ps-2">
+                                                          <h6>{product.name}</h6>
+                                                          <p>{product.desciption}</p>
+                                                      </div>
+                                                  </div>
+                                              </td>
+                                              <td>{product.category.name}</td>
+                                              <td>{product.brand}</td>
+                                              <td>
+                                                  <del className="old">${product.priceInit}.00</del>
+                                                  <span className="new text-danger">${product.priceDiscount}.00</span>
+                                              </td>
+                                              <td>{product.quantity}</td>
+                                              <td>4.9 (15)</td>
+                                              <td>355</td>
+                                              <td>$38K</td>
+                                              <td>
+                                                  <div className="actions dFlexAli-center justify-content-around">
+                                                      <Button className="detail">
+                                                          <Link to="/product/detail/1">
+                                                              <FaEye />
+                                                          </Link>
+                                                      </Button>
+                                                      <Button className="edit">
+                                                          <MdEdit />
+                                                      </Button>
+                                                      <Button
+                                                          onClick={() => deleteProductModal(product.id)}
+                                                          className="delete"
+                                                      >
+                                                          <FaTrash />
+                                                      </Button>
+                                                  </div>
+                                              </td>
+                                          </tr>
+                                      ))
+                                    : null}
                             </tbody>
                         </table>
+
+                        <Dialog className="editCategoryModal" open={deleteModal} onClose={handleCloseDel}>
+                            <DialogTitle className="dFlexAli-center">
+                                <span className="me-2 text-danger fw-bold">Delete Product</span>
+                                {load === true && <CircularProgress className="loader" color="inherit" />}
+                            </DialogTitle>
+                            <form onSubmit={deleteProduct}>
+                                <DialogContent>
+                                    <h3>Are you sure you want to delete?</h3>
+                                </DialogContent>
+                                <DialogActions className="mb-2">
+                                    <Button onClick={handleCloseDel} variant="outlined">
+                                        Cancel
+                                    </Button>
+                                    <Button variant="contained" type="submit">
+                                        Delete
+                                    </Button>
+                                </DialogActions>
+                            </form>
+                        </Dialog>
 
                         <div className="dFlexAli-center tableFooter pt-1">
                             <p className="mb-0 me-auto">
                                 showing <b>6</b> of <b>60</b> results
                             </p>
 
-                            <Pagination count={10} color="primary" showFirstButton showLastButton />
+                            <Pagination
+                                page={currentPage}
+                                count={proData?.totalPages}
+                                color="primary"
+                                showFirstButton
+                                showLastButton
+                                onChange={handleChangePage}
+                            />
                         </div>
                     </div>
                 </div>

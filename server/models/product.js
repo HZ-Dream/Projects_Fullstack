@@ -18,20 +18,45 @@ const productShema = mongoose.Schema({
     brand: {
         type: String,
         default: '',
+        required: true,
     },
-    price: {
+    priceInit: {
         type: Number,
         default: 0,
+        required: true,
+    },
+    priceDiscount: {
+        type: Number,
+        default: 0,
+        required: true,
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
         required: true,
     },
-    countInStock: {
+    quantity: {
         type: Number,
         default: 0,
     },
+    flavor: [
+        {
+            type: String,
+            required: true,
+        },
+    ],
+    weight: [
+        {
+            type: String,
+            required: true,
+        },
+    ],
+    tag: [
+        {
+            type: String,
+            required: true,
+        },
+    ],
     rating: {
         type: Number,
         default: 0,
@@ -50,4 +75,13 @@ const productShema = mongoose.Schema({
     },
 });
 
+productShema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+productShema.set('toJSON', {
+    virtuals: true,
+});
+
 exports.Product = mongoose.model('Product', productShema);
+exports.productShema = productShema;

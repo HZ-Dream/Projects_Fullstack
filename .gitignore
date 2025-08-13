@@ -10,5 +10,6 @@
 # BE
 /server/node_modules
 /server/.env
+/server/uploads
 
 # Open check file ignore success: "Ctrl + ," -> "ignore" -> "Exclude Git Ignore" -> Tick

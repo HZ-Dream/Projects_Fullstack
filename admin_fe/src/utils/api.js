@@ -12,16 +12,16 @@ export const fetchDataFromApi = async (url) => {
 };
 
 export const postData = async (url, formData) => {
-    const { res } = await axios.post(BASE_URL + url, formData);
-    return res;
+    const { data } = await axios.post(BASE_URL + url, formData);
+    return data;
 };
 
 export const editData = async (url, updatedData) => {
-    const { res } = await axios.put(BASE_URL + url, updatedData);
-    return res;
+    const { data } = await axios.put(BASE_URL + url, updatedData);
+    return data;
 };
 
 export const deleteData = async (url, id) => {
-    const { res } = await axios.delete(BASE_URL + url + id);
-    return res;
+    const { data } = await axios.delete(BASE_URL + url + id);
+    return data;
 };

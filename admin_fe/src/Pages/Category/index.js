@@ -17,7 +17,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 // Others
-import { fetchDataFromApi, editData, deleteData } from '../../utils';
+import { fetchDataFromApi, editData, deleteData } from '../../utils/api';
 
 // Context
 import { MyContext } from '../../App';
@@ -158,7 +158,7 @@ const CategoryList = () => {
                 <div className="card shadow border-0 p-3">
                     <div className="dFlexAli-center">
                         <h3 className="hd">Category List</h3>
-                        <Button variant="contained" className="ms-auto">
+                        <Button variant="contained" className="ms-auto fw-bold">
                             <Link to="/category/add">Add Category</Link>
                         </Button>
                     </div>
@@ -190,7 +190,11 @@ const CategoryList = () => {
                                             <td>
                                                 <div className="imgWrapper">
                                                     <div className="img card m-0">
-                                                        <img className="w-100" src={item.images[0]} alt="Image" />
+                                                        <img
+                                                            className="w-100"
+                                                            src={`${process.env.REACT_APP_BASE_URL}/uploads/categories/${item.images[0]}`}
+                                                            alt="Image"
+                                                        />
                                                     </div>
                                                 </div>
                                             </td>
