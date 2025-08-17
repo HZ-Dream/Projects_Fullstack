@@ -1,5 +1,4 @@
 // Icons
-import { CiCircleRemove } from 'react-icons/ci';
 import { FaRegImages } from 'react-icons/fa';
 import { MdCloudUpload } from 'react-icons/md';
 
@@ -11,30 +10,32 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // React
 import { useState, useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
 // Utils
-import { fetchDataFromApi, postData } from '../../../utils/api';
+import { editData, fetchDataFromApi, postData } from '../../utils/api';
 
 // Context
-import { MyContext } from '../../../App';
+import { MyContext } from '../../App';
 
-const ProductUpload = () => {
+const ProductEdit = () => {
     const context = useContext(MyContext);
+    let { id } = useParams();
 
     const [category, setCategory] = useState('');
-    const [files, setFiles] = useState([]);
+    const [subCategory, setSubCategory] = useState({});
     const [catData, setCatData] = useState([]);
     const [load, isLoad] = useState(false);
     const [imgFiles, setImgFiles] = useState([]);
-    const [previews, setPreviews] = useState([]);
 
     const [formFields, setFormFields] = useState({
         name: '',
         description: '',
         images: [],
         category: '',
+        subCat: '',
         brand: '',
         priceInit: 0,
         priceDiscount: 0,
@@ -48,10 +49,14 @@ const ProductUpload = () => {
     const formData = new FormData();
 
     const changeInput = (e) => {
-        setFormFields(() => ({
+        let value = e.target.value;
+        if (e.target.name === 'isFeatured') {
+            value = value === 'true';
+        }
+        setFormFields({
             ...formFields,
-            [e.target.name]: e.target.value,
-        }));
+            [e.target.name]: value,
+        });
     };
 
     const changeInputArr = (e) => {
@@ -67,15 +72,19 @@ const ProductUpload = () => {
         try {
             const imgArr = [];
             const files = e.target.files;
-            setImgFiles(e.target.files);
+
             for (var i = 0; i < files.length; i++) {
                 const file = files[i];
-                imgArr.push(file);
-                formData.append('images', file);
+                if ((file && file.type === 'image/jpeg') || file.type === 'image/png') {
+                    setImgFiles(e.target.files);
+                    imgArr.push(file);
+                    formData.append('images', file);
+                } else {
+                    context.handleClickVariant('Only JPEG and PNG files are allowed!', 'warning');
+                    return;
+                }
             }
 
-            formFields.images = imgArr;
-            setFiles(imgArr);
             console.log('Files to upload:', imgArr);
 
             postData(url, formData).then((data) => {
@@ -94,16 +103,60 @@ const ProductUpload = () => {
     };
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-        fetchDataFromApi('/api/category/all')
+        const fetchData = async () => {
+            try {
+                window.scrollTo(0, 0);
+
+                const product = await fetchDataFromApi(`/api/product/${id}`);
+                if (product) {
+                    setFormFields({
+                        name: product.name,
+                        description: product.description,
+                        images: product.images,
+                        category: product.category,
+                        subCat: product.subCat,
+                        brand: product.brand,
+                        priceInit: product.priceInit,
+                        priceDiscount: product.priceDiscount,
+                        quantity: product.quantity,
+                        flavor: product.flavor.join(', '),
+                        weight: product.weight.join(', '),
+                        tag: product.tag.join(', '),
+                        isFeatured: product.isFeatured,
+                    });
+
+                    if (product.category) {
+                        const sub = await fetchDataFromApi(`/api/category/${product.category}`);
+                        setSubCategory(sub);
+                    }
+                }
+
+                const categories = await fetchDataFromApi('/api/category/all');
+                setCatData(categories);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                context.handleClickVariant('Failed to load data!', 'error');
+            }
+        };
+
+        fetchData();
+    }, [id]);
+
+    useEffect(() => {
+        if (!category) return;
+
+        console.log('Fetching subcategories for category:', category);
+
+        fetchDataFromApi(`/api/category/${category}`)
             .then((res) => {
-                setCatData(res);
+                console.log('Subcategories fetched:', res);
+                setSubCategory(res);
             })
             .catch((err) => {
-                context.handleClickVariant('Fetch Catagory fail!', 'error');
+                context.handleClickVariant('Fetch Sub Category fail!', 'error');
                 console.error(err);
             });
-    }, []);
+    }, [category]);
 
     useEffect(() => {
         if (!imgFiles) return;
@@ -114,7 +167,6 @@ const ProductUpload = () => {
         }
 
         const objectUrls = tmp;
-        setPreviews(objectUrls);
 
         for (let i = 0; i < objectUrls.length; i++) {
             return () => {
@@ -123,27 +175,18 @@ const ProductUpload = () => {
         }
     }, [imgFiles]);
 
-    const removeProductImage = (index) => {
-        const updatedImages = files.filter((_, i) => i !== index);
-        setFormFields((prev) => ({
-            ...prev,
-            images: updatedImages,
-        }));
-        setImgFiles(updatedImages);
-    };
-
-    const addProduct = (e) => {
+    const editProduct = (e) => {
         e.preventDefault();
-        if (files.length === 0) {
+        if (formFields.images.length === 0) {
             context.handleClickVariant('Please add at least one product image!', 'warning');
             return;
         }
         isLoad(true);
-        console.log(formFields);
 
         formData.append('name', formFields.name);
         formData.append('description', formFields.description);
         formData.append('category', formFields.category);
+        formData.append('subCat', formFields.subCat);
         formData.append('brand', formFields.brand);
         formData.append('priceInit', formFields.priceInit);
         formData.append('priceDiscount', formFields.priceDiscount);
@@ -153,38 +196,25 @@ const ProductUpload = () => {
         formData.append('tag', formFields.tag);
         formData.append('isFeatured', formFields.isFeatured);
 
-        postData('/api/product/create', formFields)
+        console.log(formFields);
+
+        editData(`/api/product/${id}`, formFields)
             .then((res) => {
                 isLoad(false);
-                context.handleClickVariant('Product added successfully!', 'success');
-
-                setFormFields({
-                    name: '',
-                    description: '',
-                    images: [],
-                    category: '',
-                    brand: '',
-                    priceInit: 0,
-                    priceDiscount: 0,
-                    quantity: 0,
-                    flavor: '',
-                    weight: '',
-                    tag: '',
-                    isFeatured: false,
-                });
-                setFiles([]);
-                setImgFiles([]);
-                setPreviews([]);
+                context.handleClickVariant('Edit product successfully!', 'success');
+                setTimeout(() => {
+                    window.location.href = '/product';
+                }, 1000);
             })
             .catch((err) => {
                 console.error(err);
-                context.handleClickVariant('Failed to add product!', 'error');
+                context.handleClickVariant('Failed to edit product!', 'error');
             });
     };
     return (
         <>
             <section className="right-content w-100">
-                <form className="form" onSubmit={addProduct}>
+                <form className="form" onSubmit={editProduct}>
                     <div className="row">
                         <div className="col-sm-7">
                             <div className="card p-4">
@@ -220,15 +250,12 @@ const ProductUpload = () => {
                                             <Select
                                                 name="category"
                                                 className="w-100"
-                                                value={formFields.category}
+                                                value={formFields.category || ''}
                                                 onChange={changeInput}
                                                 displayEmpty
                                                 inputProps={{ 'aria-label': 'Without label' }}
                                                 required
                                             >
-                                                <MenuItem value="">
-                                                    <em>None</em>
-                                                </MenuItem>
                                                 {catData?.categoryList?.map((category) => (
                                                     <MenuItem
                                                         className="text-capitalize"
@@ -244,14 +271,24 @@ const ProductUpload = () => {
                                     </div>
                                     <div className="col-sm-6">
                                         <div className="form-group">
-                                            <h6>Brand</h6>
-                                            <input
-                                                value={formFields.brand}
-                                                type="text"
-                                                name="brand"
-                                                required
+                                            <h6>Sub Category</h6>
+                                            <Select
+                                                name="subCat"
+                                                className="w-100"
+                                                value={formFields.subCat}
                                                 onChange={changeInput}
-                                            />
+                                                displayEmpty
+                                                inputProps={{ 'aria-label': 'Without label' }}
+                                            >
+                                                <MenuItem value="">
+                                                    <em>None</em>
+                                                </MenuItem>
+                                                {subCategory?.subCat?.map((item, index) => (
+                                                    <MenuItem className="text-capitalize" key={index} value={item}>
+                                                        {item}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
                                         </div>
                                     </div>
                                 </div>
@@ -288,6 +325,17 @@ const ProductUpload = () => {
                         <div className="col-sm-5">
                             <div className="card p-4">
                                 <h5 className="mb-4">Additional information</h5>
+
+                                <div className="form-group">
+                                    <h6>Brand</h6>
+                                    <input
+                                        value={formFields.brand}
+                                        type="text"
+                                        name="brand"
+                                        required
+                                        onChange={changeInput}
+                                    />
+                                </div>
 
                                 <div className="form-group">
                                     <h6>Quantity</h6>
@@ -344,16 +392,17 @@ const ProductUpload = () => {
                                             type="radio"
                                             name="isFeatured"
                                             value="true"
-                                            required
+                                            checked={formFields.isFeatured === true}
                                             onChange={changeInput}
                                         />
                                         <h6 className="mb-0">Yes</h6>
+
                                         <input
                                             className="radioBtn ms-2"
                                             type="radio"
                                             name="isFeatured"
                                             value="false"
-                                            required
+                                            checked={formFields.isFeatured === false}
                                             onChange={changeInput}
                                         />
                                         <h6 className="mb-0">No</h6>
@@ -368,18 +417,15 @@ const ProductUpload = () => {
                             <h5 className="mb-4">Media And Published</h5>
 
                             <div className="imgUploadBox dFlexAli-center">
-                                {previews?.length > 0
-                                    ? previews?.map((image, index) => (
+                                {formFields?.images?.length > 0
+                                    ? formFields?.images?.map((item, index) => (
                                           <div className="uploadBox" key={index}>
-                                              <div className="remove" onClick={() => removeProductImage(index)}>
-                                                  <CiCircleRemove />
-                                              </div>
                                               <div className="box">
                                                   <LazyLoadImage
                                                       className="w-100"
                                                       alt="Image"
                                                       effect="blur"
-                                                      src={image}
+                                                      src={`${process.env.REACT_APP_BASE_URL}/uploads/products/${item}`}
                                                   />
                                               </div>
                                           </div>
@@ -391,7 +437,7 @@ const ProductUpload = () => {
                                         multiple
                                         className="fileInput"
                                         type="file"
-                                        onChange={(e) => onChangeFile(e, '/api/product/upload')}
+                                        onChange={(e) => onChangeFile(e, `/api/product/${id}/upload`)}
                                     />
                                     <div className="info">
                                         <FaRegImages />
@@ -413,4 +459,4 @@ const ProductUpload = () => {
     );
 };
 
-export default ProductUpload;
+export default ProductEdit;

@@ -39,6 +39,8 @@ const ProductList = () => {
     const [catBy, setCatBy] = useState('');
     // Set Product Data
     const [proData, setProData] = useState([]);
+    // Set Category Data
+    const [catData, setCatData] = useState([]);
     // Delete Modal
     const [deleteModal, setDeleteModal] = useState(false);
     const [deleteProductId, setDeleteProductId] = useState('');
@@ -49,9 +51,13 @@ const ProductList = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const getCategoryData = (page) => {
-        fetchDataFromApi(`/api/product?page=${page}`).then((res) => {
+        fetchDataFromApi(`/api/product?page=${page}&category=${catBy}`).then((res) => {
             setProData(res);
             setCurrentPage(page);
+        });
+
+        fetchDataFromApi('/api/category/all').then((res) => {
+            setCatData(res);
         });
     };
 
@@ -65,6 +71,14 @@ const ProductList = () => {
 
         getCategoryData(currentPage);
     }, []);
+
+    const filterProductsByCategory = (e) => {
+        setCatBy(e.target.value);
+        fetchDataFromApi(`/api/product?category=${e.target.value}`).then((res) => {
+            setProData(res);
+            setCurrentPage(1);
+        });
+    };
 
     const deleteProductModal = (id) => {
         setDeleteProductId(id);
@@ -151,16 +165,18 @@ const ProductList = () => {
                                 <Select
                                     className="w-100"
                                     value={catBy}
-                                    onChange={(e) => setCatBy(e.target.value)}
+                                    onChange={filterProductsByCategory}
                                     displayEmpty
                                     inputProps={{ 'aria-label': 'Without label' }}
                                 >
                                     <MenuItem value="">
                                         <em>None</em>
                                     </MenuItem>
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
+                                    {catData?.categoryList?.map((category) => (
+                                        <MenuItem key={category.id} value={category.id}>
+                                            {category.name}
+                                        </MenuItem>
+                                    ))}
                                 </Select>
                             </FormControl>
                         </div>
@@ -185,7 +201,7 @@ const ProductList = () => {
 
                             <tbody>
                                 {proData?.productList?.length > 0
-                                    ? proData?.productList?.map((product, index) => (
+                                    ? proData.productList.map((product, index) => (
                                           <tr key={product.id}>
                                               <td># {index + 1}</td>
                                               <td>
@@ -224,7 +240,9 @@ const ProductList = () => {
                                                           </Link>
                                                       </Button>
                                                       <Button className="edit">
-                                                          <MdEdit />
+                                                          <Link to={`/product/edit/${product.id}`}>
+                                                              <MdEdit />
+                                                          </Link>
                                                       </Button>
                                                       <Button
                                                           onClick={() => deleteProductModal(product.id)}

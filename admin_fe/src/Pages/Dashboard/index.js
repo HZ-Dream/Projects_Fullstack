@@ -64,6 +64,8 @@ const Dashboard = () => {
 
     // Set Product Data
     const [proData, setProData] = useState([]);
+    // Set Category Data
+    const [catData, setCatData] = useState([]);
     // Delete Modal
     const [deleteModal, setDeleteModal] = useState(false);
     const [deleteProductId, setDeleteProductId] = useState('');
@@ -82,9 +84,13 @@ const Dashboard = () => {
     };
 
     const getCategoryData = (page) => {
-        fetchDataFromApi(`/api/product?page=${page}`).then((res) => {
+        fetchDataFromApi(`/api/product?page=${page}&category=${catBy}`).then((res) => {
             setProData(res);
             setCurrentPage(page);
+        });
+
+        fetchDataFromApi('/api/category/all').then((res) => {
+            setCatData(res);
         });
     };
 
@@ -98,6 +104,14 @@ const Dashboard = () => {
 
         getCategoryData(currentPage);
     }, []);
+
+    const filterProductsByCategory = (e) => {
+        setCatBy(e.target.value);
+        fetchDataFromApi(`/api/product?category=${e.target.value}`).then((res) => {
+            setProData(res);
+            setCurrentPage(1);
+        });
+    };
 
     const deleteProductModal = (id) => {
         setDeleteProductId(id);
@@ -219,16 +233,18 @@ const Dashboard = () => {
                                 <Select
                                     className="w-100"
                                     value={catBy}
-                                    onChange={(e) => setCatBy(e.target.value)}
+                                    onChange={filterProductsByCategory}
                                     displayEmpty
                                     inputProps={{ 'aria-label': 'Without label' }}
                                 >
                                     <MenuItem value="">
                                         <em>None</em>
                                     </MenuItem>
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
+                                    {catData?.categoryList?.map((category) => (
+                                        <MenuItem key={category.id} value={category.id}>
+                                            {category.name}
+                                        </MenuItem>
+                                    ))}
                                 </Select>
                             </FormControl>
                         </div>
@@ -292,7 +308,9 @@ const Dashboard = () => {
                                                           </Link>
                                                       </Button>
                                                       <Button className="edit">
-                                                          <MdEdit />
+                                                          <Link to={`/product/edit/${product.id}`}>
+                                                              <MdEdit />
+                                                          </Link>
                                                       </Button>
                                                       <Button
                                                           onClick={() => deleteProductModal(product.id)}

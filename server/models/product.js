@@ -35,6 +35,10 @@ const productShema = mongoose.Schema({
         ref: 'Category',
         required: true,
     },
+    subCat: {
+        type: String,
+        default: '',
+    },
     quantity: {
         type: Number,
         default: 0,

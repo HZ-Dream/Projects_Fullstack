@@ -17,9 +17,13 @@ import Sidebar from './Components/Sidebar';
 
 // Pages
 import Dashboard from './Pages/Dashboard';
-import ProductDetails from './Pages/Product/ProductDetails';
-import ProductUpload from './Pages/Product/ProductUpload';
-import CategoryAdd from './Pages/Category/CategoryAdd';
+
+import ProductDetails from './Pages/Product/detailProduct';
+import ProductUpload from './Pages/Product/addProduct';
+import ProductEdit from './Pages/Product/editProduct';
+
+import CategoryAdd from './Pages/Category/addCategory';
+import CategoryEdit from './Pages/Category/editCategory';
 import ProductList from './Pages/Product';
 import CategoryList from './Pages/Category';
 
@@ -95,9 +99,11 @@ function App() {
                             <Route path="/product" element={<ProductList />} />
                             <Route path="/product/detail/:id" element={<ProductDetails />} />
                             <Route path="/product/upload" element={<ProductUpload />} />
+                            <Route path="/product/edit/:id" element={<ProductEdit />} />
 
                             <Route path="/category" element={<CategoryList />} />
                             <Route path="/category/add" element={<CategoryAdd />} />
+                            <Route path="/category/edit/:id" element={<CategoryEdit />} />
                         </Routes>
                     </div>
                 </div>

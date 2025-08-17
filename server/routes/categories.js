@@ -5,8 +5,6 @@ const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
 
-var imagesArr = [];
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/categories');
@@ -17,6 +15,44 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+// Add new image upload route
+router.post(
+    '/upload',
+    upload.array('images', 1), // Max 1 images
+    async (req, res) => {
+        try {
+            const imagesArr = [];
+            const files = req.files;
+            for (let i = 0; i < files.length; i++) {
+                imagesArr.push(files[i].filename);
+            }
+            console.log(imagesArr);
+            res.send({ images: imagesArr });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Upload failed' });
+        }
+    },
+);
+
+// Update image upload route to handle multiple images
+router.post('/:id/upload', upload.array('images', 1), async (req, res) => {
+    const category = await Category.findById(req.params.id);
+
+    if (category && category.images.length > 0) {
+        for (const image of category.images) {
+            const filePath = `uploads/categories/${image}`;
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        }
+    }
+
+    const imagesArr = req.files.map((file) => file.filename);
+    category.images = imagesArr;
+    await category.save();
+
+    res.send({ images: imagesArr });
+});
 
 router.get('/', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -59,27 +95,6 @@ router.get('/all', async (req, res) => {
     });
 });
 
-router.post(
-    '/upload',
-    upload.array('images', 3), // Max 3 images
-    async (req, res) => {
-        try {
-            imagesArr = [];
-            const files = req.files;
-
-            for (let i = 0; i < files.length; i++) {
-                imagesArr.push(files[i].filename);
-            }
-
-            console.log(imagesArr);
-            res.send({ images: imagesArr });
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Upload failed' });
-        }
-    },
-);
-
 router.get('/:id', async (req, res) => {
     const category = await Category.findById(req.params.id);
     if (!category) {
@@ -91,7 +106,8 @@ router.get('/:id', async (req, res) => {
 router.post('/create', async (req, res) => {
     let category = new Category({
         name: req.body.name,
-        images: imagesArr,
+        subCat: req.body.subCat,
+        images: req.body.images,
         color: req.body.color,
     });
 
@@ -133,31 +149,12 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-    const limit = pLimit(2);
-
-    const imagesToUpload = req.body.images.map((image) => {
-        return limit(async () => {
-            const result = await cloudinary.uploader.upload(image);
-            return result;
-        });
-    });
-
-    const uploadStatus = await Promise.all(imagesToUpload);
-
-    const imgUrl = uploadStatus.map((item) => item.secure_url);
-
-    if (!uploadStatus) {
-        return res.status(500).json({
-            error: 'Images can not upload!',
-            status: false,
-        });
-    }
-
     const category = await Category.findByIdAndUpdate(
         req.params.id,
         {
             name: req.body.name,
-            images: imgUrl,
+            subCat: req.body.subCat,
+            images: req.body.images,
             color: req.body.color,
         },
         { new: true },

@@ -8,19 +8,20 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
 // Other
-import { postData } from '../../../utils/api';
+import { postData } from '../../utils/api';
 
 // Context
-import { MyContext } from '../../../App';
+import { MyContext } from '../../App';
 
 const CategoryAdd = () => {
     const context = useContext(MyContext);
+    const subCatRef = useRef();
     // Set load
     const [load, isLoad] = useState(false);
     const [previews, setPreviews] = useState([]);
@@ -28,6 +29,7 @@ const CategoryAdd = () => {
     const [imgFiles, setImgFiles] = useState([]);
     const [formFields, setFormFields] = useState({
         name: '',
+        subCat: [],
         images: [],
         color: '',
     });
@@ -59,19 +61,33 @@ const CategoryAdd = () => {
         }));
     };
 
+    const changeSubCat = (e) => {
+        const value = e.target.value;
+        const convertArr = value.split(',').map((item) => item.trim());
+        setFormFields((prev) => ({
+            ...prev,
+            subCat: convertArr,
+        }));
+    };
+
     const onChangeFile = async (e, url) => {
         try {
             const imgArr = [];
             const files = e.target.files;
-            setImgFiles(e.target.files);
+
             for (var i = 0; i < files.length; i++) {
                 const file = files[i];
-                imgArr.push(file);
-                formData.append('images', file);
+                if ((file && file.type === 'image/jpeg') || file.type === 'image/png') {
+                    setImgFiles(e.target.files);
+                    imgArr.push(file);
+                    formData.append('images', file);
+                    setFiles(imgArr);
+                } else {
+                    context.handleClickVariant('Only JPEG and PNG files are allowed!', 'warning');
+                    return;
+                }
             }
 
-            formFields.images = imgArr;
-            setFiles(imgArr);
             console.log('Files to upload:', imgArr);
 
             postData(url, formData).then((data) => {
@@ -91,7 +107,7 @@ const CategoryAdd = () => {
 
     const addCategory = (e) => {
         e.preventDefault();
-        if (!formFields.name.trim() || !formFields.color.trim()) {
+        if (!formFields.name.trim() || !formFields.subCat.length === 0 || !formFields.color.trim()) {
             context.handleClickVariant('Please fill all fields!', 'warning');
             return;
         }
@@ -102,7 +118,10 @@ const CategoryAdd = () => {
         }
 
         formData.append('name', formFields.name);
+        formData.append('subCat', formFields.subCat);
         formData.append('color', formFields.color);
+
+        console.log(formFields);
 
         isLoad(true);
         postData('/api/category/create', formFields)
@@ -112,9 +131,11 @@ const CategoryAdd = () => {
 
                 setFormFields({
                     name: '',
+                    subCat: [],
                     images: [],
                     color: '',
                 });
+                subCatRef.current.value = '';
                 setPreviews([]);
                 setFiles([]);
                 setImgFiles([]);
@@ -149,6 +170,18 @@ const CategoryAdd = () => {
                                         required
                                         name="name"
                                         onChange={changeInput}
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <h6>Sub Category</h6>
+                                    <input
+                                        ref={subCatRef}
+                                        placeholder="Beef, Pork, Chicken, ..."
+                                        type="text"
+                                        required
+                                        name="subCat"
+                                        onChange={changeSubCat}
                                     />
                                 </div>
 

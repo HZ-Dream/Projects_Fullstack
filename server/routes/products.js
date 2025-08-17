@@ -7,8 +7,6 @@ const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
 
-var imagesArr = [];
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/products');
@@ -20,12 +18,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Add new product image
 router.post(
     '/upload',
     upload.array('images', 5), // Max 5 images
     async (req, res) => {
         try {
-            imagesArr = [];
+            const imagesArr = [];
             const files = req.files;
 
             for (let i = 0; i < files.length; i++) {
@@ -44,31 +43,46 @@ router.post(
 router.get('/', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const perPage = 4;
-    const totalPosts = await Product.countDocuments();
-    const totalPages = Math.ceil(totalPosts / perPage);
+    const category = req.query.category;
 
-    if (page < 1 || page > totalPages) {
-        return res.status(400).json({
-            message: 'Page not found!',
-        });
+    let filter = {};
+    if (category) {
+        filter.category = category;
     }
 
-    const productList = await Product.find()
+    const totalPosts = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalPosts / perPage);
+
+    const productList = await Product.find(filter)
         .populate('category')
         .skip((page - 1) * perPage)
         .limit(perPage)
         .exec();
 
-    if (!productList) {
-        res.status(500).json({ success: false });
+    return res.status(200).json({
+        productList,
+        totalPages,
+        totalProducts: totalPosts,
+        page,
+    });
+});
+
+// Update image upload route to handle multiple images
+router.post('/:id/upload', upload.array('images', 5), async (req, res) => {
+    const product = await Product.findById(req.params.id);
+
+    if (product && product.images.length > 0) {
+        for (const image of product.images) {
+            const filePath = `uploads/products/${image}`;
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        }
     }
 
-    return res.status(200).json({
-        productList: productList,
-        totalPages: totalPages,
-        totalProducts: totalPosts,
-        page: page,
-    });
+    const imagesArr = req.files.map((file) => file.filename);
+    product.images = imagesArr;
+    await product.save();
+
+    res.send({ images: imagesArr });
 });
 
 router.get('/:id', async (req, res) => {
@@ -96,7 +110,7 @@ router.post('/create', async (req, res) => {
     let product = new Product({
         name: req.body.name,
         description: req.body.description,
-        images: imagesArr,
+        images: req.body.images,
         brand: req.body.brand,
         priceInit: req.body.priceInit,
         priceDiscount: req.body.priceDiscount,
@@ -104,6 +118,7 @@ router.post('/create', async (req, res) => {
         weight: req.body.weight,
         tag: req.body.tag,
         category: req.body.category,
+        subCat: req.body.subCat || '',
         quantity: req.body.quantity,
         rating: req.body.rating || 0,
         numReviews: req.body.numReviews || 0,
@@ -136,7 +151,7 @@ router.put('/:id', async (req, res) => {
         {
             name: req.body.name,
             description: req.body.description,
-            images: imagesArr,
+            images: req.body.images,
             brand: req.body.brand,
             priceInit: req.body.priceInit,
             priceDiscount: req.body.priceDiscount,
@@ -144,6 +159,7 @@ router.put('/:id', async (req, res) => {
             weight: req.body.weight,
             tag: req.body.tag,
             category: req.body.category,
+            subCat: req.body.subCat || '',
             quantity: req.body.quantity,
             rating: req.body.rating || 0,
             numReviews: req.body.numReviews || 0,
