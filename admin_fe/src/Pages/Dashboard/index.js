@@ -278,7 +278,7 @@ const Dashboard = () => {
                                                           <div className="img card m-0">
                                                               <img
                                                                   className="w-100"
-                                                                  src={`${process.env.REACT_APP_BASE_URL}/uploads/products/${product.images[0]}`}
+                                                                  src={product.images[0]}
                                                                   alt="Image"
                                                               />
                                                           </div>

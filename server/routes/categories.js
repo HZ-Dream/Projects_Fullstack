@@ -1,9 +1,16 @@
 const { Category } = require('../models/category');
+const { ImageUpload } = require('../models/imageUpload');
+
 const express = require('express');
 const router = express.Router();
-
 const multer = require('multer');
 const fs = require('fs');
+const cloudinary = require('../utils/cloudinary');
+
+let pLimit;
+(async () => {
+    pLimit = (await import('p-limit')).default;
+})();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -19,16 +26,28 @@ const upload = multer({ storage: storage });
 // Add new image upload route
 router.post(
     '/upload',
-    upload.array('images', 1), // Max 1 images
+    upload.array('images', 1), // Max 1
     async (req, res) => {
         try {
             const imagesArr = [];
-            const files = req.files;
-            for (let i = 0; i < files.length; i++) {
-                imagesArr.push(files[i].filename);
+
+            for (const file of req.files) {
+                const options = {
+                    use_filename: true,
+                    unique_filename: false,
+                    overwrite: false,
+                };
+
+                const result = await cloudinary.uploader.upload(file.path, options);
+                imagesArr.push(result.secure_url);
+
+                fs.unlinkSync(file.path);
             }
-            console.log(imagesArr);
-            res.send({ images: imagesArr });
+
+            const imagesUploaded = new ImageUpload({ images: imagesArr });
+            await imagesUploaded.save();
+
+            return res.status(200).json(imagesArr);
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: 'Upload failed' });
@@ -36,23 +55,60 @@ router.post(
     },
 );
 
-// Update image upload route to handle multiple images
-router.post('/:id/upload', upload.array('images', 1), async (req, res) => {
-    const category = await Category.findById(req.params.id);
+// Replace Image
+router.post(
+    '/:id/upload',
+    upload.array('images', 1), // Max 1
+    async (req, res) => {
+        try {
+            const category = await Category.findById(req.params.id);
+            if (!category) {
+                return res.status(404).json({
+                    message: 'Category not found!',
+                    success: false,
+                });
+            }
 
-    if (category && category.images.length > 0) {
-        for (const image of category.images) {
-            const filePath = `uploads/categories/${image}`;
-            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            // Delete Image in Cloudinary
+            if (category.images.length > 0) {
+                for (const imageUrl of category.images) {
+                    // example: https://res.cloudinary.com/<cloud_name>/image/upload/v1690000000/filename.jpg
+                    const parts = imageUrl.split('/');
+                    const filename = parts[parts.length - 1];
+                    const publicId = filename.split('.')[0];
+
+                    await cloudinary.uploader.destroy(publicId);
+                }
+            }
+
+            // Delete Image in ImageUpload
+            await ImageUpload.deleteMany({ images: { $in: category.images } });
+
+            const imagesArr = [];
+
+            for (const file of req.files) {
+                const options = {
+                    use_filename: true,
+                    unique_filename: false,
+                    overwrite: false,
+                };
+
+                const result = await cloudinary.uploader.upload(file.path, options);
+                imagesArr.push(result.secure_url);
+
+                fs.unlinkSync(file.path);
+            }
+
+            const imagesUploaded = new ImageUpload({ images: imagesArr });
+            await imagesUploaded.save();
+
+            return res.status(200).json(imagesArr);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Upload failed' });
         }
-    }
-
-    const imagesArr = req.files.map((file) => file.filename);
-    category.images = imagesArr;
-    await category.save();
-
-    res.send({ images: imagesArr });
-});
+    },
+);
 
 router.get('/', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -124,28 +180,44 @@ router.post('/create', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-    const category = await Category.findById(req.params.id);
-    const images = category.images;
-
-    if (images.length !== 0) {
-        for (image of images) {
-            fs.unlinkSync(`uploads/categories/${image}`);
+    try {
+        const category = await Category.findById(req.params.id);
+        if (!category) {
+            return res.status(404).json({
+                message: 'Category not found!',
+                success: false,
+            });
         }
-    }
 
-    const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+        // Delete Image in Cloudinary
+        if (category.images.length > 0) {
+            for (const imageUrl of category.images) {
+                // example: https://res.cloudinary.com/<cloud_name>/image/upload/v1690000000/filename.jpg
+                const parts = imageUrl.split('/');
+                const filename = parts[parts.length - 1];
+                const publicId = filename.split('.')[0];
 
-    if (!deletedCategory) {
-        return res.status(404).json({
-            message: 'Category not found!',
+                await cloudinary.uploader.destroy(publicId);
+            }
+        }
+
+        // Delete Image in ImageUpload
+        await ImageUpload.deleteMany({ images: { $in: category.images } });
+
+        // Delete Image in Category
+        const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Category and related images deleted successfully!',
+        });
+    } catch (err) {
+        console.error('Error deleting category:', err);
+        return res.status(500).json({
             success: false,
+            message: 'Something went wrong!',
         });
     }
-
-    res.status(200).json({
-        success: true,
-        message: 'Category Deleted!',
-    });
 });
 
 router.put('/:id', async (req, res) => {

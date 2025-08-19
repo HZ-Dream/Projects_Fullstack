@@ -29,6 +29,8 @@ const ProductEdit = () => {
     const [catData, setCatData] = useState([]);
     const [load, isLoad] = useState(false);
     const [imgFiles, setImgFiles] = useState([]);
+    const [previews, setPreviews] = useState([]);
+    const [loadImg, setLoadImg] = useState(false);
 
     const [formFields, setFormFields] = useState({
         name: '',
@@ -70,32 +72,41 @@ const ProductEdit = () => {
 
     const onChangeFile = async (e, url) => {
         try {
-            const imgArr = [];
+            setLoadImg(true);
+            const formData = new FormData();
             const files = e.target.files;
+            const imgArr = [];
 
-            for (var i = 0; i < files.length; i++) {
+            if (files.length > 5) {
+                context.handleClickVariant('Max 5 images!', 'warning');
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                if ((file && file.type === 'image/jpeg') || file.type === 'image/png') {
-                    setImgFiles(e.target.files);
+                if (['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
                     imgArr.push(file);
                     formData.append('images', file);
                 } else {
-                    context.handleClickVariant('Only JPEG and PNG files are allowed!', 'warning');
+                    context.handleClickVariant('Only JPEG, PNG, and WEBP files are allowed!', 'warning');
                     return;
                 }
             }
 
-            console.log('Files to upload:', imgArr);
+            setImgFiles(files);
 
-            postData(url, formData).then((data) => {
-                if (data?.images) {
-                    setFormFields((prev) => ({
-                        ...prev,
-                        images: data.images,
-                    }));
-                }
-            });
-            context.handleClickVariant('File uploaded successfully!', 'success');
+            const data = await postData(url, formData);
+
+            if (data && data.length > 0) {
+                const appendedArray = [...previews, ...data];
+                setFormFields((prev) => ({
+                    ...prev,
+                    images: appendedArray,
+                }));
+                setPreviews(appendedArray);
+                setLoadImg(false);
+                context.handleClickVariant('File uploaded successfully!', 'success');
+            }
         } catch (err) {
             console.error('Error uploading file:', err);
             context.handleClickVariant('File upload failed!', 'error');
@@ -417,20 +428,25 @@ const ProductEdit = () => {
                             <h5 className="mb-4">Media And Published</h5>
 
                             <div className="imgUploadBox dFlexAli-center">
-                                {formFields?.images?.length > 0
-                                    ? formFields?.images?.map((item, index) => (
-                                          <div className="uploadBox" key={index}>
-                                              <div className="box">
-                                                  <LazyLoadImage
-                                                      className="w-100"
-                                                      alt="Image"
-                                                      effect="blur"
-                                                      src={`${process.env.REACT_APP_BASE_URL}/uploads/products/${item}`}
-                                                  />
-                                              </div>
-                                          </div>
-                                      ))
-                                    : ''}
+                                {loadImg === true ? (
+                                    <div className="uploadBox d-flex flex-column">
+                                        <input name="images" multiple className="fileInput" type="file" />
+                                        <div className="info">
+                                            <FaRegImages />
+                                            <CircularProgress className="loader" color="inherit" />
+                                        </div>
+                                    </div>
+                                ) : formFields?.images?.length > 0 ? (
+                                    formFields?.images?.map((item, index) => (
+                                        <div className="uploadBox" key={index}>
+                                            <div className="box">
+                                                <LazyLoadImage className="w-100" alt="Image" effect="blur" src={item} />
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    ''
+                                )}
                                 <div className="uploadBox d-flex flex-column">
                                     <input
                                         name="images"

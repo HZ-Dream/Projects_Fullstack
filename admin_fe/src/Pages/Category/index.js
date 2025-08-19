@@ -128,11 +128,7 @@ const CategoryList = () => {
                                             <td>
                                                 <div className="imgWrapper">
                                                     <div className="img card m-0">
-                                                        <img
-                                                            className="w-100"
-                                                            src={`${process.env.REACT_APP_BASE_URL}/uploads/categories/${item.images[0]}`}
-                                                            alt="Image"
-                                                        />
+                                                        <img className="w-100" src={item.images[0]} alt="Image" />
                                                     </div>
                                                 </div>
                                             </td>

@@ -35,6 +35,7 @@ const CategoryAdd = () => {
     });
 
     const formData = new FormData();
+    const [loadImg, setLoadImg] = useState(false);
 
     useEffect(() => {
         if (!imgFiles) return;
@@ -72,33 +73,43 @@ const CategoryAdd = () => {
 
     const onChangeFile = async (e, url) => {
         try {
-            const imgArr = [];
+            setLoadImg(true);
+            const formData = new FormData();
             const files = e.target.files;
+            const imgArr = [];
 
-            for (var i = 0; i < files.length; i++) {
+            if (files.length > 1) {
+                context.handleClickVariant('Only One image!', 'warning');
+                setLoadImg(false);
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                if ((file && file.type === 'image/jpeg') || file.type === 'image/png') {
-                    setImgFiles(e.target.files);
+                if (['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
                     imgArr.push(file);
                     formData.append('images', file);
-                    setFiles(imgArr);
                 } else {
-                    context.handleClickVariant('Only JPEG and PNG files are allowed!', 'warning');
+                    context.handleClickVariant('Only JPEG, PNG, and WEBP files are allowed!', 'warning');
                     return;
                 }
             }
 
-            console.log('Files to upload:', imgArr);
+            setImgFiles(files);
+            setFiles(imgArr);
 
-            postData(url, formData).then((data) => {
-                if (data?.images) {
-                    setFormFields((prev) => ({
-                        ...prev,
-                        images: data.images,
-                    }));
-                }
-            });
-            context.handleClickVariant('File uploaded successfully!', 'success');
+            const data = await postData(url, formData);
+
+            if (data && data.length > 0) {
+                const appendedArray = [...previews, ...data];
+                setFormFields((prev) => ({
+                    ...prev,
+                    images: appendedArray,
+                }));
+                setPreviews(appendedArray);
+                setLoadImg(false);
+                context.handleClickVariant('File uploaded successfully!', 'success');
+            }
         } catch (err) {
             console.error('Error uploading file:', err);
             context.handleClickVariant('File upload failed!', 'error');
@@ -170,6 +181,7 @@ const CategoryAdd = () => {
                                         required
                                         name="name"
                                         onChange={changeInput}
+                                        placeholder="Meat"
                                     />
                                 </div>
 
@@ -201,20 +213,30 @@ const CategoryAdd = () => {
                                     <h6 className="mb-3">Image</h6>
 
                                     <div className="imgUploadBox dFlexAli-center">
-                                        {previews?.length > 0
-                                            ? previews?.map((image, index) => (
-                                                  <div className="uploadBox" key={index}>
-                                                      <div className="box">
-                                                          <LazyLoadImage
-                                                              className="w-100"
-                                                              alt="Image"
-                                                              effect="blur"
-                                                              src={image}
-                                                          />
-                                                      </div>
-                                                  </div>
-                                              ))
-                                            : ''}
+                                        {loadImg === true ? (
+                                            <div className="uploadBox d-flex flex-column">
+                                                <input name="images" multiple className="fileInput" type="file" />
+                                                <div className="info">
+                                                    <FaRegImages />
+                                                    <CircularProgress className="loader" color="inherit" />
+                                                </div>
+                                            </div>
+                                        ) : previews?.length > 0 ? (
+                                            previews?.map((image, index) => (
+                                                <div className="uploadBox" key={index}>
+                                                    <div className="box">
+                                                        <LazyLoadImage
+                                                            className="w-100"
+                                                            alt="Image"
+                                                            effect="blur"
+                                                            src={image}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            ''
+                                        )}
                                         <div className="uploadBox d-flex flex-column">
                                             <input
                                                 name="images"
