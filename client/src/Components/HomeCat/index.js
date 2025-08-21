@@ -1,3 +1,4 @@
+// Icons
 import { IoIosArrowBack } from 'react-icons/io';
 import { IoIosArrowForward } from 'react-icons/io';
 
@@ -7,29 +8,17 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-import { useRef } from 'react';
+// React
+import { useState, useEffect, useRef } from 'react';
 import Button from '@mui/material/Button';
 
-const HomeCat = () => {
+const HomeCat = (props) => {
     const swiperRef = useRef();
-    const itemBg = [
-        '#feefea',
-        '#fffceb',
-        '#feefea',
-        '#ecffec',
-        '#f2fce4',
-        '#fffceb',
-        '#ecffec',
-        '#feefea',
-        '#fff3ff',
-        '#f2fce4',
-        '#fffceb',
-        '#f2fce4',
-        '#feefea',
-        '#ecffec',
-        '#f2fce4',
-        '#fff3ff',
-    ];
+    const [catData, setCatData] = useState([]);
+
+    useEffect(() => {
+        setCatData(props.catData);
+    }, []);
 
     return (
         <section className="homeCat">
@@ -44,16 +33,13 @@ const HomeCat = () => {
                     slidesPerGroup={3}
                     modules={[Navigation]}
                 >
-                    {itemBg?.map((item, index) => {
+                    {catData?.map((cat) => {
                         return (
-                            <SwiperSlide>
-                                <div className="item text-center cursor" style={{ background: item }}>
-                                    <img
-                                        src="https://wp.alithemes.com/html/nest/demo/assets/imgs/shop/cat-4.png"
-                                        alt="HomeCat"
-                                    />
+                            <SwiperSlide key={cat.id}>
+                                <div className="item text-center cursor" style={{ background: cat.color }}>
+                                    <img src={cat.images[0]} alt={cat.name} />
 
-                                    <h6>Black Plum</h6>
+                                    <h6>{cat.name}</h6>
                                 </div>
                             </SwiperSlide>
                         );

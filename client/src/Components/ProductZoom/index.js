@@ -8,9 +8,10 @@ import 'react-inner-image-zoom/lib/styles.min.css';
 // React
 import { useRef } from 'react';
 
-const ProductZoom = () => {
+const ProductZoom = (props) => {
     const zoomSliderBig = useRef();
     const zoomSlider = useRef();
+    const imagesPro = props.proImages;
 
     const goto = (index) => {
         zoomSlider.current.slickGoTo(index);
@@ -42,53 +43,21 @@ const ProductZoom = () => {
             <div className="productZoom position-relative">
                 <div className="badge bg-primary">23%</div>
                 <Slider {...settingDetails} className="zoomSliderBig" ref={zoomSliderBig}>
-                    <div className="item">
-                        <InnerImageZoom
-                            zoomType="hover"
-                            zoomScale={1}
-                            src="https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image-62.jpg"
-                        />
-                    </div>
-
-                    <div className="item">
-                        <InnerImageZoom
-                            zoomType="hover"
-                            zoomScale={1}
-                            src="https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image2-47.jpg"
-                        />
-                    </div>
-
-                    <div className="item">
-                        <InnerImageZoom
-                            zoomType="hover"
-                            zoomScale={1}
-                            src="https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image3-35.jpg"
-                        />
-                    </div>
+                    {imagesPro?.length > 0 &&
+                        imagesPro?.map((item, index) => (
+                            <div className="item" key={index}>
+                                <InnerImageZoom className="w-100" zoomType="hover" zoomScale={1} src={item} />
+                            </div>
+                        ))}
                 </Slider>
             </div>
             <Slider {...settingSliders} className="zoomSlider" ref={zoomSlider}>
-                <div className="item" onClick={() => goto(0)}>
-                    <img
-                        className="w-100"
-                        src="https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image-62.jpg"
-                        alt="Slider"
-                    />
-                </div>
-                <div className="item" onClick={() => goto(1)}>
-                    <img
-                        className="w-100"
-                        src="https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image2-47.jpg"
-                        alt="Slider"
-                    />
-                </div>
-                <div className="item" onClick={() => goto(2)}>
-                    <img
-                        className="w-100"
-                        src="https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image3-35.jpg"
-                        alt="Slider"
-                    />
-                </div>
+                {imagesPro?.length > 0 &&
+                    imagesPro?.map((item, index) => (
+                        <div key={index} className="item" onClick={() => goto(index)}>
+                            <img className="w-100" src={item} alt="Slider" />
+                        </div>
+                    ))}
             </Slider>
         </div>
     );

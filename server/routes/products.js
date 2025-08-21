@@ -139,6 +139,32 @@ router.get('/', async (req, res) => {
     });
 });
 
+router.get('/all', async (req, res) => {
+    try {
+        const productList = await Product.find();
+
+        return res.status(200).json({
+            productList,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: 'Server error' });
+    }
+});
+
+router.get('/featured', async (req, res) => {
+    try {
+        const productList = await Product.find({ isFeatured: true });
+
+        return res.status(200).json({
+            productList,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: 'Server error' });
+    }
+});
+
 router.get('/:id', async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) {
@@ -167,7 +193,7 @@ router.post('/create', async (req, res) => {
         images: req.body.images,
         brand: req.body.brand,
         priceInit: req.body.priceInit,
-        priceDiscount: req.body.priceDiscount,
+        priceDiscount: req.body.priceDiscount || 0,
         flavor: req.body.flavor,
         weight: req.body.weight,
         tag: req.body.tag,
@@ -193,8 +219,6 @@ router.post('/create', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-    req.body.isFeatured = req.body.isFeatured === 'true';
-
     if (req.body.dateCreated && /^\d{2}-\d{2}-\d{4}$/.test(req.body.dateCreated)) {
         const [day, month, year] = req.body.dateCreated.split('-');
         req.body.dateCreated = `${year}-${month}-${day}`;
@@ -208,7 +232,7 @@ router.put('/:id', async (req, res) => {
             images: req.body.images,
             brand: req.body.brand,
             priceInit: req.body.priceInit,
-            priceDiscount: req.body.priceDiscount,
+            priceDiscount: req.body.priceDiscount || 0,
             flavor: req.body.flavor,
             weight: req.body.weight,
             tag: req.body.tag,

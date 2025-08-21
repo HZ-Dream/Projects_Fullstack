@@ -625,6 +625,7 @@ nav .navPart2 ul li .submenu a button:hover {
 
 .productItem .imgWrapper img {
     transition: all 0.3s ease-in-out;
+    padding: 50px !important;
 }
 
 .productItem:hover .imgWrapper img {
@@ -891,6 +892,10 @@ nav .navPart2 ul li .submenu a button:hover {
 }
 
 /* Product Modal detail */
+.iiz__hint {
+    background: transparent !important;
+}
+
 .productModal .MuiPaper-elevation {
     padding: 25px;
     position: relative;
@@ -922,6 +927,13 @@ nav .navPart2 ul li .submenu a button:hover {
     overflow: hidden;
     border-radius: 15px;
     position: relative;
+}
+
+.productZoom .zoomSliderBig .item img {
+    width: 150px !important;
+    height: 180px !important;
+    margin: 0 auto !important;
+    padding: 20px 0;
 }
 
 .productZoom .badge {

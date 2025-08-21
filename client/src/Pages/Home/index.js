@@ -1,19 +1,31 @@
+// Icons
 import { IoIosArrowRoundForward } from 'react-icons/io';
 import { IoMailOutline } from 'react-icons/io5';
 import Button from '@mui/material/Button';
 
-import HomeBanner from '../../Components/HomeBanner';
+// Images
 import banner1 from '../../assets/images/banner1.png';
 import banner2 from '../../assets/images/banner2.png';
 import banner3 from '../../assets/images/banner3.png';
 import banner4 from '../../assets/images/banner4.png';
 import couponImg from '../../assets/images/coupon.png';
 
-import ProductItem from '../../Components/ProductItem';
-import HomeCat from '../../Components/HomeCat';
+// React
+import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 
+// Components
+import HomeBanner from '../../Components/HomeBanner';
+import ProductItem from '../../Components/ProductItem';
+import HomeCat from '../../Components/HomeCat';
+
+// Utils
+import { fetchDataFromApi } from '../../utils/api';
+
 const Home = () => {
+    const [catData, setCatData] = useState([]);
+    const [proData, setProData] = useState([]);
+    const [featuredProData, setFeaturedProData] = useState([]);
     var productItemSettings = {
         dots: false,
         infinite: true,
@@ -24,11 +36,27 @@ const Home = () => {
         autoplay: false,
     };
 
+    useEffect(() => {
+        fetchDataFromApi('/api/category/all').then((res) => {
+            console.log(res);
+            setCatData(res.categoryList);
+        });
+
+        fetchDataFromApi('/api/product/all').then((res) => {
+            console.log(res);
+            setProData(res.productList);
+        });
+
+        fetchDataFromApi(`/api/product/featured`).then((res) => {
+            console.log(res);
+            setFeaturedProData(res.productList);
+        });
+    }, []);
+
     return (
         <div>
             <HomeBanner />
-
-            <HomeCat />
+            {catData?.length !== 0 && <HomeCat catData={catData} />}
 
             <section className="homeProducts">
                 <div className="container">
@@ -61,11 +89,8 @@ const Home = () => {
 
                             <div className="product_row w-100 mt-4">
                                 <Slider {...productItemSettings}>
-                                    <ProductItem />
-                                    <ProductItem />
-                                    <ProductItem />
-                                    <ProductItem />
-                                    <ProductItem />
+                                    {featuredProData?.length !== 0 &&
+                                        featuredProData?.map((data) => <ProductItem productData={data} />)}
                                 </Slider>
                             </div>
 
@@ -81,14 +106,8 @@ const Home = () => {
                             </div>
 
                             <div className="product_row productNew_row w-100 mt-4 d-flex">
-                                <ProductItem />
-                                <ProductItem />
-                                <ProductItem />
-                                <ProductItem />
-                                <ProductItem />
-                                <ProductItem />
-                                <ProductItem />
-                                <ProductItem />
+                                {proData?.length !== 0 &&
+                                    proData?.map((data, index) => <ProductItem key={index} productData={data} />)}
                             </div>
 
                             <div className="bannerSec d-flex mt-4 mb-5">

@@ -258,48 +258,54 @@ const ProductEdit = () => {
                                     <div className="col-sm-6">
                                         <div className="form-group">
                                             <h6>Category</h6>
-                                            <Select
-                                                name="category"
-                                                className="w-100"
-                                                value={formFields.category || ''}
-                                                onChange={changeInput}
-                                                displayEmpty
-                                                inputProps={{ 'aria-label': 'Without label' }}
-                                                required
-                                            >
-                                                {catData?.categoryList?.map((category) => (
-                                                    <MenuItem
-                                                        className="text-capitalize"
-                                                        key={category.id}
-                                                        value={category.id}
-                                                        onClick={() => setCategory(category.id)}
-                                                    >
-                                                        {category.name}
+                                            {catData?.categoryList?.length > 0 && (
+                                                <Select
+                                                    name="category"
+                                                    className="w-100"
+                                                    value={formFields.category || ''}
+                                                    onChange={changeInput}
+                                                    displayEmpty
+                                                    inputProps={{ 'aria-label': 'Without label' }}
+                                                    required
+                                                >
+                                                    <MenuItem value="">
+                                                        <em>None</em>
                                                     </MenuItem>
-                                                ))}
-                                            </Select>
+                                                    {catData.categoryList.map((category) => (
+                                                        <MenuItem
+                                                            className="text-capitalize"
+                                                            key={category.id}
+                                                            value={category.id}
+                                                        >
+                                                            {category.name}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="col-sm-6">
                                         <div className="form-group">
                                             <h6>Sub Category</h6>
-                                            <Select
-                                                name="subCat"
-                                                className="w-100"
-                                                value={formFields.subCat}
-                                                onChange={changeInput}
-                                                displayEmpty
-                                                inputProps={{ 'aria-label': 'Without label' }}
-                                            >
-                                                <MenuItem value="">
-                                                    <em>None</em>
-                                                </MenuItem>
-                                                {subCategory?.subCat?.map((item, index) => (
-                                                    <MenuItem className="text-capitalize" key={index} value={item}>
-                                                        {item}
+                                            {subCategory?.subCat?.length > 0 && (
+                                                <Select
+                                                    name="subCat"
+                                                    className="w-100"
+                                                    value={formFields.subCat}
+                                                    onChange={changeInput}
+                                                    displayEmpty
+                                                    inputProps={{ 'aria-label': 'Without label' }}
+                                                >
+                                                    <MenuItem value="">
+                                                        <em>None</em>
                                                     </MenuItem>
-                                                ))}
-                                            </Select>
+                                                    {subCategory?.subCat?.map((item, index) => (
+                                                        <MenuItem className="text-capitalize" key={index} value={item}>
+                                                            {item}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -324,7 +330,6 @@ const ProductEdit = () => {
                                                 value={formFields.priceDiscount}
                                                 name="priceDiscount"
                                                 type="text"
-                                                required
                                                 onChange={changeInput}
                                             />
                                         </div>

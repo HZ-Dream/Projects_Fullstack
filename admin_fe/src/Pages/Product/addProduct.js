@@ -322,7 +322,6 @@ const ProductUpload = () => {
                                                 value={formFields.priceDiscount}
                                                 name="priceDiscount"
                                                 type="text"
-                                                required
                                                 onChange={changeInput}
                                             />
                                         </div>

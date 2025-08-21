@@ -19,17 +19,17 @@ const ProductModal = (props) => {
             <Button className="close_" onClick={() => props.closeProductModal()}>
                 <IoCloseCircleOutline />
             </Button>
-            <h4 className="mb-2 font-weight-bold">All Natural Italian-Style Chicken Meatballs</h4>
+            <h4 className="mb-2 font-weight-bold">{props.detailPro?.name}</h4>
 
             <div className="d-flex align-items-center">
                 <span>
-                    Brands: <b className="ms-2">Welch's</b>
+                    Brands: <b className="ms-2">{props.detailPro?.brand}</b>
                 </span>
 
                 <Rating className="rateProduct" name="read-only" value={2} readOnly size="small" precision={0.5} />
 
                 <span>
-                    SKU: <b className="ms-2">ZU49VOR</b>
+                    IDPro: <b className="ms-2">{props.detailPro?.id}</b>
                 </span>
             </div>
 
@@ -37,21 +37,22 @@ const ProductModal = (props) => {
 
             <div className="row mt-2 productDetailModal">
                 <div className="col-md-5">
-                    <ProductZoom />
+                    <ProductZoom proImages={props.detailPro?.images} />
                 </div>
 
                 <div className="col-md-7">
                     <div className="d-flex info align-items-center mb-3">
-                        <div className="oldPrice lg me-2">$9.35</div>
-                        <div className="netPrice lg text-danger">$7.25</div>
+                        <div className="oldPrice lg me-2">${props.detailPro?.priceInit}</div>
+                        <div className="netPrice lg text-danger">${props.detailPro?.priceDiscount}</div>
                     </div>
 
-                    <span className="badge bg-success">IN STOCK</span>
+                    {props.detailPro?.quantity > 0 ? (
+                        <span className="badge bg-success">Quantity: &nbsp; {props.detailPro?.quantity}</span>
+                    ) : (
+                        <span className="badge bg-danger">Quantity: &nbsp; 0</span>
+                    )}
 
-                    <p className="mt-3">
-                        Vivamus adipiscing nisl ut dolor dignissim semper. Nulla luctus malesuada tincidunt. Class
-                        aptent taciti sociosqu ad litora torquent
-                    </p>
+                    <p className="mt-3">{props.detailPro?.description}</p>
 
                     <div className="d-flex align-items-center">
                         <QuantityBox />
@@ -70,6 +71,11 @@ const ProductModal = (props) => {
                     </div>
 
                     <hr />
+
+                    <div className="dFlexAli-center mt-3">
+                        <span className="me-2">Tags:</span>
+                        <p className="mb-0">{props.detailPro?.tag.length > 0 && props.detailPro?.tag.join(', ')}</p>
+                    </div>
                 </div>
             </div>
         </Dialog>
