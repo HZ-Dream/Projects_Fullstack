@@ -3,6 +3,7 @@ import { TiThMenu } from 'react-icons/ti';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { TfiLayoutGrid4Alt } from 'react-icons/tfi';
 import { FaAngleDown } from 'react-icons/fa6';
+import { TfiReload } from 'react-icons/tfi';
 import Button from '@mui/material/Button';
 
 // Menu
@@ -13,31 +14,55 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
 // React
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 // Components
 import Sidebar from '../../Components/Sidebar';
 import ProductItem from '../../Components/ProductItem';
 
+// Utils
+import { fetchDataFromApi } from '../../utils/api';
+
+import { MyContext } from '../../App';
+
 const Listing = () => {
+    const context = useContext(MyContext);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [productView, setProductView] = useState('four');
+    const [proData, setProData] = useState(context.proDataList || []);
+    const [perPage, setPerPage] = useState(8);
 
     const openDrop = Boolean(anchorEl);
     const handleClick = (e) => {
         setAnchorEl(e.currentTarget);
     };
 
-    const closeDrop = () => {
+    const closeDrop = (value) => {
+        setPerPage(value);
         setAnchorEl(null);
     };
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
+        setProData(context.proDataList || []);
+    }, [context.proDataList]);
+
+    // useEffect(() => {
+    //     fetchDataFromApi(`/api/product?perPage=${perPage}`).then((res) => {
+    //         setProData(res.productList);
+    //     });
+    // }, [perPage]);
 
     return (
         <>
             <section className="product_Listing_Page">
                 <div className="container">
                     <div className="productListing d-flex">
-                        <Sidebar />
+                        <Sidebar proData={context.proData} catData={context.catData} />
 
                         <div className="content_right">
                             <img
@@ -68,10 +93,15 @@ const Listing = () => {
                                         <TfiLayoutGrid4Alt />
                                     </Button>
                                 </div>
+                                <div className="d-flex align-items-center btnWrapper">
+                                    <Button onClick={() => context.setProDataList(context.proData)}>
+                                        <TfiReload />
+                                    </Button>
+                                </div>
 
                                 <div className="ms-auto showByFilter">
                                     <Button onClick={handleClick}>
-                                        Show 12 <FaAngleDown />
+                                        Show {perPage} <FaAngleDown />
                                     </Button>
 
                                     <Menu
@@ -86,35 +116,38 @@ const Listing = () => {
                                             },
                                         }}
                                     >
-                                        <MenuItem onClick={closeDrop}>12</MenuItem>
-                                        <MenuItem onClick={closeDrop}>24</MenuItem>
-                                        <MenuItem onClick={closeDrop}>36</MenuItem>
+                                        <MenuItem onClick={() => closeDrop(8)}>8</MenuItem>
+                                        <MenuItem onClick={() => closeDrop(12)}>12</MenuItem>
+                                        <MenuItem onClick={() => closeDrop(16)}>16</MenuItem>
                                     </Menu>
                                 </div>
                             </div>
 
                             <div className="productListing">
-                                <ProductItem itemView={productView} />
-                                <ProductItem itemView={productView} />
-                                <ProductItem itemView={productView} />
-                                <ProductItem itemView={productView} />
-                                <ProductItem itemView={productView} />
-                                <ProductItem itemView={productView} />
-                                <ProductItem itemView={productView} />
-                                <ProductItem itemView={productView} />
+                                {proData?.length > 0 ? (
+                                    proData.map((data, index) => (
+                                        <ProductItem key={index} productData={data} itemView={productView} />
+                                    ))
+                                ) : (
+                                    <h5 className="mx-auto mt-5">There is no product you are looking for</h5>
+                                )}
                             </div>
 
-                            <div className="d-flex align-items-center justify-content-center mt-5">
-                                <Stack spacing={2}>
-                                    <Pagination
-                                        count={10}
-                                        color="primary"
-                                        size="large"
-                                        showFirstButton
-                                        showLastButton
-                                    />
-                                </Stack>
-                            </div>
+                            {proData?.length > 0 ? (
+                                <div className="d-flex align-items-center justify-content-center mt-5">
+                                    <Stack spacing={2}>
+                                        <Pagination
+                                            count={10}
+                                            color="primary"
+                                            size="large"
+                                            showFirstButton
+                                            showLastButton
+                                        />
+                                    </Stack>
+                                </div>
+                            ) : (
+                                ''
+                            )}
                         </div>
                     </div>
                 </div>

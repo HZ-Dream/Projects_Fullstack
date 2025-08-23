@@ -162,7 +162,7 @@ router.get('/:id', async (req, res) => {
 router.post('/create', async (req, res) => {
     let category = new Category({
         name: req.body.name,
-        subCat: req.body.subCat,
+        subCat: req.body.subCat || [],
         images: req.body.images,
         color: req.body.color,
     });
@@ -225,7 +225,7 @@ router.put('/:id', async (req, res) => {
         req.params.id,
         {
             name: req.body.name,
-            subCat: req.body.subCat,
+            subCat: req.body.subCat || [],
             images: req.body.images,
             color: req.body.color,
         },

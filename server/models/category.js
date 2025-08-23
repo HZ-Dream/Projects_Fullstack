@@ -5,12 +5,10 @@ const categorySchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    subCat: [
-        {
-            type: String,
-            required: true,
-        },
-    ],
+    subCat: {
+        type: [String],
+        default: [],
+    },
     images: [
         {
             type: String,

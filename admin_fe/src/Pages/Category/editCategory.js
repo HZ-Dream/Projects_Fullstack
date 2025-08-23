@@ -152,7 +152,7 @@ const CategoryEdit = () => {
 
     const editCategory = (e) => {
         e.preventDefault();
-        if (!formFields.name.trim() || !formFields.subCat.length === 0 || !formFields.color.trim()) {
+        if (!formFields.name.trim() || !formFields.color.trim()) {
             context.handleClickVariant('Please fill all fields!', 'warning');
             return;
         }
@@ -216,7 +216,6 @@ const CategoryEdit = () => {
                                         value={subCatString}
                                         placeholder="Beef, Pork, Fast Food, ..."
                                         type="text"
-                                        required
                                         name="subCat"
                                         onChange={changeSubCat}
                                     />

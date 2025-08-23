@@ -1043,6 +1043,12 @@ nav .navPart2 ul li .submenu a button:hover {
     margin-bottom: 30px;
 }
 
+.product_Listing_Page .productListing .sidebar .filterBox .scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 180px;
+}
+
 .product_Listing_Page .productListing .sidebar h6 {
     font-weight: 800;
     font-size: 14px;
@@ -1050,11 +1056,13 @@ nav .navPart2 ul li .submenu a button:hover {
     margin-bottom: 10px;
 }
 
-.product_Listing_Page .productListing .sidebar .scroll ul {
+.product_Listing_Page .productListing .sidebar .scroll ul,
+.product_Listing_Page .productListing .sidebar .scroll-2 ul {
     margin-bottom: 0;
 }
 
-.product_Listing_Page .productListing .sidebar .scroll ul li {
+.product_Listing_Page .productListing .sidebar .scroll ul li,
+.product_Listing_Page .productListing .sidebar .scroll-2 ul li {
     list-style: none;
     margin-bottom: 0;
     width: 100%;

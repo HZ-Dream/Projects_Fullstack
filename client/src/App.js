@@ -1,10 +1,13 @@
+// CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+// React
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
+// Components
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Home from './Pages/Home';
@@ -14,9 +17,16 @@ import Cart from './Pages/Cart';
 import SignIn from './Pages/SignIn';
 import SignUp from './Pages/SignUp';
 
+// Utils
+import { fetchDataFromApi } from './utils/api';
+
 const MyContext = createContext();
 
 function App() {
+    const [catData, setCatData] = useState([]);
+    const [proData, setProData] = useState([]);
+    const [proDataList, setProDataList] = useState([]);
+    const [featuredProData, setFeaturedProData] = useState([]);
     const [countryList, setCountryList] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
     const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
@@ -24,6 +34,22 @@ function App() {
 
     useEffect(() => {
         getCountry('https://countriesnow.space/api/v0.1/countries/');
+
+        // Fetch Category Data
+        fetchDataFromApi('/api/category/all').then((res) => {
+            setCatData(res.categoryList);
+        });
+
+        // Fetch Product Data
+        fetchDataFromApi('/api/product/all').then((res) => {
+            setProData(res.productList);
+            setProDataList(res.productList);
+        });
+
+        // Fetch Featured Product Data
+        fetchDataFromApi(`/api/product/featured`).then((res) => {
+            setFeaturedProData(res.productList);
+        });
     }, []);
 
     const getCountry = async (url) => {
@@ -40,6 +66,11 @@ function App() {
         setIsHeaderFooterShow,
         isUserLogin,
         setIsUserLogin,
+        catData,
+        featuredProData,
+        proData,
+        proDataList,
+        setProDataList,
     };
 
     return (

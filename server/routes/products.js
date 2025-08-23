@@ -114,7 +114,7 @@ router.post(
 
 router.get('/', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 4;
+    const perPage = parseInt(req.query.perPage) || 4;
     const category = req.query.category;
 
     let filter = {};
@@ -171,6 +171,74 @@ router.get('/:id', async (req, res) => {
         return res.status(500).json({ message: 'The Product with the given ID was not found!' });
     }
     return res.status(200).send(product);
+});
+
+// router.post('/filterProduct', async (req, res) => {
+//     try {
+//         const { categories = [], brands = [], inStock = '' } = req.body;
+
+//         let orConditions = [];
+
+//         if (categories.length > 0) {
+//             orConditions.push({ category: { $in: categories } });
+//         }
+
+//         if (brands.length > 0) {
+//             orConditions.push({ brand: { $in: brands } });
+//         }
+
+//         if (inStock === 'true') {
+//             orConditions.push({ quantity: { $gt: 0 } });
+//         } else if (inStock === 'false') {
+//             orConditions.push({ quantity: { $eq: 0 } });
+//         }
+
+//         // Nếu không có filter nào thì lấy tất cả
+//         const filter = orConditions.length > 0 ? { $or: orConditions } : {};
+
+//         const products = await Product.find(filter);
+//         res.status(200).json({ productList: products });
+//     } catch (err) {
+//         res.status(500).json({ message: err.message });
+//     }
+// });
+
+router.post('/filterProduct', async (req, res) => {
+    try {
+        const { categories = [], brands = [], inStock = '', prices = [], onSale = '' } = req.body;
+
+        let orConditions = [];
+
+        if (categories.length > 0) {
+            orConditions.push({ category: { $in: categories } });
+        }
+
+        if (brands.length > 0) {
+            orConditions.push({ brand: { $in: brands } });
+        }
+
+        if (inStock === 'true') {
+            orConditions.push({ quantity: { $gt: 0 } });
+        } else if (inStock === 'false') {
+            orConditions.push({ quantity: { $eq: 0 } });
+        }
+
+        if (prices.length > 0) {
+            orConditions.push({ priceInit: { $gte: prices[0], $lte: prices[1] } });
+        }
+
+        if (onSale === 'sale') {
+            orConditions.push({ priceDiscount: { $gt: 0 } });
+        }
+
+        // Nếu không có filter nào thì lấy tất cả
+        const filter = orConditions.length > 0 ? { $or: orConditions } : {};
+
+        const products = await Product.find(filter);
+        res.status(200).json({ productList: products });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
 router.post('/create', async (req, res) => {

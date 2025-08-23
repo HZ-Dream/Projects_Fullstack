@@ -9,7 +9,7 @@ import Rating from '@mui/material/Rating';
 import Tooltip from '@mui/material/Tooltip';
 
 // React
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Components
 import ProductZoom from '../../Components/ProductZoom';
@@ -19,6 +19,10 @@ import RelatedProducts from './RelatedProducts';
 const ProductDetails = () => {
     const [activeSize, setActiveSize] = useState(50);
     const [activeTabs, setActiveTabs] = useState(0);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <>

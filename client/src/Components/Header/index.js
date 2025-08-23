@@ -72,7 +72,7 @@ const Header = () => {
                 </div>
             </header>
 
-            <Navigation />
+            <Navigation catData={context.catData} />
         </div>
     );
 };

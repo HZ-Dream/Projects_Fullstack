@@ -1,12 +1,16 @@
+// Icons
 import { IoIosMenu } from 'react-icons/io';
 import { FaAngleDown } from 'react-icons/fa6';
 import { FaAngleRight } from 'react-icons/fa6';
 import Button from '@mui/material/Button';
+
+// React
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
-const Navigation = () => {
+const Navigation = (props) => {
     const [isOpenSidebarNav, setIsOpenSidebarNav] = useState(false);
+    const catData = props.catData;
 
     return (
         <nav>
@@ -29,69 +33,27 @@ const Navigation = () => {
 
                             <div className={`sidebarNav ${isOpenSidebarNav ? 'open' : ''}`}>
                                 <ul>
-                                    <li>
-                                        <Link to="/">
-                                            <Button>
-                                                Fruits &amp; Vegetables <FaAngleRight className="ms-auto" />
-                                            </Button>
-                                        </Link>
-                                        <div className="submenu">
-                                            <Link to="/">
-                                                <Button>Cuts &amp; Sprouts</Button>
-                                            </Link>
-                                            <Link to="/">
-                                                <Button>Exotic Fruits &amp; Veggies</Button>
-                                            </Link>
-                                            <Link to="/">
-                                                <Button>Fresh Fruits</Button>
-                                            </Link>
-                                            <Link to="/">
-                                                <Button>Fresh Vegetables</Button>
-                                            </Link>
-                                            <Link to="/">
-                                                <Button>Packaged Produce</Button>
-                                            </Link>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <Link to="/">
-                                            <Button>Meats &amp; Seafood</Button>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/">
-                                            <Button>Breakfast &amp; Dairy</Button>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/">
-                                            <Button>
-                                                Beverages <FaAngleRight className="ms-auto" />
-                                            </Button>
-                                        </Link>
-                                        <div className="submenu">
-                                            <Link to="/">
-                                                <Button>Coffee</Button>
-                                            </Link>
-                                            <Link to="/">
-                                                <Button>Drink Boxes &amp; Pouches</Button>
-                                            </Link>
-                                            <Link to="/">
-                                                <Button>Craft Beer</Button>
-                                            </Link>
-                                            <Link to="/">
-                                                <Button>Water</Button>
-                                            </Link>
-                                            <Link to="/">
-                                                <Button>Wine</Button>
-                                            </Link>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <Link to="/">
-                                            <Button>Frozen Foods</Button>
-                                        </Link>
-                                    </li>
+                                    {catData?.length > 0 &&
+                                        catData.map((cat) => (
+                                            <li key={cat.id}>
+                                                <Link to="/">
+                                                    <Button>
+                                                        {cat.name}
+                                                        {cat.subCat?.length > 0 && <FaAngleRight className="ms-auto" />}
+                                                    </Button>
+                                                </Link>
+
+                                                {cat.subCat?.length > 0 && (
+                                                    <div className="submenu">
+                                                        {cat.subCat.map((sub, index) => (
+                                                            <Link to="/" key={index}>
+                                                                <Button>{sub}</Button>
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </li>
+                                        ))}
                                 </ul>
                             </div>
                         </div>
@@ -110,9 +72,6 @@ const Navigation = () => {
                                 </Link>
                                 <div className="submenu shadow">
                                     <Link to="/">
-                                        <Button>Cart</Button>
-                                    </Link>
-                                    <Link to="/">
                                         <Button>Checkout</Button>
                                     </Link>
                                     <Link to="/">
@@ -125,21 +84,6 @@ const Navigation = () => {
                                         <Button>Featured Products</Button>
                                     </Link>
                                 </div>
-                            </li>
-                            <li className="list-inline-item">
-                                <Link to="/">
-                                    <Button>MEATS & SEAFOOD</Button>
-                                </Link>
-                            </li>
-                            <li className="list-inline-item">
-                                <Link to="/">
-                                    <Button>Bakery</Button>
-                                </Link>
-                            </li>
-                            <li className="list-inline-item">
-                                <Link to="/">
-                                    <Button>Beverages</Button>
-                                </Link>
                             </li>
                             <li className="list-inline-item">
                                 <Link to="/">

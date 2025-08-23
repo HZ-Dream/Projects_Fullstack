@@ -11,7 +11,7 @@ import banner4 from '../../assets/images/banner4.png';
 import couponImg from '../../assets/images/coupon.png';
 
 // React
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Slider from 'react-slick';
 
 // Components
@@ -19,13 +19,19 @@ import HomeBanner from '../../Components/HomeBanner';
 import ProductItem from '../../Components/ProductItem';
 import HomeCat from '../../Components/HomeCat';
 
+// Context
+import { MyContext } from '../../App';
+
 // Utils
 import { fetchDataFromApi } from '../../utils/api';
 
 const Home = () => {
-    const [catData, setCatData] = useState([]);
-    const [proData, setProData] = useState([]);
-    const [featuredProData, setFeaturedProData] = useState([]);
+    const context = useContext(MyContext);
+
+    const catData = context.catData;
+    const featuredProData = context.featuredProData;
+    const [newProData, setNewProData] = useState([]);
+
     var productItemSettings = {
         dots: false,
         infinite: true,
@@ -37,19 +43,8 @@ const Home = () => {
     };
 
     useEffect(() => {
-        fetchDataFromApi('/api/category/all').then((res) => {
-            console.log(res);
-            setCatData(res.categoryList);
-        });
-
-        fetchDataFromApi('/api/product/all').then((res) => {
-            console.log(res);
-            setProData(res.productList);
-        });
-
-        fetchDataFromApi(`/api/product/featured`).then((res) => {
-            console.log(res);
-            setFeaturedProData(res.productList);
+        fetchDataFromApi('/api/product?perPage=8').then((res) => {
+            setNewProData(res.productList);
         });
     }, []);
 
@@ -106,8 +101,8 @@ const Home = () => {
                             </div>
 
                             <div className="product_row productNew_row w-100 mt-4 d-flex">
-                                {proData?.length !== 0 &&
-                                    proData?.map((data, index) => <ProductItem key={index} productData={data} />)}
+                                {newProData?.length !== 0 &&
+                                    newProData?.map((data, index) => <ProductItem key={index} productData={data} />)}
                             </div>
 
                             <div className="bannerSec d-flex mt-4 mb-5">
