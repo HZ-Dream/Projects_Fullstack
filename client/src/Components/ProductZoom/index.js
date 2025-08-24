@@ -11,7 +11,13 @@ import { useRef } from 'react';
 const ProductZoom = (props) => {
     const zoomSliderBig = useRef();
     const zoomSlider = useRef();
-    const imagesPro = props.proImages;
+    const imagesPro = props.proDetail.images;
+
+    const handlePercent = () => {
+        const { priceInit, priceDiscount } = props.proDetail || {};
+        if (!priceInit || !priceDiscount || priceDiscount >= priceInit) return null;
+        return Math.round(((priceInit - priceDiscount) / priceInit) * 100);
+    };
 
     const goto = (index) => {
         zoomSlider.current.slickGoTo(index);
@@ -41,7 +47,9 @@ const ProductZoom = (props) => {
     return (
         <div className="productZoomContainer">
             <div className="productZoom position-relative">
-                <div className="badge bg-primary">23%</div>
+                <div className="badge bg-primary">
+                    {props.proDetail?.priceDiscount > 0 && handlePercent() ? `${handlePercent()}%` : null}
+                </div>
                 <Slider {...settingDetails} className="zoomSliderBig" ref={zoomSliderBig}>
                     {imagesPro?.length > 0 &&
                         imagesPro?.map((item, index) => (

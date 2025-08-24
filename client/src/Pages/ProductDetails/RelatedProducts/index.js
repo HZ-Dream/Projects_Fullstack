@@ -4,12 +4,14 @@ import Slider from 'react-slick';
 // Components
 import ProductItem from '../../../Components/ProductItem';
 
-const RelatedProducts = () => {
+const RelatedProducts = (props) => {
+    const proData = props.proData;
+
     var productItemSettings = {
         dots: false,
-        infinite: true,
+        infinite: proData?.length > 6 ? true : false,
         speed: 500,
-        slidesToShow: 6,
+        slidesToShow: proData?.length < 6 ? proData.length : 6,
         slidesToScroll: 1,
         arrows: true,
         autoplay: false,
@@ -25,12 +27,8 @@ const RelatedProducts = () => {
 
             <div className="product_row w-100 mt-4">
                 <Slider {...productItemSettings}>
-                    <ProductItem />
-                    <ProductItem />
-                    <ProductItem />
-                    <ProductItem />
-                    <ProductItem />
-                    <ProductItem />
+                    {proData?.length > 0 &&
+                        proData?.map((item, index) => <ProductItem key={index} productData={item} />)}
                 </Slider>
             </div>
         </>

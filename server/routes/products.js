@@ -173,36 +173,6 @@ router.get('/:id', async (req, res) => {
     return res.status(200).send(product);
 });
 
-// router.post('/filterProduct', async (req, res) => {
-//     try {
-//         const { categories = [], brands = [], inStock = '' } = req.body;
-
-//         let orConditions = [];
-
-//         if (categories.length > 0) {
-//             orConditions.push({ category: { $in: categories } });
-//         }
-
-//         if (brands.length > 0) {
-//             orConditions.push({ brand: { $in: brands } });
-//         }
-
-//         if (inStock === 'true') {
-//             orConditions.push({ quantity: { $gt: 0 } });
-//         } else if (inStock === 'false') {
-//             orConditions.push({ quantity: { $eq: 0 } });
-//         }
-
-//         // Nếu không có filter nào thì lấy tất cả
-//         const filter = orConditions.length > 0 ? { $or: orConditions } : {};
-
-//         const products = await Product.find(filter);
-//         res.status(200).json({ productList: products });
-//     } catch (err) {
-//         res.status(500).json({ message: err.message });
-//     }
-// });
-
 router.post('/filterProduct', async (req, res) => {
     try {
         const { categories = [], brands = [], inStock = '', prices = [], onSale = '' } = req.body;
@@ -262,7 +232,7 @@ router.post('/create', async (req, res) => {
         brand: req.body.brand,
         priceInit: req.body.priceInit,
         priceDiscount: req.body.priceDiscount || 0,
-        flavor: req.body.flavor,
+        flavor: req.body.flavor || [],
         weight: req.body.weight,
         tag: req.body.tag,
         category: req.body.category,
@@ -301,7 +271,7 @@ router.put('/:id', async (req, res) => {
             brand: req.body.brand,
             priceInit: req.body.priceInit,
             priceDiscount: req.body.priceDiscount || 0,
-            flavor: req.body.flavor,
+            flavor: req.body.flavor || [],
             weight: req.body.weight,
             tag: req.body.tag,
             category: req.body.category,

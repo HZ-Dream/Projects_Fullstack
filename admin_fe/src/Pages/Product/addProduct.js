@@ -41,9 +41,9 @@ const ProductUpload = () => {
         priceInit: 0,
         priceDiscount: 0,
         quantity: 0,
-        flavor: '',
-        weight: '',
-        tag: '',
+        flavor: [],
+        weight: [],
+        tag: [],
         isfeatured: false,
     });
 
@@ -58,8 +58,8 @@ const ProductUpload = () => {
     };
 
     const changeInputArr = (e) => {
-        const arr = [];
-        arr.push(e.target.value);
+        const value = e.target.value;
+        const arr = value.split(',').map((item) => item.trim());
         setFormFields(() => ({
             ...formFields,
             [e.target.name]: arr,
@@ -156,15 +156,6 @@ const ProductUpload = () => {
             };
         }
     }, [imgFiles]);
-
-    const removeProductImage = (index) => {
-        const updatedImages = files.filter((_, i) => i !== index);
-        setFormFields((prev) => ({
-            ...prev,
-            images: updatedImages,
-        }));
-        setImgFiles(updatedImages);
-    };
 
     const addProduct = (e) => {
         e.preventDefault();
@@ -361,7 +352,6 @@ const ProductUpload = () => {
                                     <h6>Flavor</h6>
                                     <input
                                         value={formFields.flavor}
-                                        required
                                         name="flavor"
                                         type="text"
                                         placeholder="Grape, Apple, Mint,..."

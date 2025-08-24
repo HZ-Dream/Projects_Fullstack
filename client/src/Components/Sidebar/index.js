@@ -146,7 +146,7 @@ const Sidebar = (props) => {
                     <RangeSlider
                         className="mt-3"
                         value={valuePrice}
-                        onInput={handlePriceChange} // Thay đổi từ setValuePrice thành handlePriceChange
+                        onInput={handlePriceChange}
                         min={1}
                         max={1000}
                         step={1}

@@ -42,12 +42,10 @@ const productShema = mongoose.Schema({
         type: Number,
         default: 0,
     },
-    flavor: [
-        {
-            type: String,
-            required: true,
-        },
-    ],
+    flavor: {
+        type: [String],
+        default: [],
+    },
     weight: [
         {
             type: String,

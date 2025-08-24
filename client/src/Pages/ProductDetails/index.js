@@ -10,19 +10,49 @@ import Tooltip from '@mui/material/Tooltip';
 
 // React
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 // Components
 import ProductZoom from '../../Components/ProductZoom';
 import QuantityBox from '../../Components/QuantityBox';
 import RelatedProducts from './RelatedProducts';
 
+// React
+import { useContext } from 'react';
+
+// Utils
+import { fetchDataFromApi } from '../../utils/api';
+
+import { MyContext } from '../../App';
+
 const ProductDetails = () => {
-    const [activeSize, setActiveSize] = useState(50);
+    const context = useContext(MyContext);
+    let { id } = useParams();
+    const [activeWeight, setActiveWeight] = useState('');
+    const [activeFlavor, setActiveFlavor] = useState('');
     const [activeTabs, setActiveTabs] = useState(0);
+
+    const [proData, setProData] = useState({});
+    const [categoryRelated, setCategoryRelated] = useState('');
+    const [brandRelated, setBrandRelated] = useState('');
+    const [relatedProData, setRelatedProData] = useState([]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, []);
+
+        fetchDataFromApi(`/api/product/${id}`).then((res) => {
+            setProData(res);
+            setCategoryRelated(res.category);
+            setBrandRelated(res.brand);
+        });
+    }, [id]);
+
+    useEffect(() => {
+        const updatedPro = context.proData.filter(
+            (item) => item.category === categoryRelated || item.brand === brandRelated,
+        );
+        setRelatedProData(updatedPro);
+    }, [categoryRelated, brandRelated]);
 
     return (
         <>
@@ -30,16 +60,16 @@ const ProductDetails = () => {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-4 ps-5">
-                            <ProductZoom />
+                            <ProductZoom proDetail={proData} />
                         </div>
 
                         <div className="col-md-8 px-5">
-                            <h2 className="hd text-capitalize">All Natural Italian-Style Chicken Meatballs</h2>
+                            <h2 className="hd text-capitalize">{proData?.name}</h2>
                             <ul className="list list-inline dFlexAli-center">
                                 <li className="list-inline-item">
                                     <div className="dFlexAli-center">
                                         <span className="text-light me-1">Brands:</span>
-                                        <span>Welch's</span>
+                                        <span>{proData?.brand}</span>
                                     </div>
                                 </li>
 
@@ -59,25 +89,24 @@ const ProductDetails = () => {
 
                                 <li className="list-inline-item">
                                     <div className="dFlexAli-center">
-                                        <span className="text-light me-1">SKU:</span>
-                                        <span>ZU49VOR</span>
+                                        <span className="text-light me-1">IDPro:</span>
+                                        <span>{proData?.id}</span>
                                     </div>
                                 </li>
                             </ul>
 
                             <div className="dFlexAli-center info mb-3">
-                                <span className="oldPrice">$20.00</span>
-                                <span className="netPrice text-danger ms-2">$15.00</span>
+                                {proData?.priceDiscount > 0 ? (
+                                    <>
+                                        <span className="oldPrice">${proData?.priceInit}.00</span>
+                                        <span className="netPrice text-danger ms-2">${proData?.priceDiscount}.00</span>
+                                    </>
+                                ) : (
+                                    <span className="netPrice text-danger">${proData?.priceInit}.00</span>
+                                )}
                             </div>
 
-                            <span className="badge bg-success">In Stock</span>
-
-                            <p className="mt-3">
-                                Vivamus adipiscing nisl ut dolor dignissim semper. Nulla luctus malesuada tincidunt.
-                                Class aptent taciti sociosqu ad litora torquent. Vivamus adipiscing nisl ut dolor
-                                dignissim semper. Nulla luctus malesuada tincidunt. Class aptent taciti sociosqu ad
-                                litora torquent
-                            </p>
+                            <span className="badge bg-success">Quantity: &nbsp; {proData?.quantity}</span>
 
                             <div className="dFlexAli-center mt-3 actions">
                                 <Tooltip title="Add to Wishlist" placement="top">
@@ -97,17 +126,53 @@ const ProductDetails = () => {
                             </div>
 
                             <div className="dFlexAli-center productSize">
-                                <span>Size / Weight:</span>
+                                <span>Tag:</span>
                                 <ul className="list list-inline mb-0 ps-4">
-                                    <li className="list-inline-item" onClick={() => setActiveSize(50)}>
-                                        <span className={`tag ${activeSize === 50 ? 'active' : ''}`}>50g</span>
-                                    </li>
-                                    <li className="list-inline-item" onClick={() => setActiveSize(100)}>
-                                        <span className={`tag ${activeSize === 100 ? 'active' : ''}`}>100g</span>
-                                    </li>
-                                    <li className="list-inline-item" onClick={() => setActiveSize(200)}>
-                                        <span className={`tag ${activeSize === 200 ? 'active' : ''}`}>200g</span>
-                                    </li>
+                                    {Array.isArray(proData?.tag) &&
+                                        proData.tag.length > 0 &&
+                                        proData.tag.map((item, index) => (
+                                            <li key={index} className="list-inline-item tag">
+                                                <span className="tag">{item}</span>
+                                            </li>
+                                        ))}
+                                </ul>
+                            </div>
+
+                            <div className="dFlexAli-center productSize">
+                                <span>Flavor:</span>
+                                <ul className="list list-inline mb-0 ps-4">
+                                    {Array.isArray(proData?.flavor) &&
+                                        proData.flavor.length > 0 &&
+                                        proData.flavor.map((item, index) => (
+                                            <li
+                                                key={index}
+                                                className="list-inline-item"
+                                                onClick={() => setActiveFlavor(item)}
+                                            >
+                                                <span className={`tag ${activeFlavor === item ? 'active' : ''}`}>
+                                                    {item}
+                                                </span>
+                                            </li>
+                                        ))}
+                                </ul>
+                            </div>
+
+                            <div className="dFlexAli-center productSize">
+                                <span>Weight:</span>
+                                <ul className="list list-inline mb-0 ps-4">
+                                    {Array.isArray(proData?.weight) &&
+                                        proData.weight.length > 0 &&
+                                        proData.weight.map((item, index) => (
+                                            <li
+                                                key={index}
+                                                className="list-inline-item"
+                                                onClick={() => setActiveWeight(item)}
+                                            >
+                                                <span className={`tag ${activeWeight === item ? 'active' : ''}`}>
+                                                    {item}
+                                                </span>
+                                            </li>
+                                        ))}
                                 </ul>
                             </div>
 
@@ -158,22 +223,7 @@ const ProductDetails = () => {
 
                             {activeTabs === 0 && (
                                 <div className="tabContent">
-                                    <p>
-                                        Quisque varius diam vel metus mattis, id aliquam diam rhoncus. Proin vitae magna
-                                        in dui finibus malesuada et at nulla. Morbi elit ex, viverra vitae ante vel,
-                                        blandit feugiat ligula. Fusce fermentum iaculis nibh, at sodales leo maximus a.
-                                        Nullam ultricies sodales nunc, in pellentesque lorem mattis quis. Cras imperdiet
-                                        est in nunc tristique lacinia. Nullam aliquam mauris eu accumsan tincidunt.
-                                        Suspendisse velit ex, aliquet vel ornare vel, dignissim a tortor. <br /> <br />
-                                        Morbi ut sapien vitae odio accumsan gravida. Morbi vitae erat auctor, eleifend
-                                        nunc a, lobortis neque. Praesent aliquam dignissim viverra. Maecenas lacus odio,
-                                        feugiat eu nunc sit amet, maximus sagittis dolor. Vivamus nisi sapien, elementum
-                                        sit amet eros sit amet, ultricies cursus ipsum. Sed consequat luctus ligula.
-                                        Curabitur laoreet rhoncus blandit. Aenean vel diam ut arcu pharetra dignissim ut
-                                        sed leo. Vivamus faucibus, ipsum in vestibulum vulputate, lorem orci convallis
-                                        quam, sit amet consequat nulla felis pharetra lacus. Duis semper erat mauris,
-                                        sed egestas purus commodo vel.
-                                    </p>
+                                    <p>{proData?.description}</p>
                                 </div>
                             )}
 
@@ -365,7 +415,7 @@ const ProductDetails = () => {
                     </div>
 
                     <br />
-                    <RelatedProducts />
+                    {relatedProData?.length > 6 && <RelatedProducts proData={relatedProData} />}
                 </div>
             </section>
         </>
