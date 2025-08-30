@@ -18,11 +18,15 @@ app.use(express.json());
 const userRoutes = require('./routes/users');
 const categoryRoutes = require('./routes/categories');
 const productRoutes = require('./routes/products');
+const cartRoutes = require('./routes/carts');
+const prouctReviewRoutes = require('./routes/productReviews');
 
 app.use('/uploads', express.static('uploads'));
 app.use('/api/user', userRoutes);
+app.use('/api/cart', cartRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/product', productRoutes);
+app.use('/api/productReview', prouctReviewRoutes);
 
 // Database
 mongoose

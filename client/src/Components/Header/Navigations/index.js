@@ -67,21 +67,33 @@ const Navigation = (props) => {
                                 </Link>
                             </li>
                             <li className="list-inline-item">
-                                <Link to="/cat">
+                                <Link to="/">
                                     <Button>Shop</Button>
+                                </Link>
+                            </li>
+                            <li className="list-inline-item">
+                                <Link to="/">
+                                    <Button>Wishlist</Button>
+                                </Link>
+                            </li>
+                            <li className="list-inline-item">
+                                <Link to="/">
+                                    <Button>Compare</Button>
+                                </Link>
+                            </li>
+                            <li className="list-inline-item">
+                                <Link to="/cat">
+                                    <Button>Pages</Button>
                                 </Link>
                                 <div className="submenu shadow">
                                     <Link to="/">
-                                        <Button>Checkout</Button>
+                                        <Button>Policy Customer</Button>
                                     </Link>
                                     <Link to="/">
-                                        <Button>Wishlist</Button>
+                                        <Button>Hotline</Button>
                                     </Link>
                                     <Link to="/">
-                                        <Button>Order Tracking</Button>
-                                    </Link>
-                                    <Link to="/">
-                                        <Button>Featured Products</Button>
+                                        <Button>Report</Button>
                                     </Link>
                                 </div>
                             </li>

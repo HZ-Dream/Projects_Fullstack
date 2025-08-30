@@ -1,19 +1,26 @@
+// Icons
 import { FaMinus } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa6';
+
+// Marterial UI
 import Button from '@mui/material/Button';
-import { useState } from 'react';
+
+// React
+import { useContext } from 'react';
+
+import { MyContext } from '../../App';
 
 const QuantityBox = () => {
-    const [inputValue, setInputValue] = useState(1);
+    const { quantity, setQuantity } = useContext(MyContext);
 
     const minusQuantity = () => {
-        if (inputValue > 1) {
-            setInputValue(inputValue - 1);
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
         }
     };
 
     const plusQuantity = () => {
-        setInputValue(inputValue + 1);
+        setQuantity(quantity + 1);
     };
 
     return (
@@ -23,14 +30,14 @@ const QuantityBox = () => {
             </Button>
             <input
                 type="text"
-                name="quantiy"
-                value={inputValue}
+                name="quantity"
+                value={quantity}
                 onChange={(e) => {
                     const val = Number(e.target.value);
                     if (!isNaN(val) && val > 0) {
-                        setInputValue(val);
+                        setQuantity(val);
                     } else if (e.target.value === '') {
-                        setInputValue('');
+                        setQuantity('');
                     }
                 }}
             />

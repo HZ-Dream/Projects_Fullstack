@@ -21,7 +21,7 @@ import RelatedProducts from './RelatedProducts';
 import { useContext } from 'react';
 
 // Utils
-import { fetchDataFromApi } from '../../utils/api';
+import { fetchDataFromApi, postData } from '../../utils/api';
 
 import { MyContext } from '../../App';
 
@@ -37,6 +37,16 @@ const ProductDetails = () => {
     const [brandRelated, setBrandRelated] = useState('');
     const [relatedProData, setRelatedProData] = useState([]);
 
+    const [reviewData, setReviewData] = useState([]);
+    const [rating, setRating] = useState(1);
+    const [reviews, setReviews] = useState({
+        productId: id,
+        customerId: '',
+        customerName: '',
+        review: '',
+        rating: 1,
+    });
+
     useEffect(() => {
         window.scrollTo(0, 0);
 
@@ -44,6 +54,11 @@ const ProductDetails = () => {
             setProData(res);
             setCategoryRelated(res.category);
             setBrandRelated(res.brand);
+            context.setQuantity(1);
+        });
+
+        fetchDataFromApi(`/api/productReview/${id}`).then((res) => {
+            setReviewData(res);
         });
     }, [id]);
 
@@ -53,6 +68,68 @@ const ProductDetails = () => {
         );
         setRelatedProData(updatedPro);
     }, [categoryRelated, brandRelated]);
+
+    const onChangeInput = (e) => {
+        setReviews(() => ({
+            ...reviews,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const addToCart = (data) => {
+        if (data?.quantity === 0) {
+            context.handleClickVariant('Out of stock Products!', 'warning');
+            return;
+        }
+        if (activeWeight === '') {
+            context.handleClickVariant('You must select weight!', 'warning');
+            return;
+        }
+
+        const totalPrice =
+            data?.priceDiscount > 0 ? context.quantity * data.priceDiscount : context.quantity * data.priceInit;
+
+        const cart = {
+            productTitle: data?.name,
+            images: data?.images[0],
+            rating: '4',
+            flavor: activeFlavor.trim() || '',
+            weight: activeWeight.trim(),
+            priceInit: data?.priceInit,
+            priceDiscount: data?.priceDiscount || 0,
+            quantity: context.quantity,
+            subTotal: totalPrice,
+            productId: data?.id,
+            userId: context.userData.userId,
+        };
+
+        context.addToCart(cart);
+    };
+
+    const addReview = (e) => {
+        e.preventDefault();
+        if (Object.keys(context.userData).length === 0) {
+            context.handleClickVariant('You need sign in!', 'error');
+            return;
+        }
+
+        console.log(context.userData);
+
+        reviews.customerId = context.userData.userId;
+        reviews.rating = rating;
+
+        postData('/api/productReview/add', reviews).then((res) => {
+            context.handleClickVariant('Submit review success!', 'success');
+            setReviews({
+                ...reviews,
+                review: '',
+            });
+            setRating(1);
+            fetchDataFromApi(`/api/productReview/${id}`).then((res) => {
+                setReviewData(res);
+            });
+        });
+    };
 
     return (
         <>
@@ -179,7 +256,10 @@ const ProductDetails = () => {
                             <div className="dFlexAli-center mt-4">
                                 <QuantityBox />
 
-                                <Button className="btn-blue btn-lg btn-big btn-round ms-3">
+                                <Button
+                                    onClick={() => addToCart(proData)}
+                                    className="btn-blue btn-lg btn-big btn-round ms-3"
+                                >
                                     Add To Cart <FaShoppingCart className="ms-2" />
                                 </Button>
                             </div>
@@ -254,31 +334,37 @@ const ProductDetails = () => {
                                 <div className="tabContent">
                                     <div className="row">
                                         <div className="col-md-8">
-                                            <form className="reviewForm">
+                                            <form onSubmit={addReview} className="reviewForm">
                                                 <h4>Add a Review</h4>
                                                 <div className="form-group">
                                                     <textarea
+                                                        value={reviews.review}
+                                                        onChange={onChangeInput}
                                                         className="form-control"
                                                         name="review"
                                                         placeholder="Write a review"
+                                                        required
                                                     ></textarea>
                                                 </div>
                                                 <div className="row">
                                                     <div className="col-md-6">
                                                         <div className="form-group">
                                                             <input
+                                                                onChange={onChangeInput}
+                                                                name="customerName"
                                                                 className="form-control"
                                                                 type="text"
-                                                                name="userName"
                                                                 placeholder="Name"
+                                                                required
                                                             />
                                                         </div>
                                                     </div>
                                                     <div className="col-md-6">
                                                         <div className="form-group">
                                                             <Rating
+                                                                onChange={(event, newValue) => setRating(newValue)}
                                                                 name="rating"
-                                                                value={0}
+                                                                value={rating}
                                                                 size="small"
                                                                 precision={0.5}
                                                             />
@@ -299,41 +385,49 @@ const ProductDetails = () => {
                                             <h4 className="text-uppercase">Customer questions & answers</h4>
                                             <br />
 
-                                            <div className="card p-4 reviewsCard flex-row">
-                                                <div className="image">
-                                                    <div className="rounded-circle">
-                                                        <img
-                                                            src="https://wp.alithemes.com/html/nest/demo/assets/imgs/blog/author-2.png"
-                                                            alt="User"
-                                                        />
-                                                    </div>
+                                            {reviewData.length > 0 ? (
+                                                reviewData.map((item) => (
+                                                    <div key={item.id} className="card p-4 reviewsCard flex-row">
+                                                        <div className="image">
+                                                            <div className="rounded-circle">
+                                                                <img
+                                                                    src="https://wp.alithemes.com/html/nest/demo/assets/imgs/blog/author-2.png"
+                                                                    alt="User"
+                                                                />
+                                                            </div>
 
-                                                    <span className="text-g d-block text-center fw-bold">Sienna</span>
-                                                </div>
+                                                            <span className="mt-2 text-g d-block text-center fw-bold">
+                                                                {item.customerName}
+                                                            </span>
+                                                        </div>
 
-                                                <div className="info ps-5">
-                                                    <div className="dFlexAli-center w-100">
-                                                        <h5 className="text-light">12/07/2025</h5>
-                                                        <div className="ms-auto">
-                                                            <Rating
-                                                                className="half-rating-read"
-                                                                name="read-only"
-                                                                value={3.5}
-                                                                readOnly
-                                                                size="small"
-                                                                precision={0.5}
-                                                            />
+                                                        <div className="info ps-5">
+                                                            <div className="dFlexAli-center w-100">
+                                                                <h5 className="text-light">
+                                                                    {new Date(item.createdAt).toLocaleDateString(
+                                                                        'vi-VN',
+                                                                    )}
+                                                                </h5>
+
+                                                                <div className="ms-auto">
+                                                                    <Rating
+                                                                        className="half-rating-read"
+                                                                        name="read-only"
+                                                                        value={item.rating}
+                                                                        readOnly
+                                                                        size="small"
+                                                                        precision={0.5}
+                                                                    />
+                                                                </div>
+                                                            </div>
+
+                                                            <p>{item.review}</p>
                                                         </div>
                                                     </div>
-
-                                                    <p>
-                                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                                        Delectus, suscipit exercitationem accusantium obcaecati quos
-                                                        voluptate nesciunt facilis itaque modi commodi dignissimos sequi
-                                                        repudiandae minus ab deleniti totam officia id incidunt?
-                                                    </p>
-                                                </div>
-                                            </div>
+                                                ))
+                                            ) : (
+                                                <h5 className="text-light">There are currently no comments</h5>
+                                            )}
                                         </div>
 
                                         <div className="col-md-4">

@@ -2,6 +2,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
+// Material UI
+import { useSnackbar } from 'notistack';
+
 // React
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { createContext, useEffect, useState } from 'react';
@@ -18,21 +21,60 @@ import SignIn from './Pages/SignIn';
 import SignUp from './Pages/SignUp';
 
 // Utils
-import { fetchDataFromApi } from './utils/api';
+import { fetchDataFromApi, postData } from './utils/api';
 
 const MyContext = createContext();
 
 function App() {
-    const [catData, setCatData] = useState([]);
+    // Notice
+    const { enqueueSnackbar } = useSnackbar();
+
+    // User
+    const [userData, setUserData] = useState({});
+    const [tokenData, setTokenData] = useState('');
+    const [isUserLogin, setIsUserLogin] = useState(false);
+
+    // Product, Category
     const [proData, setProData] = useState([]);
     const [proDataList, setProDataList] = useState([]);
     const [featuredProData, setFeaturedProData] = useState([]);
+    const [catData, setCatData] = useState([]);
+
+    // Cart
+    const [myCart, setMyCart] = useState([]);
+    const [quantity, setQuantity] = useState(1);
+    const [cartData, setCartData] = useState({
+        productTitle: '',
+        images: '',
+        rating: '',
+        flavor: '',
+        weight: '',
+        priceInit: 0,
+        priceDiscount: 0,
+        quantity: 0,
+        subTotal: 0,
+        productId: '',
+        userId: '',
+    });
+
+    // Other
     const [countryList, setCountryList] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
     const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
-    const [isUserLogin, setIsUserLogin] = useState(true);
 
     useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+
+        if (token !== null && token !== '') {
+            setUserData(user);
+            setTokenData(token);
+            setIsUserLogin(true);
+        } else {
+            setIsUserLogin(false);
+        }
+
+        // Country
         getCountry('https://countriesnow.space/api/v0.1/countries/');
 
         // Fetch Category Data
@@ -52,13 +94,61 @@ function App() {
         });
     }, []);
 
+    useEffect(() => {
+        if (tokenData) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                setUserData(user);
+                setIsUserLogin(true);
+
+                fetchDataFromApi(`/api/cart/${user.userId}`).then((res) => {
+                    setMyCart(res);
+                });
+            } else {
+                setIsUserLogin(false);
+            }
+        } else {
+            setIsUserLogin(false);
+        }
+    }, [tokenData]);
+
+    useEffect(() => {
+        if (userData.userId) {
+            fetchDataFromApi(`/api/cart/${userData.userId}`).then((res) => {
+                setMyCart(res);
+            });
+        }
+    }, [cartData]);
+
     const getCountry = async (url) => {
         await axios.get(url).then((res) => {
             setCountryList(res.data.data);
         });
     };
 
+    const handleClickVariant = (message, variant) => {
+        console.log(`Message: ${message}, Variant: ${variant}`);
+
+        enqueueSnackbar(message, { variant });
+    };
+
+    const addToCart = (data) => {
+        if (tokenData !== null && tokenData !== '') {
+            postData('/api/cart/add', data).then((res) => {
+                if (res !== null && res !== undefined && res !== '') {
+                    setCartData(data);
+                    handleClickVariant('Successfully added to cart!', 'success');
+                }
+            });
+        } else {
+            handleClickVariant('You need sign in!', 'warning');
+        }
+    };
+
     const values = {
+        userData,
+        tokenData,
+        setTokenData,
         countryList,
         selectedCountry,
         setSelectedCountry,
@@ -66,11 +156,19 @@ function App() {
         setIsHeaderFooterShow,
         isUserLogin,
         setIsUserLogin,
+        handleClickVariant,
+        addToCart,
         catData,
         featuredProData,
         proData,
         proDataList,
         setProDataList,
+        myCart,
+        setMyCart,
+        cartData,
+        setCartData,
+        quantity,
+        setQuantity,
     };
 
     return (

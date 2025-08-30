@@ -70,7 +70,7 @@ const ProductItem = (props) => {
                 </Button>
             </div>
             {isOpenModal === true && (
-                <ProductModal detailPro={props.productData} closeProductModal={closeProductModal} />
+                <ProductModal firstOpen="true" detailPro={props.productData} closeProductModal={closeProductModal} />
             )}
         </div>
     );

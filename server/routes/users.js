@@ -5,13 +5,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 router.post('/signup', async (req, res) => {
-    const { name, phone, email, password } = req.body;
+    const { name, phone, email, password, isAdmin } = req.body;
 
     try {
         const existingUser = await User.findOne({ email: email });
 
         if (existingUser) {
-            res.status(400).json({ msg: 'User already exist!' });
+            res.status(400).json({ error: true, msg: 'Email already exists!' });
+            return;
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
@@ -21,6 +22,7 @@ router.post('/signup', async (req, res) => {
             phone: phone,
             email: email,
             password: hashPassword,
+            isAdmin: isAdmin || false,
         });
 
         const token = jwt.sign({ email: result.email, id: result._id }, process.env.JSON_WEB_TOKEN_SECRET_KEY);
@@ -28,6 +30,7 @@ router.post('/signup', async (req, res) => {
         res.status(200).json({
             user: result,
             token: token,
+            error: false,
         });
     } catch (error) {
         console.log(error);
@@ -43,12 +46,14 @@ router.post('/signin', async (req, res) => {
 
         if (!existingUser) {
             res.status(400).json({ msg: 'User not found!' });
+            return;
         }
 
         const matchPassword = await bcrypt.compare(password, existingUser.password);
 
         if (!matchPassword) {
-            res.status(400).json({ msg: 'Invalid credentials!' });
+            res.status(400).json({ msg: 'Wrong password. Try again or click forgot password to reset it!' });
+            return;
         }
 
         const token = jwt.sign(
@@ -99,7 +104,7 @@ router.get('/get/count', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-    const { name, phone, email, password } = req.body;
+    const { name, phone, email, password, isAdmin } = req.body;
 
     try {
         const userExit = await User.findById(req.params.id);
@@ -118,6 +123,7 @@ router.put('/:id', async (req, res) => {
                 phone: phone,
                 email: email,
                 password: newPassWord,
+                isAdmin: isAdmin || false,
             },
             { new: true },
         );

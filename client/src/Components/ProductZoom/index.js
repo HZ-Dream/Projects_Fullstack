@@ -11,7 +11,7 @@ import { useRef } from 'react';
 const ProductZoom = (props) => {
     const zoomSliderBig = useRef();
     const zoomSlider = useRef();
-    const imagesPro = props.proDetail.images;
+    const imagesPro = props.proDetail?.images;
 
     const handlePercent = () => {
         const { priceInit, priceDiscount } = props.proDetail || {};

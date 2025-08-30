@@ -6,12 +6,34 @@ import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 
 // React
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 // Components
-import QuantityBox from '../../Components/QuantityBox';
+import QuantityCart from '../../Components/QuantityBox/quantityCart';
+
+// Utils
+import { fetchDataFromApi, deleteData } from '../../utils/api';
+
+import { MyContext } from '../../App';
 
 const Cart = () => {
+    const context = useContext(MyContext);
+    const myCart = context.myCart;
+
+    let subTotal = 0;
+    myCart.map((item) => (subTotal += item.subTotal));
+
+    const removeItem = (id) => {
+        deleteData('/api/cart/', id).then((res) => {
+            context.handleClickVariant('Delete item success!', 'success');
+
+            fetchDataFromApi(`/api/cart/${context.userData.userId}`).then((res) => {
+                context.setMyCart(res);
+            });
+        });
+    };
+
     return (
         <>
             <section className="section cartPage">
@@ -19,16 +41,20 @@ const Cart = () => {
                     <div className="row">
                         <h2 className="hd mb-0">Your Cart</h2>
                         <p>
-                            There are <b className="text-red">3</b> products in your cart
+                            There are &nbsp;
+                            <b className="text-red">{context.myCart.length > 0 ? context.myCart.length : 0}</b> &nbsp;
+                            products in your cart
                         </p>
                         <div className="col-md-9 pe-5">
                             <div className="table-responsive">
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th width="35%">Product</th>
+                                            <th width="15%">Product</th>
+                                            <th width="10%">Falvor / Weight</th>
                                             <th width="15%">Unit Price</th>
-                                            <th className="ps-4" width="25%">
+                                            <th width="15%">Dis Price</th>
+                                            <th className="ps-4" width="20%">
                                                 Quantity
                                             </th>
                                             <th width="15%">Subtotal</th>
@@ -36,114 +62,51 @@ const Cart = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td width="35%">
-                                                <Link to="/product/1">
-                                                    <div className="dFlexAli-center cartItemWrapper">
-                                                        <div className="imgWrapper">
-                                                            <img
-                                                                className="w-100"
-                                                                src="https://wp.alithemes.com/html/nest/demo/assets/imgs/shop/product-1-1.jpg"
-                                                                alt="Cart Item"
-                                                            />
-                                                        </div>
+                                        {myCart?.length > 0 &&
+                                            myCart.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td width="15%">
+                                                        <Link to={`/product/${item.productId}`}>
+                                                            <div className="dFlexAli-center cartItemWrapper">
+                                                                <div className="imgWrapper">
+                                                                    <img
+                                                                        className="w-100"
+                                                                        src={item.images}
+                                                                        alt={item.productTitle}
+                                                                    />
+                                                                </div>
 
-                                                        <div className="info px-3">
-                                                            <h6>Field Roast Chao Cheese Creamy Original</h6>
-                                                            <Rating
-                                                                name="read-only"
-                                                                value={3.5}
-                                                                readOnly
-                                                                size="small"
-                                                                precision={0.5}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            </td>
-                                            <td width="15%">$7.25</td>
-                                            <td width="25%">
-                                                <QuantityBox />
-                                            </td>
-                                            <td width="15%">$7.25</td>
-                                            <td width="10%">
-                                                <span className="remove">
-                                                    <RiDeleteBin5Line />
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td width="35%">
-                                                <Link to="/product/1">
-                                                    <div className="dFlexAli-center cartItemWrapper">
-                                                        <div className="imgWrapper">
-                                                            <img
-                                                                className="w-100"
-                                                                src="https://wp.alithemes.com/html/nest/demo/assets/imgs/shop/product-1-1.jpg"
-                                                                alt="Cart Item"
-                                                            />
-                                                        </div>
-
-                                                        <div className="info px-3">
-                                                            <h6>Field Roast Chao Cheese Creamy Original</h6>
-                                                            <Rating
-                                                                name="read-only"
-                                                                value={3.5}
-                                                                readOnly
-                                                                size="small"
-                                                                precision={0.5}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            </td>
-                                            <td width="15%">$7.25</td>
-                                            <td width="25%">
-                                                <QuantityBox />
-                                            </td>
-                                            <td width="15%">$7.25</td>
-                                            <td width="10%">
-                                                <span className="remove">
-                                                    <RiDeleteBin5Line />
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td width="35%">
-                                                <Link to="/product/1">
-                                                    <div className="dFlexAli-center cartItemWrapper">
-                                                        <div className="imgWrapper">
-                                                            <img
-                                                                className="w-100"
-                                                                src="https://wp.alithemes.com/html/nest/demo/assets/imgs/shop/product-1-1.jpg"
-                                                                alt="Cart Item"
-                                                            />
-                                                        </div>
-
-                                                        <div className="info px-3">
-                                                            <h6>Field Roast Chao Cheese Creamy Original</h6>
-                                                            <Rating
-                                                                name="read-only"
-                                                                value={3.5}
-                                                                readOnly
-                                                                size="small"
-                                                                precision={0.5}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            </td>
-                                            <td width="15%">$7.25</td>
-                                            <td width="25%">
-                                                <QuantityBox />
-                                            </td>
-                                            <td width="15%">$7.25</td>
-                                            <td width="10%">
-                                                <span className="remove">
-                                                    <RiDeleteBin5Line />
-                                                </span>
-                                            </td>
-                                        </tr>
+                                                                <div className="info px-3">
+                                                                    <h6>{item.productTitle}</h6>
+                                                                    <Rating
+                                                                        name="read-only"
+                                                                        value={item.rating}
+                                                                        readOnly
+                                                                        size="small"
+                                                                        precision={0.5}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </Link>
+                                                    </td>
+                                                    <td width="10%">
+                                                        {item.flavor ? `${item.flavor} / ${item.weight}` : item.weight}
+                                                    </td>
+                                                    <td width="15%">${item.priceInit}</td>
+                                                    <td className="text-danger" width="15%">
+                                                        ${item.priceDiscount}
+                                                    </td>
+                                                    <td width="20%">
+                                                        <QuantityCart data={item} quantity={item.quantity} />
+                                                    </td>
+                                                    <td width="15%">${item.subTotal}</td>
+                                                    <td width="10%">
+                                                        <span className="remove" onClick={() => removeItem(item.id)}>
+                                                            <RiDeleteBin5Line />
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -155,7 +118,7 @@ const Cart = () => {
 
                                 <div className="dFlexAli-center mb-3">
                                     <span>Subtotal</span>
-                                    <span className="ms-auto text-red fw-bold">$21.75</span>
+                                    <span className="ms-auto text-red fw-bold">${subTotal}</span>
                                 </div>
 
                                 <div className="dFlexAli-center mb-3">
@@ -174,7 +137,7 @@ const Cart = () => {
 
                                 <div className="dFlexAli-center">
                                     <span>Total</span>
-                                    <span className="ms-auto text-red fw-bold">$21.75</span>
+                                    <span className="ms-auto text-red fw-bold">${subTotal}</span>
                                 </div>
 
                                 <Button className="btn-red btn-lg btn-big mt-4">Checkout</Button>

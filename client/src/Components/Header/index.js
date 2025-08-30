@@ -1,17 +1,61 @@
-import { Link } from 'react-router-dom';
+// Icons
 import { FiUser } from 'react-icons/fi';
 import { IoBagOutline } from 'react-icons/io5';
-import Button from '@mui/material/Button';
+import { MdDashboard } from 'react-icons/md';
+import { FaUser } from 'react-icons/fa';
+import { LuLogOut } from 'react-icons/lu';
 
+// Material UI
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import Logout from '@mui/icons-material/Logout';
+
+// React
+import { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
+
+// Images
 import Logo from '../../assets/images/logo.png';
+
+// Components
 import CountryDropdown from '../CountryDropdown';
 import SearchBox from './SearchBox';
 import Navigation from './Navigations';
-import { useContext } from 'react';
+
+// Context
 import { MyContext } from '../../App';
 
 const Header = () => {
     const context = useContext(MyContext);
+
+    const [active, setActive] = useState(false);
+
+    const handleClick = () => {
+        if (active) {
+            setActive(false);
+        } else {
+            setActive(true);
+        }
+    };
+    const handleClose = () => {
+        setActive(false);
+    };
+
+    const handleLogout = () => {
+        setActive(false);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+
+        context.setUserData(null);
+        context.setTokenData(null);
+        context.setIsUserLogin(false);
+    };
 
     return (
         <div className="headerWrapper-container">
@@ -42,11 +86,35 @@ const Header = () => {
                             <div className="d-flex align-items-center part3 ms-auto">
                                 {context.isUserLogin === true ? (
                                     <>
-                                        <Button className="circle">
-                                            <FiUser />
-                                        </Button>
+                                        <div className={`user-menu-container ${active ? 'active' : ''}`}>
+                                            <Button onClick={handleClick} className="circle">
+                                                <FiUser />
+                                            </Button>
+
+                                            <div className="user-menu">
+                                                <Link to="/profile" onClick={handleClose}>
+                                                    <FaUser />
+                                                    <span>Profile</span>
+                                                </Link>
+
+                                                <Link to="/dashboard" onClick={handleClose}>
+                                                    <MdDashboard />
+                                                    <span>Dashboard</span>
+                                                </Link>
+
+                                                <hr />
+
+                                                <Link to="/" onClick={handleLogout}>
+                                                    <LuLogOut />
+                                                    <span>Logout</span>
+                                                </Link>
+                                            </div>
+                                        </div>
+
+                                        <span className="ms-3 me-3">
+                                            <b>Hi!</b> {context.userData.name}
+                                        </span>
                                         <div className="ms-auto cartTab d-flex align-items-center">
-                                            <span className="price ms-3 me-3">$12.9</span>
                                             <div className="position-relative">
                                                 <Button className="circle">
                                                     <Link to="/cart">
@@ -54,7 +122,7 @@ const Header = () => {
                                                     </Link>
                                                 </Button>
                                                 <span className="count d-flex align-items-center justify-content-center">
-                                                    1
+                                                    {context.myCart.length > 0 ? context.myCart.length : 0}
                                                 </span>
                                             </div>
                                         </div>
