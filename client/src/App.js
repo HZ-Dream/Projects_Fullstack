@@ -19,6 +19,8 @@ import ProductDetails from './Pages/ProductDetails';
 import Cart from './Pages/Cart';
 import SignIn from './Pages/SignIn';
 import SignUp from './Pages/SignUp';
+import MyList from './Pages/MyList';
+import Checkout from './Pages/Checkout';
 
 // Utils
 import { fetchDataFromApi, postData } from './utils/api';
@@ -58,6 +60,15 @@ function App() {
     });
 
     // Other
+    const [wishlistData, setWishlistData] = useState({
+        productId: '',
+        productTitle: '',
+        image: '',
+        rating: 0,
+        priceInit: 0,
+        priceDiscount: 0,
+        userId: '',
+    });
     const [countryList, setCountryList] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
     const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
@@ -102,7 +113,9 @@ function App() {
                 setIsUserLogin(true);
 
                 fetchDataFromApi(`/api/cart/${user.userId}`).then((res) => {
-                    setMyCart(res);
+                    if (res !== null && res !== undefined && res !== '') {
+                        setMyCart(res);
+                    }
                 });
             } else {
                 setIsUserLogin(false);
@@ -145,6 +158,17 @@ function App() {
         }
     };
 
+    const addWishlist = (data) => {
+        console.log(data);
+
+        postData('/api/myList/add', data).then((res) => {
+            if (res !== null && res !== undefined && res !== '') {
+                setWishlistData(data);
+                handleClickVariant('Successfully added to wishlist!', 'success');
+            }
+        });
+    };
+
     const values = {
         userData,
         tokenData,
@@ -169,6 +193,9 @@ function App() {
         setCartData,
         quantity,
         setQuantity,
+        wishlistData,
+        setWishlistData,
+        addWishlist,
     };
 
     return (
@@ -182,6 +209,8 @@ function App() {
                     <Route path="/cart" exact={true} element={<Cart />} />
                     <Route path="/signIn" exact={true} element={<SignIn />} />
                     <Route path="/signUp" exact={true} element={<SignUp />} />
+                    <Route path="/myList" exact={true} element={<MyList />} />
+                    <Route path="/checkout" exact={true} element={<Checkout />} />
                 </Routes>
                 {isHeaderFooterShow && <Footer />}
             </MyContext.Provider>

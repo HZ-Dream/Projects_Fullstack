@@ -100,6 +100,11 @@ a {
     color: var(--white-color) !important;
 }
 
+.btn-red:hover {
+    background: #cc341d !important;
+    color: #f1f1f1 !important;
+}
+
 .btn-white {
     text-transform: capitalize !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
@@ -1707,3 +1712,29 @@ footer .copyright {
 }
 
 /* Sign In end */
+
+/* Checkout start */
+.card.order-info {
+    padding: 25px !important;
+    background: #fafafa !important;
+}
+
+.order-info .table {
+    border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.order-info .table thead {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.order-info .table tbody .divide {
+    border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.card.order-info h6 {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+/* Checkout end */

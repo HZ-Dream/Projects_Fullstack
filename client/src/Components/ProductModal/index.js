@@ -26,6 +26,25 @@ const ProductModal = (props) => {
         context.setQuantity(1);
     }, [props.firstOpen]);
 
+    const addWishlist = () => {
+        if (Object.keys(context.userData).length === 0) {
+            context.handleClickVariant('You need sign in!', 'error');
+            return;
+        }
+
+        const listItem = {
+            productId: props.detailPro?.id,
+            productTitle: props.detailPro?.name,
+            image: props.detailPro?.images[0],
+            rating: 3,
+            priceInit: props.detailPro?.priceInit,
+            priceDiscount: props.detailPro?.priceDiscount || 0,
+            userId: context.userData.userId,
+        };
+
+        context.addWishlist(listItem);
+    };
+
     const addToCart = (data) => {
         if (data?.quantity === 0) {
             context.handleClickVariant('Out of stock Products!', 'warning');
@@ -140,7 +159,7 @@ const ProductModal = (props) => {
                     </div>
 
                     <div className="d-flex align-items-center mt-4 actions">
-                        <Button className="btn-round text-capitalize btn-sml" variant="outlined">
+                        <Button onClick={addWishlist} className="btn-round text-capitalize btn-sml" variant="outlined">
                             <FaHeart className="me-2" /> Add Wishlist
                         </Button>
 

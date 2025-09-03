@@ -76,6 +76,25 @@ const ProductDetails = () => {
         }));
     };
 
+    const addWishlist = (data) => {
+        if (Object.keys(context.userData).length === 0) {
+            context.handleClickVariant('You need sign in!', 'error');
+            return;
+        }
+
+        const listItem = {
+            productId: data?.id,
+            productTitle: data?.name,
+            image: data?.images[0],
+            rating: 3,
+            priceInit: data?.priceInit,
+            priceDiscount: data?.priceDiscount || 0,
+            userId: context.userData.userId,
+        };
+
+        context.addWishlist(listItem);
+    };
+
     const addToCart = (data) => {
         if (data?.quantity === 0) {
             context.handleClickVariant('Out of stock Products!', 'warning');
@@ -187,7 +206,11 @@ const ProductDetails = () => {
 
                             <div className="dFlexAli-center mt-3 actions">
                                 <Tooltip title="Add to Wishlist" placement="top">
-                                    <Button className="btn-gray btn-round text-capitalize btn-sml" variant="outlined">
+                                    <Button
+                                        onClick={() => addWishlist(proData)}
+                                        className="btn-gray btn-round text-capitalize btn-sml"
+                                        variant="outlined"
+                                    >
                                         <FaHeart className="me-2" /> Add Wishlist
                                     </Button>
                                 </Tooltip>

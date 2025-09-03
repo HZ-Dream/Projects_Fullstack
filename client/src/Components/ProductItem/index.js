@@ -7,13 +7,16 @@ import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
 
 // React
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 // Components
 import ProductModal from '../ProductModal';
 
+import { MyContext } from '../../App';
+
 const ProductItem = (props) => {
+    const context = useContext(MyContext);
     const [isOpenModal, setIsOpenModal] = useState(false);
 
     const viewProductDetails = (id) => {
@@ -28,6 +31,25 @@ const ProductItem = (props) => {
         const { priceInit, priceDiscount } = props.productData || {};
         if (!priceInit || !priceDiscount || priceDiscount >= priceInit) return null;
         return Math.round(((priceInit - priceDiscount) / priceInit) * 100);
+    };
+
+    const addWishlist = () => {
+        if (Object.keys(context.userData).length === 0) {
+            context.handleClickVariant('You need sign in!', 'error');
+            return;
+        }
+
+        const listItem = {
+            productId: props.productData?.id,
+            productTitle: props.productData?.name,
+            image: props.productData?.images[0],
+            rating: 3,
+            priceInit: props.productData?.priceInit,
+            priceDiscount: props.productData?.priceDiscount || 0,
+            userId: context.userData.userId,
+        };
+
+        context.addWishlist(listItem);
     };
 
     return (
@@ -65,7 +87,7 @@ const ProductItem = (props) => {
                 <Button onClick={() => viewProductDetails(1)}>
                     <BsArrowsFullscreen />
                 </Button>
-                <Button>
+                <Button onClick={addWishlist}>
                     <IoMdHeartEmpty style={{ fontSize: '20px' }} />
                 </Button>
             </div>

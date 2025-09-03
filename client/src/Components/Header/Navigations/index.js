@@ -72,7 +72,7 @@ const Navigation = (props) => {
                                 </Link>
                             </li>
                             <li className="list-inline-item">
-                                <Link to="/">
+                                <Link to="/myList">
                                     <Button>Wishlist</Button>
                                 </Link>
                             </li>

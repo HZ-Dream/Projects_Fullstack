@@ -6,7 +6,7 @@ router.get('/:id', async (req, res) => {
     try {
         const cartList = await Cart.find({ userId: req.params.id });
         if (!cartList || cartList.length === 0) {
-            return res.status(404).json({ success: false, message: 'No cart found!' });
+            return res.status(200).json([]);
         }
         return res.status(200).json(cartList);
     } catch (err) {
@@ -51,6 +51,28 @@ router.post('/add', async (req, res) => {
         return res.status(500).json({
             error: err,
             success: false,
+        });
+    }
+});
+
+router.delete('/clear/:userId', async (req, res) => {
+    try {
+        const cartList = await Cart.find({ userId: req.params.userId });
+        if (!cartList || cartList.length === 0) {
+            return res.status(404).json({
+                message: 'Cart not found!',
+                success: false,
+            });
+        }
+
+        const deleteResult = await Cart.deleteMany({ userId: req.params.userId });
+
+        return res.status(200).json([]);
+    } catch (err) {
+        console.error('Error deleting cart:', err);
+        return res.status(500).json({
+            success: false,
+            message: 'Something went wrong!',
         });
     }
 });
