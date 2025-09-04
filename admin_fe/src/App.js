@@ -18,14 +18,20 @@ import Sidebar from './Components/Sidebar';
 // Pages
 import Dashboard from './Pages/Dashboard';
 
+import ProductList from './Pages/Product';
 import ProductDetails from './Pages/Product/detailProduct';
 import ProductUpload from './Pages/Product/addProduct';
 import ProductEdit from './Pages/Product/editProduct';
 
 import CategoryAdd from './Pages/Category/addCategory';
 import CategoryEdit from './Pages/Category/editCategory';
-import ProductList from './Pages/Product';
 import CategoryList from './Pages/Category';
+
+import Order from './Pages/Order';
+
+import HomeBannerList from './Pages/HomeBanner';
+import HomeBannerAdd from './Pages/HomeBanner/addHomeBanner';
+import HomeBannerEdit from './Pages/HomeBanner/editHomeBanner';
 
 const MyContext = createContext();
 
@@ -104,6 +110,12 @@ function App() {
                             <Route path="/category" element={<CategoryList />} />
                             <Route path="/category/add" element={<CategoryAdd />} />
                             <Route path="/category/edit/:id" element={<CategoryEdit />} />
+
+                            <Route path="/order" element={<Order />} />
+
+                            <Route path="/homeBanner" element={<HomeBannerList />} />
+                            <Route path="/homeBanner/add" element={<HomeBannerAdd />} />
+                            <Route path="/homeBanner/edit/:id" element={<HomeBannerEdit />} />
                         </Routes>
                     </div>
                 </div>

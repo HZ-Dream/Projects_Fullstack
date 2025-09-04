@@ -2,8 +2,8 @@
 import { MdBrandingWatermark } from 'react-icons/md';
 import { BiSolidCategoryAlt } from 'react-icons/bi';
 import { IoMdPricetags } from 'react-icons/io';
-import { IoIosColorPalette } from 'react-icons/io';
-import { SiZiggo } from 'react-icons/si';
+import { IoFastFood } from 'react-icons/io5';
+import { FaWeightScale } from 'react-icons/fa6';
 import { HiCurrencyDollar } from 'react-icons/hi2';
 import { MdRateReview } from 'react-icons/md';
 import { BsFillPatchCheckFill } from 'react-icons/bs';
@@ -17,13 +17,22 @@ import Button from '@mui/material/Button';
 import avatarImg from '../../assets/images/avatar.jpg';
 
 // React
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Slider from 'react-slick';
 
 // Components
 import UserAvatarImgComponent from '../../Components/UserAvatarImg';
+import { useParams } from 'react-router-dom';
+
+// API
+import { fetchDataFromApi } from '../../utils/api';
 
 const ProductDetails = () => {
+    let { id } = useParams();
+    const [detailData, setDetailData] = useState({});
+    const [catData, setCatData] = useState({});
+    const [imagesData, setImagesData] = useState([]);
+    const [reviewData, setReviewData] = useState([]);
     var productSlider = {
         dots: false,
         infinite: true,
@@ -37,7 +46,7 @@ const ProductDetails = () => {
         dots: false,
         infinite: true,
         speed: 500,
-        slidesToShow: 4,
+        slidesToShow: imagesData.length || 4,
         slidesToScroll: 1,
         arrows: false,
     };
@@ -46,11 +55,28 @@ const ProductDetails = () => {
     const productSliderSml = useRef(null);
 
     const goToSlide = (index) => {
-        console.log(index);
-
         productSliderBig.current.slickGoTo(index);
         productSliderSml.current.slickGoTo(index);
     };
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
+        fetchDataFromApi(`/api/product/${id}`).then((res) => {
+            setDetailData(res);
+            setImagesData(res.images);
+
+            fetchDataFromApi(`/api/category/${res.category}`).then((res) => {
+                setCatData(res);
+            });
+
+            fetchDataFromApi(`/api/productReview/${id}`).then((res) => {
+                setReviewData(res);
+            });
+        });
+    }, [id]);
 
     return (
         <>
@@ -61,78 +87,20 @@ const ProductDetails = () => {
                             <div className="sliderWrapper py-3 ps-4">
                                 <h6 className="mb-3">Product Gallery</h6>
                                 <Slider {...productSlider} className="sliderBig mb-2" ref={productSliderBig}>
-                                    <div className="item">
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/01.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
-                                    <div className="item">
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/02.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
-                                    <div className="item">
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/03.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
-                                    <div className="item">
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/04.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
-                                    <div className="item">
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/05.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
+                                    {imagesData?.length > 0 &&
+                                        imagesData.map((item, index) => (
+                                            <div key={index} className="item">
+                                                <img className="w-100" src={item} alt="ImgDetail" />
+                                            </div>
+                                        ))}
                                 </Slider>
                                 <Slider {...productSmlSlider} className="sliderSml" ref={productSliderSml}>
-                                    <div className="item" onClick={() => goToSlide(0)}>
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/01.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
-                                    <div className="item" onClick={() => goToSlide(1)}>
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/02.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
-                                    <div className="item" onClick={() => goToSlide(2)}>
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/03.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
-                                    <div className="item" onClick={() => goToSlide(3)}>
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/04.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
-                                    <div className="item" onClick={() => goToSlide(4)}>
-                                        <img
-                                            className="w-100"
-                                            src="https://mironcoder-hotash.netlify.app/images/product/single/05.webp"
-                                            alt="ImgDetail"
-                                        />
-                                    </div>
+                                    {imagesData?.length > 0 &&
+                                        imagesData.map((item, index) => (
+                                            <div key={index} className="item" onClick={() => goToSlide(index)}>
+                                                <img className="w-100" src={item} alt="ImgDetail" />
+                                            </div>
+                                        ))}
                                 </Slider>
                             </div>
                         </div>
@@ -140,9 +108,7 @@ const ProductDetails = () => {
                         <div className="col-md-7 productDetailSection">
                             <div className="py-3 px-4">
                                 <h6 className="mb-4">Product Details</h6>
-                                <h4 className="mb-4">
-                                    Formal suits for men wedding slim fit 3 piece dress business party jacket
-                                </h4>
+                                <h4 className="mb-4">{detailData.name}</h4>
 
                                 <div className="productInfo">
                                     <div className="row mb-3">
@@ -153,7 +119,7 @@ const ProductDetails = () => {
                                             <span className="name">Brand</span>
                                         </div>
                                         <div className="col-sm-9">
-                                            <span>Ecstasy</span>
+                                            <span>{detailData.brand}</span>
                                         </div>
                                     </div>
 
@@ -165,7 +131,7 @@ const ProductDetails = () => {
                                             <span className="name">Category</span>
                                         </div>
                                         <div className="col-sm-9">
-                                            <span>Man</span>
+                                            <span>{catData.name}</span>
                                         </div>
                                     </div>
 
@@ -180,21 +146,12 @@ const ProductDetails = () => {
                                             <span>
                                                 <div className="row">
                                                     <ul className="list list-inline tags sml">
-                                                        <li className="list-inline-item">
-                                                            <span>suite</span>
-                                                        </li>
-                                                        <li className="list-inline-item">
-                                                            <span>party</span>
-                                                        </li>
-                                                        <li className="list-inline-item">
-                                                            <span>dress</span>
-                                                        </li>
-                                                        <li className="list-inline-item">
-                                                            <span>smart</span>
-                                                        </li>
-                                                        <li className="list-inline-item">
-                                                            <span>man</span>
-                                                        </li>
+                                                        {detailData.tag?.length > 0 &&
+                                                            detailData.tag.map((item, index) => (
+                                                                <li key={index} className="list-inline-item">
+                                                                    <span>{item}</span>
+                                                                </li>
+                                                            ))}
                                                     </ul>
                                                 </div>
                                             </span>
@@ -204,23 +161,20 @@ const ProductDetails = () => {
                                     <div className="row mb-3">
                                         <div className="col-sm-3 dFlexAli-center">
                                             <span className="icon">
-                                                <IoIosColorPalette />
+                                                <IoFastFood />
                                             </span>
-                                            <span className="name">Color</span>
+                                            <span className="name">Flavor</span>
                                         </div>
                                         <div className="col-sm-9">
                                             <span>
                                                 <div className="row">
                                                     <ul className="list list-inline tags sml">
-                                                        <li className="list-inline-item">
-                                                            <span>red</span>
-                                                        </li>
-                                                        <li className="list-inline-item">
-                                                            <span>black</span>
-                                                        </li>
-                                                        <li className="list-inline-item">
-                                                            <span>brown</span>
-                                                        </li>
+                                                        {detailData.flavor?.length > 0 &&
+                                                            detailData.flavor.map((item, index) => (
+                                                                <li key={index} className="list-inline-item">
+                                                                    <span>{item}</span>
+                                                                </li>
+                                                            ))}
                                                     </ul>
                                                 </div>
                                             </span>
@@ -230,26 +184,20 @@ const ProductDetails = () => {
                                     <div className="row mb-3">
                                         <div className="col-sm-3 dFlexAli-center">
                                             <span className="icon">
-                                                <SiZiggo />
+                                                <FaWeightScale />
                                             </span>
-                                            <span className="name">Size</span>
+                                            <span className="name">Weight</span>
                                         </div>
                                         <div className="col-sm-9">
                                             <span>
                                                 <div className="row">
                                                     <ul className="list list-inline tags sml">
-                                                        <li className="list-inline-item">
-                                                            <span>m</span>
-                                                        </li>
-                                                        <li className="list-inline-item">
-                                                            <span>l</span>
-                                                        </li>
-                                                        <li className="list-inline-item">
-                                                            <span>xl</span>
-                                                        </li>
-                                                        <li className="list-inline-item">
-                                                            <span>xxl</span>
-                                                        </li>
+                                                        {detailData.weight?.length > 0 &&
+                                                            detailData.weight.map((item, index) => (
+                                                                <li key={index} className="list-inline-item">
+                                                                    <span>{item}</span>
+                                                                </li>
+                                                            ))}
                                                     </ul>
                                                 </div>
                                             </span>
@@ -264,10 +212,16 @@ const ProductDetails = () => {
                                             <span className="name">Price</span>
                                         </div>
                                         <div className="col-sm-9">
-                                            <span>
-                                                <del className="old me-2">$23.00</del>
-                                                <span className="text-danger fw-bold">$21.00</span>
-                                            </span>
+                                            {detailData.priceDiscount > 0 ? (
+                                                <span>
+                                                    <del className="old me-2">${detailData.priceInit}</del>
+                                                    <span className="text-danger fw-bold">
+                                                        ${detailData.priceDiscount}
+                                                    </span>
+                                                </span>
+                                            ) : (
+                                                <span className="text-danger fw-bold">${detailData.priceInit}</span>
+                                            )}
                                         </div>
                                     </div>
 
@@ -279,7 +233,7 @@ const ProductDetails = () => {
                                             <span className="name">Review</span>
                                         </div>
                                         <div className="col-sm-9">
-                                            <span>23</span>
+                                            <span>{reviewData?.length}</span>
                                         </div>
                                     </div>
 
@@ -291,7 +245,7 @@ const ProductDetails = () => {
                                             <span className="name">Published</span>
                                         </div>
                                         <div className="col-sm-9">
-                                            <span>02 Feb 2020</span>
+                                            <span>{new Date(detailData.dateCreated).toLocaleDateString('vi-VN')}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -301,17 +255,7 @@ const ProductDetails = () => {
 
                     <div className="p-4">
                         <h6 className="mt-4 mb-3">Product Description</h6>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae reprehenderit repellendus
-                            expedita esse cupiditate quos doloremque rerum, corrupti ab illum est nihil, voluptate ex
-                            dignissimos! Sit voluptatem delectus nam, molestiae, repellendus ab sint quo aliquam debitis
-                            amet natus doloremque laudantium? Repudiandae, consequuntur, officiis quidem quo deleniti,
-                            autem non laudantium sequi error molestiae ducimus accusamus facere velit consectetur vero
-                            dolore natus nihil temporibus aspernatur quia consequatur? Consequuntur voluptate deserunt
-                            repellat tenetur debitis molestiae doloribus dicta. In rem illum dolorem atque ratione
-                            voluptates asperiores maxime doloremque laudantium magni neque ad quae quos quidem, quaerat
-                            rerum ducimus blanditiis reiciendis
-                        </p>
+                        <p>{detailData.description}</p>
 
                         <br />
 
@@ -381,7 +325,7 @@ const ProductDetails = () => {
                             </div>
 
                             <div className="ratingOverral text-center">
-                                <h5>Total Review (38)</h5>
+                                <h5>Total Review ({reviewData?.length})</h5>
                                 <h1>4.5</h1>
                                 <Rating name="read-only" value={4.5} readOnly precision={0.5} />
                             </div>
@@ -403,7 +347,7 @@ const ProductDetails = () => {
                         <h6 className="mt-4 mb-4">Customer Reviews</h6>
 
                         <div className="reviewSection">
-                            <div className="reviewRow">
+                            {/* <div className="reviewRow">
                                 <div className="row">
                                     <div className="col-md-7 d-flex">
                                         <div className="d-flex flex-column">
@@ -463,38 +407,47 @@ const ProductDetails = () => {
                                     fugiat ducimus labore debitis unde autem recusandae? Eius harum tempora quis minima,
                                     adipisci natus quod magni omnis quas.
                                 </p>
-                            </div>
+                            </div> */}
 
-                            <div className="reviewRow">
-                                <div className="row">
-                                    <div className="col-md-7 d-flex">
-                                        <div className="d-flex flex-column">
-                                            <div className="userInfo dFlexAli-center mb-3">
-                                                <UserAvatarImgComponent Img={avatarImg} />
-                                                <div className="info ps-2">
-                                                    <h6 className="mb-0">Dream</h6>
-                                                    <span>25 minutes ago</span>
+                            {reviewData?.length > 0 ? (
+                                reviewData.map((item, index) => (
+                                    <div key={index} className="reviewRow">
+                                        <div className="row">
+                                            <div className="col-md-7 d-flex">
+                                                <div className="d-flex flex-column">
+                                                    <div className="userInfo dFlexAli-center mb-3">
+                                                        <UserAvatarImgComponent Img={avatarImg} />
+                                                        <div className="info ps-2">
+                                                            <h6 className="mb-0">{item.customerName}</h6>
+                                                            <span>
+                                                                {new Date(item.createdAt).toLocaleDateString('vi-VN')}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <Rating
+                                                        name="read-only"
+                                                        value={item.rating}
+                                                        readOnly
+                                                        precision={0.5}
+                                                    />
                                                 </div>
                                             </div>
-
-                                            <Rating name="read-only" value={4.5} readOnly precision={0.5} />
+                                            <div className="col-md-5 dFlexAli-center">
+                                                <div className="ms-auto">
+                                                    <Button className="btn-big btn-blue">
+                                                        <FaReply className="me-2" />
+                                                        Reply
+                                                    </Button>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <p className="mt-3">{item.review}</p>
                                     </div>
-                                    <div className="col-md-5 dFlexAli-center">
-                                        <div className="ms-auto">
-                                            <Button className="btn-big btn-blue">
-                                                <FaReply className="me-2" />
-                                                Reply
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p className="mt-3">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quo nostrum dolore
-                                    fugiat ducimus labore debitis unde autem recusandae? Eius harum tempora quis minima,
-                                    adipisci natus quod magni omnis quas.
-                                </p>
-                            </div>
+                                ))
+                            ) : (
+                                <p>At present, there are no comments</p>
+                            )}
                         </div>
                     </div>
                 </div>

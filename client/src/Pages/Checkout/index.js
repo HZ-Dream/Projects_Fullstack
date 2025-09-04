@@ -63,7 +63,7 @@ const Checkout = () => {
                     context.setMyCart(res);
 
                     setTimeout(() => {
-                        window.location.href = '/';
+                        window.location.href = '/order';
                     }, 1000);
                 });
             }

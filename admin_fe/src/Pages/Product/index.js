@@ -235,7 +235,7 @@ const ProductList = () => {
                                               <td>
                                                   <div className="actions dFlexAli-center justify-content-around">
                                                       <Button className="detail">
-                                                          <Link to="/product/detail/1">
+                                                          <Link to={`/product/detail/${product.id}`}>
                                                               <FaEye />
                                                           </Link>
                                                       </Button>

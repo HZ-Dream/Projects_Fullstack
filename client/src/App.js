@@ -21,6 +21,7 @@ import SignIn from './Pages/SignIn';
 import SignUp from './Pages/SignUp';
 import MyList from './Pages/MyList';
 import Checkout from './Pages/Checkout';
+import Order from './Pages/Order';
 
 // Utils
 import { fetchDataFromApi, postData } from './utils/api';
@@ -211,6 +212,7 @@ function App() {
                     <Route path="/signUp" exact={true} element={<SignUp />} />
                     <Route path="/myList" exact={true} element={<MyList />} />
                     <Route path="/checkout" exact={true} element={<Checkout />} />
+                    <Route path="/order" exact={true} element={<Order />} />
                 </Routes>
                 {isHeaderFooterShow && <Footer />}
             </MyContext.Provider>

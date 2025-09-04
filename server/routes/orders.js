@@ -2,6 +2,47 @@ const { Order } = require('../models/order');
 const express = require('express');
 const router = express.Router();
 
+router.get('/', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = 5;
+    const totalPosts = await Order.countDocuments();
+    const totalPages = Math.ceil(totalPosts / perPage);
+
+    if (page < 1 || page > totalPages) {
+        return res.status(400).json({
+            message: 'Page not found!',
+        });
+    }
+
+    const orderList = await Order.find()
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .exec();
+
+    if (!orderList) {
+        res.status(500).json({ success: false });
+    }
+
+    return res.status(200).json({
+        orderList: orderList,
+        totalPages: totalPages,
+        totalOrders: totalPosts,
+        page: page,
+    });
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const orderList = await Order.find({ userId: req.params.id });
+        if (!orderList || orderList.length === 0) {
+            return res.status(200).json([]);
+        }
+        return res.status(200).json(orderList);
+    } catch (err) {
+        return res.status(500).json({ success: false, error: err });
+    }
+});
+
 router.post('/create', async (req, res) => {
     try {
         const mappedOrders = req.body.orders.map((item) => ({

@@ -8,6 +8,7 @@ import { FaBell } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
 import { BiLogOut } from 'react-icons/bi';
 import { FaCopyright } from 'react-icons/fa';
+import { AiFillPicture } from 'react-icons/ai';
 
 // Material UI
 import Button from '@mui/material/Button';
@@ -88,19 +89,39 @@ const Sidebar = () => {
                         </div>
                     </li>
                     <li>
-                        <Button className={`w-100 ${actClass === 4 ? 'act' : ''}`} onClick={() => setAct(4)}>
+                        <Link to="/order">
+                            <Button className={`w-100 ${actClass === 4 ? 'act' : ''}`} onClick={() => setAct(4)}>
+                                <span className="icon">
+                                    <FaCartArrowDown />
+                                </span>
+                                <span className="name">Orders</span>
+                            </Button>
+                        </Link>
+                    </li>
+                    <li>
+                        <Button className={`w-100 ${actClass === 5 ? 'act' : ''}`} onClick={() => setAct(5)}>
                             <span className="icon">
-                                <FaCartArrowDown />
+                                <AiFillPicture />
                             </span>
-                            <span className="name">Orders</span>
+                            <span className="name">Banners</span>
                             <span className="arrow">
                                 <FaAngleRight />
                             </span>
                         </Button>
+                        <div className={`submenuWrapper ${actClass === 5 ? 'open' : ''}`}>
+                            <ul className="submenu">
+                                <li>
+                                    <Link to="/homeBanner">Banner List</Link>
+                                </li>
+                                <li>
+                                    <Link to="/homeBanner/add">Banner Add</Link>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                     <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 5 ? 'act' : ''}`} onClick={() => setAct(5)}>
+                            <Button className={`w-100 ${actClass === 6 ? 'act' : ''}`} onClick={() => setAct(6)}>
                                 <span className="icon">
                                     <MdMessage />
                                 </span>
@@ -110,7 +131,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 6 ? 'act' : ''}`} onClick={() => setAct(6)}>
+                            <Button className={`w-100 ${actClass === 7 ? 'act' : ''}`} onClick={() => setAct(7)}>
                                 <span className="icon">
                                     <FaBell />
                                 </span>
@@ -120,7 +141,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 7 ? 'act' : ''}`} onClick={() => setAct(7)}>
+                            <Button className={`w-100 ${actClass === 8 ? 'act' : ''}`} onClick={() => setAct(8)}>
                                 <span className="icon">
                                     <IoIosSettings />
                                 </span>

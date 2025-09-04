@@ -4,17 +4,10 @@ import { IoBagOutline } from 'react-icons/io5';
 import { MdDashboard } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
 import { LuLogOut } from 'react-icons/lu';
+import { BsFillBagCheckFill } from 'react-icons/bs';
 
 // Material UI
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import Logout from '@mui/icons-material/Logout';
 
 // React
 import { useContext, useState } from 'react';
@@ -100,6 +93,11 @@ const Header = () => {
                                                 <Link to="/dashboard" onClick={handleClose}>
                                                     <MdDashboard />
                                                     <span>Dashboard</span>
+                                                </Link>
+
+                                                <Link to="/order" onClick={handleClose}>
+                                                    <BsFillBagCheckFill />
+                                                    <span>Order</span>
                                                 </Link>
 
                                                 <hr />

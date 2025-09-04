@@ -22,6 +22,7 @@ const cartRoutes = require('./routes/carts');
 const prouctReviewRoutes = require('./routes/productReviews');
 const myListRoutes = require('./routes/myLists');
 const orderRoutes = require('./routes/orders');
+const homeBannerRoutes = require('./routes/homeBanners');
 
 app.use('/uploads', express.static('uploads'));
 app.use('/api/user', userRoutes);
@@ -31,6 +32,7 @@ app.use('/api/product', productRoutes);
 app.use('/api/productReview', prouctReviewRoutes);
 app.use('/api/myList', myListRoutes);
 app.use('/api/order', orderRoutes);
+app.use('/api/homeBanner', homeBannerRoutes);
 
 // Database
 mongoose
