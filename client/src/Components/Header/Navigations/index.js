@@ -67,7 +67,7 @@ const Navigation = (props) => {
                                 </Link>
                             </li>
                             <li className="list-inline-item">
-                                <Link to="/">
+                                <Link to="/productList">
                                     <Button>Shop</Button>
                                 </Link>
                             </li>

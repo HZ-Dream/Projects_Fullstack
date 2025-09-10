@@ -1627,6 +1627,10 @@ footer .copyright {
     z-index: 100;
 }
 
+.signInPage.otpPage .box {
+    margin-top: 85px !important;
+}
+
 .signInPage.signUp .box {
     width: 500px !important;
 }
@@ -1738,3 +1742,91 @@ footer .copyright {
 }
 
 /* Checkout end */
+
+/* Account Page */
+.myAccountPage .MuiTab-root {
+    font-weight: 600 !important;
+}
+
+.myAccountPage .myAccBox {
+    padding: 25px;
+    background: #fafafa;
+    border-radius: 10px;
+}
+
+.userImage {
+    width: 140px;
+    height: 140px;
+    overflow: hidden;
+    border-radius: 100%;
+    border: 2px solid var(--second-color);
+    position: relative;
+}
+
+.userImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.userImage .overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: all 0.2s ease-in-out;
+    opacity: 0;
+}
+
+.userImage .load {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.userImage .load svg {
+    font-size: 30px;
+    color: var(--white-color);
+}
+
+.userImage:hover .overlay {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.userImage .overlay svg {
+    font-size: 30px;
+    color: var(--white-color);
+}
+
+.userImage .overlay input {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    cursor: pointer;
+}
+
+.myAccBox .form-group {
+    margin-bottom: 25px;
+}
+
+.myAccBox .form-group .MuiOutlinedInput-input {
+    background: #f1f1f1 !important;
+}
+
+.MuiCircularProgress-root.loader {
+    width: 20px !important;
+    height: 20px !important;
+}

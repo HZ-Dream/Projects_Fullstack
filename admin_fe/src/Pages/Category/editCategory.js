@@ -1,5 +1,4 @@
 // Icons
-import { CiCircleRemove } from 'react-icons/ci';
 import { FaRegImages } from 'react-icons/fa';
 import { MdCloudUpload } from 'react-icons/md';
 

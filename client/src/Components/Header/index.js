@@ -85,7 +85,7 @@ const Header = () => {
                                             </Button>
 
                                             <div className="user-menu">
-                                                <Link to="/profile" onClick={handleClose}>
+                                                <Link to="/myAccount" onClick={handleClose}>
                                                     <FaUser />
                                                     <span>Profile</span>
                                                 </Link>

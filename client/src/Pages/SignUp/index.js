@@ -12,7 +12,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // React
 import { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Utils
 import { postData } from '../../utils/api';
@@ -22,6 +22,7 @@ import { MyContext } from '../../App';
 
 const SignUp = () => {
     const context = useContext(MyContext);
+    const navigate = useNavigate();
     const [isLoad, setIsLoad] = useState(false);
     const [formfields, setFormFields] = useState({
         name: '',
@@ -61,9 +62,11 @@ const SignUp = () => {
                 .then((res) => {
                     setIsLoad(false);
                     context.handleClickVariant('Sign Up account success!', 'success');
+                    localStorage.setItem('userEmail', formfields.email);
 
                     setTimeout(() => {
-                        window.location.href = '/signIn';
+                        navigate('/verifyOtp');
+                        // window.location.href = '/signIn';
                     }, 1000);
                 })
                 .catch((err) => {

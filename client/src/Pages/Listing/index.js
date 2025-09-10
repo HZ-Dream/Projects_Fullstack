@@ -15,6 +15,7 @@ import Stack from '@mui/material/Stack';
 
 // React
 import { useState, useEffect, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 
 // Components
 import Sidebar from '../../Components/Sidebar';
@@ -27,11 +28,13 @@ import { MyContext } from '../../App';
 
 const Listing = () => {
     const context = useContext(MyContext);
+    const location = useLocation();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [productView, setProductView] = useState('four');
     const [proData, setProData] = useState(context.proDataList || []);
     const [perPage, setPerPage] = useState(8);
+    const [hasSearched, setHasSearched] = useState(false);
 
     const openDrop = Boolean(anchorEl);
     const handleClick = (e) => {

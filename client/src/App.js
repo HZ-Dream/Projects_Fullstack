@@ -22,6 +22,8 @@ import SignUp from './Pages/SignUp';
 import MyList from './Pages/MyList';
 import Checkout from './Pages/Checkout';
 import Order from './Pages/Order';
+import MyAccount from './Pages/MyAccount';
+import VerifyOtp from './Pages/VerifyOtp';
 
 // Utils
 import { fetchDataFromApi, postData } from './utils/api';
@@ -73,6 +75,7 @@ function App() {
     const [countryList, setCountryList] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
     const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
+    const [searchData, setSearchData] = useState([]);
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -95,10 +98,12 @@ function App() {
         });
 
         // Fetch Product Data
-        fetchDataFromApi('/api/product/all').then((res) => {
-            setProData(res.productList);
-            setProDataList(res.productList);
-        });
+        if (!proDataList || proDataList.length === 0) {
+            fetchDataFromApi('/api/product/all').then((res) => {
+                setProData(res.productList);
+                setProDataList(res.productList);
+            });
+        }
 
         // Fetch Featured Product Data
         fetchDataFromApi(`/api/product/featured`).then((res) => {
@@ -197,6 +202,8 @@ function App() {
         wishlistData,
         setWishlistData,
         addWishlist,
+        searchData,
+        setSearchData,
     };
 
     return (
@@ -205,7 +212,7 @@ function App() {
                 {isHeaderFooterShow && <Header />}
                 <Routes>
                     <Route path="/" exact={true} element={<Home />} />
-                    <Route path="/cat" exact={true} element={<Listing />} />
+                    <Route path="/productList" exact={true} element={<Listing />} />
                     <Route path="/product/:id" exact={true} element={<ProductDetails />} />
                     <Route path="/cart" exact={true} element={<Cart />} />
                     <Route path="/signIn" exact={true} element={<SignIn />} />
@@ -213,6 +220,8 @@ function App() {
                     <Route path="/myList" exact={true} element={<MyList />} />
                     <Route path="/checkout" exact={true} element={<Checkout />} />
                     <Route path="/order" exact={true} element={<Order />} />
+                    <Route path="/myAccount" exact={true} element={<MyAccount />} />
+                    <Route path="/verifyOtp" exact={true} element={<VerifyOtp />} />
                 </Routes>
                 {isHeaderFooterShow && <Footer />}
             </MyContext.Provider>

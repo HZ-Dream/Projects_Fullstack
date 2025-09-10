@@ -20,6 +20,13 @@ import { postData } from '../../utils/api';
 // Context
 import { MyContext } from '../../App';
 
+// Google OAuth
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { firebaseApp } from '../../firebase';
+
+const auth = getAuth(firebaseApp);
+const provider = new GoogleAuthProvider();
+
 const SignIn = () => {
     const context = useContext(MyContext);
     const [isLoad, setIsLoad] = useState(false);
@@ -79,6 +86,58 @@ const SignIn = () => {
             context.handleClickVariant(err, 'warning');
             return;
         }
+    };
+
+    const signInGoogle = (e) => {
+        e.preventDefault();
+
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                const user = result.user;
+
+                const arrImage = [user.providerData[0].photoURL];
+
+                const fields = {
+                    name: user.providerData[0].displayName,
+                    email: user.providerData[0].email,
+                    password: user.providerData[0].email,
+                    image: arrImage,
+                    phone: '',
+                };
+
+                postData('/api/user/authWithGoogle', fields).then((res) => {
+                    try {
+                        if (res.error !== true) {
+                            context.handleClickVariant('Sign In Google success!', 'success');
+                            localStorage.setItem('token', res.token);
+
+                            const user = {
+                                name: res.user?.name,
+                                email: res.user?.email,
+                                userId: res.user?.id,
+                            };
+
+                            localStorage.setItem('user', JSON.stringify(user));
+
+                            setTimeout(() => {
+                                context.setIsHeaderFooterShow(true);
+                                window.location.href = '/';
+                            }, 1000);
+                        }
+                    } catch (err) {
+                        context.handleClickVariant(err, 'warning');
+                        return;
+                    }
+                });
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                const email = error.customData.email;
+                const credential = GoogleAuthProvider.credentialFromError(error);
+            });
     };
 
     return (
@@ -168,7 +227,7 @@ const SignIn = () => {
 
                         <ul className="list list-inline mb-0 socialSign">
                             <li className="list-inline-item">
-                                <Link to="#">
+                                <Link onClick={signInGoogle}>
                                     <FcGoogle />
                                 </Link>
                             </li>
