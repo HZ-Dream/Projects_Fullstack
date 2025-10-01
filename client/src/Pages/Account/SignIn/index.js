@@ -8,9 +8,13 @@ import Logo from '../../../assets/images/logo.png';
 // Material UI
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+
+// Utils
+import { postData } from '../../../utils/api';
 
 // Context
 import { MyContext } from '../../../App';
@@ -24,10 +28,59 @@ const cx = classNames.bind(styles);
 
 const SignIn = () => {
     const context = useContext(MyContext);
+    const [isLoad, setIsLoad] = useState(false);
+    const [formfields, setFormFields] = useState({
+        email: '',
+        password: '',
+    });
 
-    useEffect(() => {
-        context.setIsHeaderFooterShow(false);
-    }, []);
+    const onChangeInput = (e) => {
+        setFormFields(() => ({
+            ...formfields,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const signIn = (e) => {
+        e.preventDefault();
+        try {
+            if (formfields.email.trim() === '' || formfields.password.trim() === '') {
+                context.handleClickVariant('Please fill all fields in form!', 'warning');
+                return;
+            }
+
+            setIsLoad(true);
+
+            postData('/api/auth/signIn', formfields)
+                .then((res) => {
+                    setIsLoad(false);
+                    context.handleClickVariant('Sign Up account success!', 'success');
+
+                    localStorage.setItem('token', res.token);
+
+                    context.setTokenData(res.token);
+
+                    const user = {
+                        name: res.user?.name,
+                        email: res.user?.email,
+                        userId: res.user?.id,
+                    };
+
+                    localStorage.setItem('user', JSON.stringify(user));
+
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                })
+                .catch((err) => {
+                    setIsLoad(false);
+                    context.handleClickVariant(err.response.data.msg, 'error');
+                });
+        } catch (err) {
+            context.handleClickVariant(err, 'warning');
+            return;
+        }
+    };
 
     return (
         <section className={`section ${cx('signInPage')}`}>
@@ -52,9 +105,11 @@ const SignIn = () => {
                         <img className={cx('imgLogo')} src={Logo} alt="Logo" />
                     </div>
                     <h2 className="mb-2 text-center">Sign In</h2>
-                    <form>
+                    <form onSubmit={signIn}>
                         <div className={cx('form-group')}>
                             <TextField
+                                onChange={onChangeInput}
+                                name="email"
                                 className="w-100"
                                 id="standard-basic"
                                 label="Email"
@@ -65,6 +120,8 @@ const SignIn = () => {
                         </div>
                         <div className={cx('form-group')}>
                             <TextField
+                                onChange={onChangeInput}
+                                name="password"
                                 className="w-100"
                                 id="standard-password-input"
                                 label="Password"
@@ -80,11 +137,22 @@ const SignIn = () => {
                         </a>
 
                         <div className="dFlexAli-center mt-2">
-                            <Button className="btn-primary btn-lg btn-big w-100">Login</Button>
+                            <Button
+                                disabled={isLoad === true ? true : false}
+                                type="submit"
+                                className="btn-primary btn-lg btn-big w-100"
+                            >
+                                <span className="me-2">Login</span>
+                                {isLoad === true && (
+                                    <CircularProgress
+                                        className="loader"
+                                        color="inherit"
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                )}
+                            </Button>
                             <Button className="btn-white btn-lg btn-big w-100 ms-3">
-                                <Link onClick={() => context.setIsHeaderFooterShow(true)} to="/">
-                                    Cancel
-                                </Link>
+                                <Link to="/">Cancel</Link>
                             </Button>
                         </div>
 

@@ -1,15 +1,19 @@
-// Icons, Button
-import { Link } from 'react-router-dom';
+// Icons
+import { MdDashboard } from 'react-icons/md';
+import { FaUser } from 'react-icons/fa';
+import { LuLogOut } from 'react-icons/lu';
 import { FiUser } from 'react-icons/fi';
 import { FaRegBell } from 'react-icons/fa';
+import { BsFillBagCheckFill } from 'react-icons/bs';
 import Button from '@mui/material/Button';
 
 // Img
 import Logo from '../../assets/images/logo.png';
 
 // React
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { MyContext } from '../../App';
+import { Link } from 'react-router-dom';
 
 // Components
 import SearchBox from './SearchBox';
@@ -23,6 +27,31 @@ const cx = classNames.bind(styles);
 
 const Header = () => {
     const context = useContext(MyContext);
+
+    const [active, setActive] = useState(false);
+
+    const handleClick = () => {
+        if (active) {
+            setActive(false);
+        } else {
+            setActive(true);
+        }
+    };
+
+    const handleClose = () => {
+        setActive(false);
+    };
+
+    const handleLogout = () => {
+        setActive(false);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+
+        context.setUserData(null);
+        context.setTokenData(null);
+        context.setIsUserLogin(false);
+    };
+
     return (
         <div className={cx('headerWrapper-container')}>
             <div className={cx('headerWrapper')}>
@@ -52,9 +81,30 @@ const Header = () => {
                                     <Button className={`${cx('circle')} d-flex align-items-center`}>
                                         <FaRegBell />
                                     </Button>
-                                    <Button className={`${cx('circle')} ms-2`}>
-                                        <FiUser />
-                                    </Button>
+                                    <div className={`${cx('user-menu-container')} ${active ? cx('active') : ''}`}>
+                                        <Button onClick={handleClick} className={`${cx('circle')} ms-2`}>
+                                            <FiUser />
+                                        </Button>
+
+                                        <div className={cx('user-menu')}>
+                                            <Link to="/myAccount" onClick={handleClose}>
+                                                <FaUser />
+                                                <span>Profile</span>
+                                            </Link>
+
+                                            <Link to="/dashboard" onClick={handleClose}>
+                                                <MdDashboard />
+                                                <span>Dashboard</span>
+                                            </Link>
+
+                                            <hr />
+
+                                            <Link to="/" onClick={handleLogout}>
+                                                <LuLogOut />
+                                                <span>Logout</span>
+                                            </Link>
+                                        </div>
+                                    </div>
                                 </>
                             ) : (
                                 <Button className="btn-primary btn-lg btn-big w-100">

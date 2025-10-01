@@ -14,7 +14,7 @@ import AvatarImg from '../../assets/images/avatar.jpg';
 import Rating from '@mui/material/Rating';
 
 // React
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 // Components
@@ -30,6 +30,10 @@ const cx = classNames.bind(styles);
 const QuizDetail = () => {
     const [activeTabs, setActiveTabs] = useState(0);
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <>
             <section className={`productDetails ${cx('section')}`}>
@@ -40,7 +44,7 @@ const QuizDetail = () => {
                             <ul className="list list-inline dFlexAli-center">
                                 <li className="list-inline-item">
                                     <div className="dFlexAli-center">
-                                        <span className="text-light me-1">ID Quiz</span>
+                                        <span className="text-light me-1">ID Quiz:</span>
                                         <span>ZU49VOR</span>
                                     </div>
                                 </li>

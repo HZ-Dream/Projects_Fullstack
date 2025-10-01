@@ -8,9 +8,13 @@ import Logo from '../../../assets/images/logo.png';
 // Material UI
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+
+// Utils
+import { postData } from '../../../utils/api';
 
 // Context
 import { MyContext } from '../../../App';
@@ -24,10 +28,60 @@ const cx = classNames.bind(styles);
 
 const SignUp = () => {
     const context = useContext(MyContext);
+    const [isLoad, setIsLoad] = useState(false);
+    const [formfields, setFormFields] = useState({
+        name: '',
+        phone: '',
+        email: '',
+        password: '',
+        isAdmin: false,
+    });
 
-    useEffect(() => {
-        context.setIsHeaderFooterShow(false);
-    }, []);
+    const onChangeInput = (e) => {
+        setFormFields(() => ({
+            ...formfields,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const signUp = (e) => {
+        e.preventDefault();
+        try {
+            if (
+                formfields.name.trim() === '' ||
+                formfields.phone.trim() === '' ||
+                formfields.email.trim() === '' ||
+                formfields.password.trim() === ''
+            ) {
+                context.handleClickVariant('Please fill all fields in form!', 'warning');
+                return;
+            }
+
+            setIsLoad(true);
+            console.log(formfields);
+
+            postData('/api/auth/signUp', formfields)
+                .then((res) => {
+                    setIsLoad(false);
+                    context.handleClickVariant('Sign Up account success!', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = '/signIn';
+                    }, 1000);
+                })
+                .catch((err) => {
+                    setIsLoad(false);
+                    if (err.response.data.msg) {
+                        context.handleClickVariant(err.response.data.msg, 'error');
+                    } else {
+                        context.handleClickVariant('Server error', 'error');
+                    }
+                });
+        } catch (err) {
+            context.handleClickVariant(err, 'warning');
+            return;
+        }
+    };
 
     return (
         <section className={`section ${cx('signInPage', 'signUp')}`}>
@@ -52,16 +106,26 @@ const SignUp = () => {
                         <img className={cx('imgLogo')} src={Logo} alt="Logo" />
                     </div>
                     <h2 className="mb-2 text-center">Sign Up</h2>
-                    <form>
+                    <form onSubmit={signUp}>
                         <div className="row">
                             <div className="col-md-6">
                                 <div className={cx('form-group')}>
-                                    <TextField className="w-100" label="Name" type="text" required variant="standard" />
+                                    <TextField
+                                        onChange={onChangeInput}
+                                        name="name"
+                                        className="w-100"
+                                        label="Name"
+                                        type="text"
+                                        required
+                                        variant="standard"
+                                    />
                                 </div>
                             </div>
                             <div className="col-md-6">
                                 <div className={cx('form-group')}>
                                     <TextField
+                                        onChange={onChangeInput}
+                                        name="phone"
                                         className="w-100"
                                         label="Phone"
                                         type="text"
@@ -74,6 +138,8 @@ const SignUp = () => {
 
                         <div className={cx('form-group')}>
                             <TextField
+                                onChange={onChangeInput}
+                                name="email"
                                 className="w-100"
                                 id="standard-basic"
                                 label="Email"
@@ -84,6 +150,8 @@ const SignUp = () => {
                         </div>
                         <div className={cx('form-group')}>
                             <TextField
+                                onChange={onChangeInput}
+                                name="password"
                                 className="w-100"
                                 id="standard-password-input"
                                 label="Password"
@@ -99,11 +167,22 @@ const SignUp = () => {
                         </a>
 
                         <div className="dFlexAli-center">
-                            <Button className="btn-primary btn-lg btn-big w-100 mt-2">Sign Up</Button>
+                            <Button
+                                type="submit"
+                                disabled={isLoad === true ? true : false}
+                                className="btn-primary btn-lg btn-big w-100 mt-2"
+                            >
+                                <span className="me-2">Sign Up</span>
+                                {isLoad === true && (
+                                    <CircularProgress
+                                        className="loader"
+                                        color="inherit"
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                )}
+                            </Button>
                             <Button className="btn-white btn-lg btn-big w-100 mt-2 ms-3">
-                                <Link onClick={() => context.setIsHeaderFooterShow(true)} to="/">
-                                    Cancel
-                                </Link>
+                                <Link to="/">Cancel</Link>
                             </Button>
                         </div>
 

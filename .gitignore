@@ -5,6 +5,7 @@
 
 # FE
 /client/node_modules
+/client/.env
 
 # BE
 /server/node_modules

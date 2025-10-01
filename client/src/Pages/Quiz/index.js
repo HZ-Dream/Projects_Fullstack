@@ -13,7 +13,7 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
 // React
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Components
 import Sidebar from '../../Components/Sidebar';
@@ -30,6 +30,10 @@ const Quiz = () => {
     const [sortBy, setSortBy] = useState('');
     const [productView, setProductView] = useState('four');
     const act = cx('act');
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     const openDrop = Boolean(anchorEl);
     const handleClick = (e) => {

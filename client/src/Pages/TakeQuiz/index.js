@@ -27,10 +27,6 @@ const TakeQuiz = () => {
     const context = useContext(MyContext);
     const [isOpenModal, setIsOpenModal] = useState(false);
 
-    useEffect(() => {
-        context.setIsHeaderFooterShow(false);
-    }, []);
-
     return (
         <section className={`section ${cx('takeQuiz')}`}>
             <div className="row">
@@ -226,9 +222,7 @@ const TakeQuiz = () => {
                                 </p>
                                 <div className={cx('modalBtn')}>
                                     <Button className="btn-primary btn-lg btn-big">
-                                        <Link to="/quiz/1" onClick={() => context.setIsHeaderFooterShow(true)}>
-                                            Finish
-                                        </Link>
+                                        <Link to="/quiz/1">Finish</Link>
                                     </Button>
                                     <Button
                                         className="btn-white btn-lg btn-big ms-3"

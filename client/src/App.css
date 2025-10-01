@@ -13,7 +13,7 @@ body {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.8);
     overflow-x: hidden;
-    background: #fbfbfb;
+    background: #ebe9e9;
 }
 
 ul {
@@ -35,8 +35,8 @@ a {
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 5px;
+    height: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -143,7 +143,7 @@ a {
     background: #fafafa !important;
 }
 
-.btn .btn-green {
+.btn-green {
     background: #16b858 !important;
     color: var(--white-color) !important;
     text-transform: capitalize !important;
@@ -219,6 +219,12 @@ a {
     .container-xl {
         max-width: 1200px;
     }
+}
+
+/* Load */
+.MuiCircularProgress-root.loader {
+    width: 20px !important;
+    height: 20px !important;
 }
 
 /* Table */
