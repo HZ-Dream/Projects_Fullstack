@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 
 // Utils
 import { postData } from '../../../utils/api';

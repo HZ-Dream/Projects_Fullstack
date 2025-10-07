@@ -10,6 +10,11 @@ body.dark .card {
     border: 1px solid #10214b !important;
 }
 
+body.dark .form-select {
+    background: #132345 !important;
+    color: var(--white-color) !important;
+}
+
 :root {
     --boldBlue-color: #0858f7;
 
@@ -1211,4 +1216,105 @@ body.dark .imgUploadBox .uploadBox * {
 body.dark .css-113d811-MuiFormLabel-root-MuiInputLabel-root,
 body.dark .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input {
     color: #fffc !important;
+}
+
+/* Create Quiz */
+body.dark .createQuiz .wrapQuiz .quizItem {
+    background: #0858f7;
+    color: var(--white-color);
+}
+
+body.dark .createQuiz .wrapQuiz .quizItem.next {
+    background: #000 !important;
+    border: 2px solid var(--white-color);
+}
+
+.createQuiz .wrapQuiz {
+    max-height: 210px !important;
+    overflow-y: scroll;
+}
+
+.createQuiz .wrapQuiz .quizItem {
+    background: #ccc;
+    color: #fafafa;
+    border-radius: 10px;
+    margin-right: 8px;
+    margin-bottom: 10px;
+    display: inline-flex;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    font-weight: 600;
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.createQuiz .wrapQuiz .quizItem:hover {
+    opacity: 0.7;
+}
+
+.createQuiz .wrapQuiz .quizItem.next {
+    background: #000 !important;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.createQuiz .previewArea .imageArea {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.createQuiz .thumbnail .thumbnailImage {
+    width: 80px;
+    height: 60px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.createQuiz .thumbnail .thumbnailImage.active {
+    border: 2px solid blue;
+}
+
+.createQuiz .thumbnail .thumbnailReset {
+    width: 80px;
+    height: 60px;
+    border: 1px dashed #aaa;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+}
+
+body.dark .createQuiz .inputAnswer {
+    background: #132345 !important;
+    border: 1px solid #253557 !important;
+    color: var(--white-color) !important;
+}
+
+.createQuiz .inputAnswer {
+    background: #fafafa !important;
+    width: 100% !important;
+    outline: none !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    height: 35px;
+    padding-left: 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-left: 20px;
+}
+
+.createQuiz .checkboxAnswer {
+    background: #fafafa !important;
+    width: 20px;
+    outline: none !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    height: 20px;
+    border-radius: 5px;
+    font-size: 14px;
 }
