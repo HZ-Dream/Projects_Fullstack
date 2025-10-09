@@ -14,11 +14,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // React
 import { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 
 // API
-import { postData } from '../../../utils/api';
+import { fetchDataFromApi, editData } from '../../../utils/api';
 
 import { MyContext } from '../../../App';
 
@@ -27,8 +27,11 @@ var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/ex
 var TempImg2 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/exam-02_yudywz.avif';
 var TempImg3 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/exam-03_dcwayo.webp';
 
-const CreateQuiz = () => {
+const EditQuiz = () => {
     const context = useContext(MyContext);
+    let { quizId } = useParams();
+    const navigate = useNavigate();
+
     const [isLoad, setIsLoad] = useState(false);
 
     const [fieldVal, setFieldVal] = useState('');
@@ -57,6 +60,41 @@ const CreateQuiz = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        fetchDataFromApi(`/api/quiz/getQuizDetail/${quizId}`)
+            .then((res) => {
+                console.log(res);
+
+                setFormField({
+                    title: res.title || '',
+                    description: res.description || '',
+                    field: res.field || '',
+                    level: res.level || '',
+                    duration: Number(res.duration) || 0,
+                    password: res.password || '',
+                    image: res.image || '',
+                    userId: res.userId || '',
+                    quiz: res.quiz
+                        ? res.quiz.map((q) => ({
+                              questionText: q.questionText || '',
+                              options: q.options
+                                  ? q.options.map((opt) => ({ text: opt }))
+                                  : [{ text: '' }, { text: '' }],
+                              correctAnswers: q.correctAnswers || [],
+                          }))
+                        : [{ questionText: '', options: [{ text: '' }, { text: '' }], correctAnswers: [] }],
+                });
+                setFieldVal(res.field || '');
+                setLevelVal(res.level || '');
+                setSelectedImg(res.image || null);
+            })
+            .catch((err) => {
+                if (err.response && err.response.data && err.response.data.msg) {
+                    context.handleClickVariant(err.response.data.msg, 'error');
+                } else {
+                    context.handleClickVariant('Server error', 'error');
+                }
+            });
     }, []);
 
     // Image Quiz
@@ -235,7 +273,7 @@ const CreateQuiz = () => {
         return true;
     };
 
-    const createQuiz = (e) => {
+    const updateQuiz = (e) => {
         e.preventDefault();
 
         if (!validateSubmit()) return;
@@ -255,33 +293,14 @@ const CreateQuiz = () => {
                 })),
             };
 
-            postData('/api/quiz/createQuiz', finalFormField)
+            editData(`/api/quiz/updateQuiz/${quizId}`, finalFormField)
                 .then((res) => {
                     setIsLoad(false);
-                    context.handleClickVariant('Create quiz success!', 'success');
+                    context.handleClickVariant('Edit quiz success!', 'success');
 
-                    setFormField({
-                        title: '',
-                        description: '',
-                        field: '',
-                        level: '',
-                        duration: '',
-                        password: '',
-                        image: '',
-                        userId: '',
-                        quiz: [
-                            {
-                                questionText: '',
-                                options: [{ text: '' }, { text: '' }],
-                                correctAnswers: [],
-                            },
-                        ],
-                    });
-
-                    setFieldVal('');
-                    setLevelVal('');
-                    setSelectedImg(null);
-                    setActiveQuestionIndex(0);
+                    setTimeout(() => {
+                        navigate(`/dashboard/quizList/${context.userData.userId}`);
+                    }, 1000);
                 })
                 .catch((err) => {
                     setIsLoad(false);
@@ -298,7 +317,7 @@ const CreateQuiz = () => {
     };
     return (
         <section className="right-content w-100 createQuiz">
-            <form onSubmit={createQuiz} className="form">
+            <form onSubmit={updateQuiz} className="form">
                 <div className="row">
                     <div className="col-sm-7">
                         <div className="card p-4">
@@ -406,7 +425,7 @@ const CreateQuiz = () => {
                                 className="mt-3 btn-green w-100 btn-big text-capitalize"
                             >
                                 <span className="dFlexAli-center me-2">
-                                    <MdCloudUpload className="me-2" /> Create
+                                    <MdCloudUpload className="me-2" /> Save
                                 </span>
                                 {isLoad === true && (
                                     <CircularProgress
@@ -566,4 +585,4 @@ const CreateQuiz = () => {
     );
 };
 
-export default CreateQuiz;
+export default EditQuiz;

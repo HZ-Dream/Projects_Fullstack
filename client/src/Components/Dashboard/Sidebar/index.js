@@ -58,7 +58,7 @@ const Sidebar = () => {
                         <div className={`submenuWrapper ${actClass === 2 ? 'open' : ''}`}>
                             <ul className="submenu">
                                 <li>
-                                    <Link to="/dashboard/quizList">Quiz List</Link>
+                                    <Link to={`/dashboard/quizList/${context.userData.userId}`}>Quiz List</Link>
                                 </li>
                                 <li>
                                     <Link to="/dashboard/quizCreate">Create Quiz</Link>

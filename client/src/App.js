@@ -20,6 +20,7 @@ import TakeQuiz from './Pages/TakeQuiz';
 import Dashboard from './Pages/Dashboard/index';
 import QuizList from './Pages/Dashboard/ManageQuiz/QuizList';
 import CreateQuiz from './Pages/Dashboard/ManageQuiz/CreateQuiz';
+import EditQuiz from './Pages/Dashboard/ManageQuiz/EditQuiz';
 
 // Layouts
 import MainLayout from './Layouts/MainLayout';
@@ -133,8 +134,9 @@ function App() {
 
                     <Route element={<DashboardLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/dashboard/quizList" element={<QuizList />} />
+                        <Route path="/dashboard/quizList/:userId" element={<QuizList />} />
                         <Route path="/dashboard/quizCreate" element={<CreateQuiz />} />
+                        <Route path="/dashboard/quizEdit/:quizId" element={<EditQuiz />} />
                     </Route>
                 </Routes>
             </MyContext.Provider>
