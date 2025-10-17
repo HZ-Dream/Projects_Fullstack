@@ -11,6 +11,7 @@ import banner4 from '../../assets/images/banner4.png';
 import couponImg from '../../assets/images/coupon.png';
 
 // React
+import { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 
 // Components
@@ -22,9 +23,14 @@ import HomeCat from '../../Components/HomeCat';
 import styles from './Home.module.scss';
 import classNames from 'classnames/bind';
 
+// API
+import { fetchDataFromApi } from '../../utils/api';
+
 const cx = classNames.bind(styles);
 
 const Home = () => {
+    const [quizData, setQuizData] = useState([]);
+
     var quizItemSettings = {
         dots: false,
         infinite: true,
@@ -34,6 +40,12 @@ const Home = () => {
         arrows: true,
         autoplay: false,
     };
+
+    useEffect(() => {
+        fetchDataFromApi('/api/quiz/getAllQuizzes').then((res) => {
+            setQuizData(res);
+        });
+    }, []);
 
     return (
         <div>
@@ -68,11 +80,10 @@ const Home = () => {
 
                             <div className={`${cx('product_row')} w-100 mt-4`}>
                                 <Slider {...quizItemSettings}>
-                                    <QuizItem />
-                                    <QuizItem />
-                                    <QuizItem />
-                                    <QuizItem />
-                                    <QuizItem />
+                                    {quizData?.length > 0 &&
+                                        quizData.map((item, index) => {
+                                            return <QuizItem key={index} data={item} />;
+                                        })}
                                 </Slider>
                             </div>
 
@@ -88,14 +99,10 @@ const Home = () => {
                             </div>
 
                             <div className={`${cx('productNew_row')} w-100 mt-4 d-flex`}>
-                                <QuizItem className="itemRow_4" />
-                                <QuizItem className="itemRow_4" />
-                                <QuizItem className="itemRow_4" />
-                                <QuizItem className="itemRow_4" />
-                                <QuizItem className="itemRow_4" />
-                                <QuizItem className="itemRow_4" />
-                                <QuizItem className="itemRow_4" />
-                                <QuizItem className="itemRow_4" />
+                                {quizData?.length > 0 &&
+                                    quizData.map((item, index) => {
+                                        return <QuizItem key={index} className="itemRow_4" data={item} />;
+                                    })}
                             </div>
 
                             <div className={`${cx('bannerSec')} d-flex mt-4 mb-5`}>

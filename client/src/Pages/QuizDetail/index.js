@@ -11,28 +11,135 @@ import Button from '@mui/material/Button';
 import AvatarImg from '../../assets/images/avatar.jpg';
 
 // Material UI
+import Dialog from '@mui/material/Dialog';
+import Slide from '@mui/material/Slide';
 import Rating from '@mui/material/Rating';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 // Components
-import QuizZoom from '../../Components/QuizZoom';
 import RelatedQuizzes from './RelatedQuizzes';
+
+// API
+import { fetchDataFromApi, postData } from '../../utils/api';
 
 // CSS
 import styles from './QuizDetail.module.scss';
 import classNames from 'classnames/bind';
 
+import { MyContext } from '../../App';
 const cx = classNames.bind(styles);
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const QuizDetail = () => {
+    const context = useContext(MyContext);
+    let { quizId } = useParams();
+    const navigate = useNavigate();
+    const { userData } = useContext(MyContext);
+
+    const [isLoad, setIsLoad] = useState(false);
+    const [isOpenModal, setIsOpenModal] = useState(false);
     const [activeTabs, setActiveTabs] = useState(0);
+
+    const [quizData, setQuizData] = useState(null);
+    const [quizList, setQuizList] = useState(null);
+    const [passField, setPassField] = useState('');
+    const [takenQuiz, setTakenQuiz] = useState(null);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, []);
+
+        if (context.activeTabs !== null) {
+            setActiveTabs(context.activeTabs);
+            context.setActiveTabs(null);
+        }
+
+        fetchDataFromApi(`/api/quiz/getQuizDetail/${quizId}`)
+            .then((res) => {
+                setQuizData(res);
+                setQuizList(res.quiz);
+            })
+            .catch((err) => {
+                console.error('Error fetching quiz data:', err);
+            });
+
+        const userId = userData?.userId;
+
+        if (userId) {
+            postData(`/api/takeQuiz/getTakenQuiz/${quizId}`, { userId })
+                .then((res) => {
+                    setTakenQuiz(res);
+                })
+                .catch((err) => {
+                    console.error('Error fetching taken quiz history:', err);
+                    setTakenQuiz([]);
+                });
+        }
+    }, [quizId, userData?.userId, context]);
+
+    const handleChange = (event) => {
+        setPassField(event.target.value);
+    };
+
+    const formattedDate = (dateString) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString('vi-VN', options);
+    };
+
+    const formatDuration = (totalSeconds) => {
+        if (isNaN(totalSeconds) || totalSeconds < 0) {
+            return '00:00';
+        }
+
+        const minutes = Math.floor(totalSeconds / 60);
+
+        const seconds = totalSeconds % 60;
+
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const formattedSeconds = String(seconds).padStart(2, '0');
+
+        return `${formattedMinutes}:${formattedSeconds}`;
+    };
+
+    const confirmPassword = () => {
+        if (passField.trim() === '' || passField === null) {
+            context.handleClickVariant('Please enter the password!', 'error');
+            return;
+        }
+
+        setIsLoad(true);
+
+        postData(`/api/takeQuiz/checkPassword/${quizId}`, { password: passField })
+            .then((res) => {
+                setTimeout(() => {
+                    setIsLoad(false);
+                    navigate(`/takeQuiz/${quizId}`);
+                }, 1000);
+            })
+            .catch((err) => {
+                if (err.response && err.response.data && err.response.data.msg) {
+                    context.handleClickVariant(err.response.data.msg, 'error');
+
+                    setIsLoad(false);
+                } else {
+                    context.handleClickVariant('An unexpected error occurred!', 'error');
+                }
+            });
+    };
+
+    const startQuiz = () => {
+        setIsLoad(true);
+        setTimeout(() => {
+            setIsLoad(false);
+            navigate(`/takeQuiz/${quizId}`);
+        }, 1000);
+    };
 
     return (
         <>
@@ -40,19 +147,19 @@ const QuizDetail = () => {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-8 ps-5">
-                            <h3 className="hd text-capitalize">Internet of Things - IOT (HUBT 2025)</h3>
+                            <h3 className="hd text-capitalize">{quizData?.title}</h3>
                             <ul className="list list-inline dFlexAli-center">
                                 <li className="list-inline-item">
                                     <div className="dFlexAli-center">
                                         <span className="text-light me-1">ID Quiz:</span>
-                                        <span>ZU49VOR</span>
+                                        <span>{quizData?._id}</span>
                                     </div>
                                 </li>
 
                                 <li className="list-inline-item">
                                     <div className="dFlexAli-center">
                                         <span className="text-light me-1">Field:</span>
-                                        <span>Information Technology</span>
+                                        <span>{quizData?.field}</span>
                                     </div>
                                 </li>
                             </ul>
@@ -60,13 +167,13 @@ const QuizDetail = () => {
                             <div className="dFlexAli-center mb-2">
                                 <MdQuiz />
                                 <span className="mx-2">Number of Questions:</span>
-                                <b>23</b>
+                                <b>{quizList?.length}</b>
                             </div>
 
                             <div className="dFlexAli-center mb-2">
                                 <FaClock />
                                 <span className="mx-2">Duration:</span>
-                                <b>20 minutes</b>
+                                <b>{quizData?.duration} minutes</b>
                             </div>
 
                             <div className="dFlexAli-center mb-2">
@@ -92,13 +199,77 @@ const QuizDetail = () => {
                         </div>
 
                         <div className="col-md-4 pe-5">
-                            <QuizZoom />
-                            <div className="d-flex justify-content-center mt-3">
-                                <Button className="btn-primary btn-round text-capitalize btn-sml px-3">
-                                    <Link to="/takeQuiz/1">START QUIZ</Link>
-                                </Button>
+                            <div className={cx('quizImgBox')}>
+                                <img src={quizData?.image} alt="Quiz" />
                             </div>
+
+                            {quizData?.password && quizData.password.trim() !== '' ? (
+                                <div className="d-flex justify-content-center mt-3">
+                                    <Button
+                                        onClick={() => setIsOpenModal(true)}
+                                        className="btn-primary btn-round text-capitalize btn-sml px-3"
+                                    >
+                                        START QUIZ
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="d-flex justify-content-center mt-3">
+                                    <Button
+                                        disabled={isLoad === true ? true : false}
+                                        onClick={startQuiz}
+                                        className="btn-primary btn-round text-capitalize btn-sml px-3"
+                                    >
+                                        <span className="dFlexAli-center me-2">Start Quiz</span>
+                                        {isLoad === true && (
+                                            <CircularProgress
+                                                className="loader"
+                                                color="inherit"
+                                                style={{ width: 20, height: 20 }}
+                                            />
+                                        )}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
+
+                        <Dialog
+                            open={isOpenModal}
+                            onClose={() => setIsOpenModal(false)}
+                            slots={{
+                                transition: Transition,
+                            }}
+                            className="locationModal"
+                        >
+                            <div className={cx('modal')}>
+                                <h4 className="mb-0 text-danger">You need to enter a password to take the test!</h4>
+                                <hr />
+                                <div className="w-100 mb-4 dFlexAli-center">
+                                    <input onChange={handleChange} className="w-50 ms-auto" type="text" />
+                                </div>
+                                <div className={cx('modalBtn')}>
+                                    <Button
+                                        disabled={isLoad === true ? true : false}
+                                        onClick={confirmPassword}
+                                        className="btn-primary btn-lg btn-big"
+                                    >
+                                        <span className="dFlexAli-center me-2">Enter</span>
+                                        {isLoad === true && (
+                                            <CircularProgress
+                                                className="loader"
+                                                color="inherit"
+                                                style={{ width: 20, height: 20 }}
+                                            />
+                                        )}
+                                    </Button>
+                                    <Button
+                                        className="btn-white btn-lg btn-big ms-3"
+                                        onClick={() => setIsOpenModal(false)}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </div>
+                        </Dialog>
                     </div>
 
                     <br />
@@ -322,16 +493,24 @@ const QuizDetail = () => {
                                             <thead>
                                                 <tr>
                                                     <th>Completion Date</th>
-                                                    <th>Correct Answers</th>
+                                                    <th>Correct Answer</th>
+                                                    <th>Score</th>
+                                                    <th>Duration</th>
                                                     <th>Options</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr className="table-item">
-                                                    <td>15/7/2025</td>
-                                                    <td>20</td>
-                                                    <td>Review Quiz Details</td>
-                                                </tr>
+                                                {takenQuiz &&
+                                                    takenQuiz.length !== 0 &&
+                                                    takenQuiz.map((quiz) => (
+                                                        <tr key={quiz.id} className="table-item">
+                                                            <td>{formattedDate(quiz.createdAt)}</td>
+                                                            <td>{quiz.correct}</td>
+                                                            <td>{quiz.score}</td>
+                                                            <td>{formatDuration(quiz.duration)}</td>
+                                                            <td>Review Quiz Details</td>
+                                                        </tr>
+                                                    ))}
                                             </tbody>
                                         </table>
                                     </div>
@@ -341,7 +520,7 @@ const QuizDetail = () => {
                     </div>
 
                     <br />
-                    <RelatedQuizzes />
+                    {/* <RelatedQuizzes /> */}
                 </div>
             </section>
         </>

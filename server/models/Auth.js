@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+// Auth
 const AuthSchema = new Schema(
     {
         name: { type: String, required: true },

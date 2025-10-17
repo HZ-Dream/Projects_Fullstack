@@ -50,17 +50,17 @@
         }
 
         &.mark {
-            background: yellow;
+            background: yellow !important;
             border: 1px solid red;
         }
 
         &.correct {
-            background: #ddfbe1;
+            background: #ddfbe1 !important;
             border: 1px solid #3cb46e;
         }
 
         &.incorrect {
-            background: #ffe8e8;
+            background: #ffe8e8 !important;
             border: 1px solid #e43a45;
         }
     }

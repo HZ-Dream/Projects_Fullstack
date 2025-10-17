@@ -12,13 +12,24 @@ function decryptWithAES(ciphertext) {
 }
 
 class QuizController {
+    // [GET] /quiz/getAllQuizzes
+    async getAllQuizzes(req, res) {
+        try {
+            const quizzes = await Quiz.find();
+
+            res.status(200).json(quizzes);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
     // [GET] /quiz/getQuiz/:userId
     async getQuiz(req, res) {
         const userId = req.params.userId;
 
         try {
             const quizzes = await Quiz.find({ userId });
-            console.log(quizzes);
 
             res.status(200).json(quizzes);
         } catch (error) {

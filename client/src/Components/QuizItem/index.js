@@ -28,6 +28,7 @@ const cx = classNames.bind(styles);
 
 const QuizItem = (props) => {
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [quizData, setQuizData] = useState(props.data);
 
     const viewQuizDetails = (id) => {
         setIsOpenModal(true);
@@ -37,22 +38,23 @@ const QuizItem = (props) => {
         setIsOpenModal(false);
     };
 
+    const formattedDate = (dateString) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString('vi-VN', options);
+    };
+
     return (
         <div className={`item ${cx('productItem', props.className, props.itemView)}`}>
-            <Link to="quiz/1">
+            <Link to={`quiz/${quizData?.id}`}>
                 <div className={cx('imgWrapper')}>
-                    <img
-                        className="w-100"
-                        src="https://s3.eduquiz.io.vn/eduquiz/workspace/bi-mat-3/exam/IMG_1749609982.jpg"
-                        alt="Product"
-                    />
+                    <img className="w-100" src={quizData?.image} alt={quizData?.title} style={{ height: 123 }} />
                 </div>
 
                 <div className={cx('info')}>
-                    <h4 className={cx('nameQuiz')}>Internet of Things - IOT (HUBT 2025)</h4>
-                    <span className="d-flex align-items-center">
+                    <h4 className={cx('nameQuiz')}>{quizData?.title}</h4>
+                    <span title="dd/MM/yyyy" className="d-flex align-items-center">
                         <FaClock />
-                        <span className="ms-1">30/06/2025</span>
+                        <span className="ms-1">{formattedDate(quizData?.updatedAt)}</span>
                     </span>
                     <div className="d-flex align-items-center">
                         <Rating

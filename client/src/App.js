@@ -24,7 +24,7 @@ import EditQuiz from './Pages/Dashboard/ManageQuiz/EditQuiz';
 
 // Layouts
 import MainLayout from './Layouts/MainLayout';
-import AuthLayout from './Layouts/AuthLayout';
+import NoneLayout from './Layouts/NoneLayout';
 import DashboardLayout from './Layouts/DanshboardLayout';
 
 const MyContext = createContext();
@@ -45,6 +45,9 @@ function App() {
         const darkModeLocal = localStorage.getItem('darkMode');
         return darkModeLocal !== null ? darkModeLocal === 'true' : true;
     });
+
+    // QuizDetail
+    const [activeTabs, setActiveTabs] = useState(null);
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -114,6 +117,8 @@ function App() {
         setMenuBtn,
         darkMode,
         setDarkMode,
+        activeTabs,
+        setActiveTabs,
     };
 
     return (
@@ -123,13 +128,14 @@ function App() {
                     <Route element={<MainLayout />}>
                         <Route path="/" element={<Home />} />
                         <Route path="/quiz" element={<Quiz />} />
-                        <Route path="/quiz/:id" element={<QuizDetail />} />
-                        <Route path="/takeQuiz/:id" element={<TakeQuiz />} />
+                        <Route path="/quiz/:quizId" element={<QuizDetail />} />
                     </Route>
 
-                    <Route element={<AuthLayout />}>
+                    <Route element={<NoneLayout />}>
                         <Route path="/signIn" element={<SignIn />} />
                         <Route path="/signUp" element={<SignUp />} />
+
+                        <Route path="/takeQuiz/:quizId" element={<TakeQuiz />} />
                     </Route>
 
                     <Route element={<DashboardLayout />}>
