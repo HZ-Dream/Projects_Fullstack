@@ -9,6 +9,7 @@ const AuthSchema = new Schema(
         email: { type: String, required: true, unique: true },
         phone: { type: String },
         password: { type: String, required: true },
+        image: { type: String, default: '' },
         isAdmin: { type: Boolean, default: false },
     },
     {

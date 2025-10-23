@@ -81,10 +81,12 @@ header.dashboard {
     top: 0;
     left: 0;
     z-index: 1000;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 body.dark header.dashboard {
     background: var(--darkMode-color);
+    border-bottom: 1px solid #253557;
 }
 
 header.dashboard .part1.col-sm-3 {
@@ -320,16 +322,15 @@ body.dark .dropdown_list li.MuiButtonBase-root:hover {
 
 .main .sidebarWrapper .sidebar {
     width: 20%;
-    height: 100vh;
     position: fixed;
     top: 70px;
     left: 0;
     background: var(--white-color);
-    max-height: 100vh;
-    overflow-y: scroll;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
     overflow-x: hidden;
     padding-top: 5px;
-    padding-bottom: 10px !important;
+    padding-bottom: 50px;
     transition: all 0.3s;
 }
 

@@ -456,40 +456,27 @@ const QuizDetail = () => {
 
                             {activeTabs === 1 && (
                                 <div className="tabQuizList">
-                                    <div className={`${cx('tabQuizItem')} mt-2`}>
-                                        <span>Câu 1: Con rùa có mấy cái chân</span>
-                                        <ul>
-                                            <li>1</li>
-                                            <li>2</li>
-                                            <li>3</li>
-                                            <li>4</li>
-                                        </ul>
-                                    </div>
-                                    <div className={`${cx('tabQuizItem')} mt-2`}>
-                                        <span>Câu 2: Con rùa có mấy cái chân</span>
-                                        <ul>
-                                            <li>1</li>
-                                            <li>2</li>
-                                            <li>3</li>
-                                            <li>4</li>
-                                        </ul>
-                                    </div>
-                                    <div className={`${cx('tabQuizItem')} mt-2`}>
-                                        <span>Câu 3: Con rùa có mấy cái chân</span>
-                                        <ul>
-                                            <li>1</li>
-                                            <li>2</li>
-                                            <li>3</li>
-                                            <li>4</li>
-                                        </ul>
-                                    </div>
+                                    {quizList?.length === 0 ? (
+                                        <span>No questions available for this quiz.</span>
+                                    ) : (
+                                        quizList.map((quizItem, index) => (
+                                            <div key={index} className={`${cx('tabQuizItem')} mt-2`}>
+                                                <span>{quizItem.questionText}</span>
+                                                <ul>
+                                                    {quizItem.options.map((option, idx) => (
+                                                        <li key={idx}>{option}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
                             )}
 
                             {activeTabs === 2 && (
                                 <div className="tabContent">
                                     <div className="table-responsive">
-                                        <table className="table table-bordered">
+                                        <table className="table">
                                             <thead>
                                                 <tr>
                                                     <th>Completion Date</th>

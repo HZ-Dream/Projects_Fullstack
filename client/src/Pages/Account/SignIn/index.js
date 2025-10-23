@@ -54,7 +54,7 @@ const SignIn = () => {
             postData('/api/auth/signIn', formfields)
                 .then((res) => {
                     setIsLoad(false);
-                    context.handleClickVariant('Sign Up account success!', 'success');
+                    context.handleClickVariant('Sign In account success!', 'success');
 
                     localStorage.setItem('token', res.token);
 

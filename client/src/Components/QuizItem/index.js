@@ -97,7 +97,7 @@ const QuizItem = (props) => {
                     <LuScanEye />
                 </Button>
             </div>
-            {isOpenModal && <QuizModal isOpen={isOpenModal} closeQuizModal={closeQuizModal} />}
+            {isOpenModal && <QuizModal data={quizData} isOpen={isOpenModal} closeQuizModal={closeQuizModal} />}
         </div>
     );
 };

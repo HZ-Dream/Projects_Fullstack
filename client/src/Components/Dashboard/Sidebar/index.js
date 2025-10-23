@@ -13,7 +13,7 @@ import { MdQuiz } from 'react-icons/md';
 import Button from '@mui/material/Button';
 
 // React
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useContext } from 'react';
 
 // Components
@@ -21,6 +21,7 @@ import { MyContext } from '../../../App';
 
 const Sidebar = () => {
     const context = useContext(MyContext);
+    const navigate = useNavigate();
     const [actClass, setActClass] = useState();
 
     const setAct = (index) => {
@@ -29,6 +30,17 @@ const Sidebar = () => {
         } else {
             setActClass(index);
         }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+
+        context.setUserData(null);
+        context.setTokenData(null);
+        context.setIsUserLogin(false);
+
+        navigate('/');
     };
 
     return (
@@ -58,7 +70,7 @@ const Sidebar = () => {
                         <div className={`submenuWrapper ${actClass === 2 ? 'open' : ''}`}>
                             <ul className="submenu">
                                 <li>
-                                    <Link to={`/dashboard/quizList/${context.userData.userId}`}>Quiz List</Link>
+                                    <Link to={`/dashboard/quizList/${context.userData?.userId}`}>Quiz List</Link>
                                 </li>
                                 <li>
                                     <Link to="/dashboard/quizCreate">Create Quiz</Link>
@@ -113,9 +125,9 @@ const Sidebar = () => {
 
                 <div className="logoutWrapper">
                     <div className="logoutBox">
-                        <Button className="dFlexAli-center fw-bold" variant="contained">
+                        <Button className="dFlexAli-center fw-bold" variant="contained" onClick={handleLogout}>
                             <BiLogOut className="me-2" />
-                            Logout
+                            <span>Logout</span>
                         </Button>
                     </div>
                 </div>

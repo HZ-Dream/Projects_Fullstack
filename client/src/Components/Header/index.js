@@ -87,7 +87,7 @@ const Header = () => {
                                         </Button>
 
                                         <div className={cx('user-menu')}>
-                                            <Link to="/myAccount" onClick={handleClose}>
+                                            <Link to={`/profile/${context.userData.userId}`} onClick={handleClose}>
                                                 <FaUser />
                                                 <span>Profile</span>
                                             </Link>

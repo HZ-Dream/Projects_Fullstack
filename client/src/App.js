@@ -15,6 +15,7 @@ import QuizDetail from './Pages/QuizDetail';
 import SignIn from './Pages/Account/SignIn';
 import SignUp from './Pages/Account/SignUp';
 import TakeQuiz from './Pages/TakeQuiz';
+import Profile from './Pages/Profile';
 
 // Components Dashboard
 import Dashboard from './Pages/Dashboard/index';
@@ -129,6 +130,7 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/quiz/:quizId" element={<QuizDetail />} />
+                        <Route path="/profile/:userId" element={<Profile />} />
                     </Route>
 
                     <Route element={<NoneLayout />}>
