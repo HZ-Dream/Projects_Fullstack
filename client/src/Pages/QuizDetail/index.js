@@ -4,27 +4,28 @@ import { RiNumbersFill } from 'react-icons/ri';
 import { FaClock } from 'react-icons/fa';
 import { FaHeart } from 'react-icons/fa';
 import { MdNoteAdd } from 'react-icons/md';
-
-import Button from '@mui/material/Button';
+import { FaReply } from 'react-icons/fa';
+import { RiDeleteBack2Fill } from 'react-icons/ri';
 
 // Img
-import AvatarImg from '../../assets/images/avatar.jpg';
+import defaultAvatar from '../../assets/images/default.jpg';
 
 // Material UI
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 import Rating from '@mui/material/Rating';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 
 // Components
 import RelatedQuizzes from './RelatedQuizzes';
 
 // API
-import { fetchDataFromApi, postData } from '../../utils/api';
+import { deleteData, fetchDataFromApi, postData } from '../../utils/api';
 
 // CSS
 import styles from './QuizDetail.module.scss';
@@ -43,6 +44,7 @@ const QuizDetail = () => {
     const navigate = useNavigate();
     const { userData } = useContext(MyContext);
 
+    const [currUserId, setCurrUserId] = useState();
     const [isLoad, setIsLoad] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [activeTabs, setActiveTabs] = useState(0);
@@ -69,9 +71,13 @@ const QuizDetail = () => {
                 console.error('Error fetching quiz data:', err);
             });
 
+        loadReviews();
+
         const userId = userData?.userId;
 
         if (userId) {
+            setCurrUserId(userId);
+
             postData(`/api/takeQuiz/getTakenQuiz/${quizId}`, { userId })
                 .then((res) => {
                     setTakenQuiz(res);
@@ -82,6 +88,18 @@ const QuizDetail = () => {
                 });
         }
     }, [quizId, userData?.userId, context]);
+
+    const loadReviews = useCallback(() => {
+        fetchDataFromApi(`/api/quizReview/getReviews/${quizId}`)
+            .then((res) => {
+                setReviewData(res.reviews);
+                setReplyData(res.replies);
+            })
+            .catch((err) => {
+                console.error('Error fetching review data:', err);
+                setReviewData([]);
+            });
+    }, [quizId]);
 
     const handleChange = (event) => {
         setPassField(event.target.value);
@@ -108,6 +126,13 @@ const QuizDetail = () => {
     };
 
     const confirmPassword = () => {
+        const userId = userData?.userId;
+
+        if (!userId) {
+            context.handleClickVariant('You need to log in!', 'error');
+            return;
+        }
+
         if (passField.trim() === '' || passField === null) {
             context.handleClickVariant('Please enter the password!', 'error');
             return;
@@ -134,11 +159,222 @@ const QuizDetail = () => {
     };
 
     const startQuiz = () => {
-        setIsLoad(true);
-        setTimeout(() => {
-            setIsLoad(false);
-            navigate(`/takeQuiz/${quizId}`);
-        }, 1000);
+        const userId = userData?.userId;
+
+        console.log(userId);
+
+        if (userId) {
+            setIsLoad(true);
+            setTimeout(() => {
+                setIsLoad(false);
+                navigate(`/takeQuiz/${quizId}`);
+            }, 1000);
+        } else {
+            context.handleClickVariant('You need to log in!', 'error');
+            return;
+        }
+    };
+
+    // Handle review
+    const onChangeInput = (e) => {
+        setReviews(() => ({
+            ...reviews,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const validateSubmit = () => {
+        const userId = userData?.userId;
+
+        if (userId) {
+            if (reviews.userName.trim() === '' || reviews.review.trim() === '' || rate === 0) {
+                context.handleClickVariant('Please fill in all the fields and provide a rating!', 'warning');
+                return false;
+            }
+
+            reviews.userId = userId;
+            reviews.userImage = userData?.userImage || '';
+
+            return true;
+        } else {
+            context.handleClickVariant('You need to log in to submit a review!', 'error');
+            return false;
+        }
+    };
+
+    const submitReview = (e) => {
+        e.preventDefault();
+
+        if (!validateSubmit()) {
+            return;
+        }
+
+        reviews.rating = rate;
+
+        postData('/api/quizReview/submitReview', reviews)
+            .then((res) => {
+                context.handleClickVariant('Review submitted successfully!', 'success');
+                setReviews({
+                    ...reviews,
+                    review: '',
+                    userName: '',
+                });
+                setRate(0);
+
+                loadReviews();
+            })
+            .catch((err) => {
+                console.error('Error submitting review:', err);
+                context.handleClickVariant('Failed to submit review. Please try again later.', 'error');
+            });
+    };
+
+    // Handle reply
+    const openReply = (parentId) => {
+        setOpenReplyForms((prev) => (prev.includes(parentId) ? prev : [...prev, parentId]));
+        setShowReplyInput(true);
+        setReplyText('');
+    };
+
+    const cancelReply = (parentId) => {
+        setOpenReplyForms((prev) => prev.filter((id) => id !== parentId));
+        setShowReplyInput(false);
+        setReplyText('');
+    };
+
+    const submitReply = (e, parentId) => {
+        e.preventDefault();
+
+        const userId = userData?.userId;
+        if (!userId) {
+            context.handleClickVariant('You need to log in to reply!', 'error');
+            return;
+        }
+
+        if (replyText.trim() === '') {
+            context.handleClickVariant('Reply cannot be empty!', 'warning');
+            return;
+        }
+
+        const payload = {
+            reviewId: quizId,
+            parentReplyId: parentId,
+            userId: userId,
+            userName: userData?.name || 'Anonymous',
+            userImage: userData?.userImage || '',
+            replyText: replyText.trim(),
+        };
+
+        postData('/api/reply/submitReply', payload)
+            .then(() => {
+                context.handleClickVariant('Reply submitted successfully!', 'success');
+                setReplyText('');
+                cancelReply(parentId);
+                loadReviews();
+            })
+            .catch((err) => {
+                console.error('Error submitting reply:', err);
+                context.handleClickVariant('Failed to submit reply!', 'error');
+            });
+    };
+
+    const renderReplies = (parentId) => {
+        const replies = replyData.filter((r) => r.parentReplyId === parentId);
+        if (replies.length === 0) return null;
+
+        return replies.map((replyItem) => (
+            <div key={replyItem._id} className={`mb-3 ms-3`}>
+                <div className={`card p-3 ${cx('reviewsCard')} flex-row`}>
+                    <div className="image">
+                        <div className={cx('rounded-circle')}>
+                            <img src={replyItem.userImage === '' ? defaultAvatar : replyItem.userImage} alt="User" />
+                        </div>
+                        <span className="text-g d-block text-center fw-bold">{replyItem.userName}</span>
+                    </div>
+
+                    <div className={`${cx('info')} ps-3`}>
+                        <div className="dFlexAli-center w-100">
+                            <h6 className="text-light">{formattedDate(replyItem.updatedAt)}</h6>
+
+                            <div className="dFlexAli-center ms-auto">
+                                <Button
+                                    onClick={() => openReply(replyItem._id)}
+                                    className="btn-sm btn-round btn-green btn-hover"
+                                >
+                                    <FaReply />
+                                </Button>
+
+                                {replyItem.userId === currUserId && (
+                                    <Button
+                                        onClick={() => deleteComment('reply', replyItem._id)}
+                                        className="btn-sm btn-round btn-red btn-hover ms-2"
+                                    >
+                                        <RiDeleteBack2Fill />
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+
+                        <p>{replyItem.replyText}</p>
+                    </div>
+                </div>
+
+                {/* form reply ngay dưới reply này */}
+                {openReplyForms.includes(replyItem._id) && (
+                    <form onSubmit={(e) => submitReply(e, replyItem._id)} className="mt-2 ps-4 ms-4">
+                        <textarea
+                            className="form-control"
+                            placeholder="Write your reply..."
+                            value={replyText}
+                            onChange={(e) => setReplyText(e.target.value)}
+                            required
+                        />
+                        <div className="mt-2">
+                            <Button type="submit" className="btn-green btn-round btn-sm">
+                                Submit
+                            </Button>
+                            <Button
+                                type="button"
+                                onClick={() => cancelReply(replyItem._id)}
+                                className="btn-gray btn-round btn-sm ms-2 text-capitalize"
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </form>
+                )}
+
+                {renderReplies(replyItem._id)}
+            </div>
+        ));
+    };
+
+    const deleteComment = (type, id) => {
+        console.log(type, id);
+
+        if (type === 'review') {
+            deleteData('/api/quizReview/deleteReview/', id)
+                .then((res) => {
+                    context.handleClickVariant('Review deleted successfully!', 'success');
+
+                    loadReviews();
+                })
+                .catch((err) => {
+                    console.error('Error delete review:', err);
+                    context.handleClickVariant('Failed to delete review!', 'error');
+                });
+        } else {
+            deleteData('/api/reply/deleteReply/', id)
+                .then((res) => {
+                    context.handleClickVariant('Reply deleted successfully!', 'success');
+
+                    loadReviews();
+                })
+                .catch((err) => {
+                    console.error('Error delete reply:', err);
+                    context.handleClickVariant('Failed to delete reply!', 'error');
+                });
+        }
     };
 
     return (
@@ -183,7 +419,7 @@ const QuizDetail = () => {
                             </div>
 
                             <div className="dFlexAli-center my-3">
-                                <img className={`${cx('imgAvatar')} me-2`} src={AvatarImg} alt="Avatar" />
+                                <img className={`${cx('imgAvatar')} me-2`} src={defaultAvatar} alt="Avatar" />
                                 <span>Dream</span>
                             </div>
 
@@ -311,10 +547,12 @@ const QuizDetail = () => {
                                 <div className="tabContent">
                                     <div className="row">
                                         <div className="col-md-8">
-                                            <form className={cx('reviewForm')}>
-                                                <h4>Add a Comment</h4>
+                                            <form onSubmit={submitReview} className={cx('reviewForm')}>
+                                                <h4>Add a Review</h4>
                                                 <div className={cx('form-group')}>
                                                     <textarea
+                                                        onChange={onChangeInput}
+                                                        value={reviews.review}
                                                         className={cx('form-control')}
                                                         name="review"
                                                         placeholder="Write something..."
@@ -324,6 +562,8 @@ const QuizDetail = () => {
                                                     <div className="col-md-6">
                                                         <div className={cx('form-group')}>
                                                             <input
+                                                                onChange={onChangeInput}
+                                                                value={reviews.userName}
                                                                 className={cx('form-control')}
                                                                 type="text"
                                                                 name="userName"
@@ -334,8 +574,9 @@ const QuizDetail = () => {
                                                     <div className="col-md-6">
                                                         <div className={cx('form-group')}>
                                                             <Rating
+                                                                onChange={(event, newValue) => setRate(newValue)}
                                                                 name="rating"
-                                                                value={0}
+                                                                value={rate}
                                                                 size="small"
                                                                 precision={0.5}
                                                             />
@@ -351,46 +592,111 @@ const QuizDetail = () => {
                                                     </Button>
                                                 </div>
                                             </form>
-
                                             <br />
                                             <h4 className="text-uppercase">Comments</h4>
-                                            <br />
 
-                                            <div className={`card p-4 ${cx('reviewsCard')} flex-row`}>
-                                                <div className="image">
-                                                    <div className={cx('rounded-circle')}>
-                                                        <img
-                                                            src="https://wp.alithemes.com/html/nest/demo/assets/imgs/blog/author-2.png"
-                                                            alt="User"
-                                                        />
-                                                    </div>
+                                            {reviewData.length === 0 ? (
+                                                <span>No reviews available for this quiz.</span>
+                                            ) : (
+                                                reviewData.map((reviewItem) => (
+                                                    <div key={reviewItem._id} className="mb-3">
+                                                        <div className={`card p-3 ${cx('reviewsCard')} flex-row`}>
+                                                            <div className="image">
+                                                                <div className={cx('rounded-circle')}>
+                                                                    <img
+                                                                        src={
+                                                                            reviewItem.userImage === ''
+                                                                                ? defaultAvatar
+                                                                                : reviewItem.userImage
+                                                                        }
+                                                                        alt="User"
+                                                                    />
+                                                                </div>
+                                                                <span className="text-g d-block text-center fw-bold">
+                                                                    {reviewItem.userName}
+                                                                </span>
+                                                            </div>
 
-                                                    <span className="text-g d-block text-center fw-bold">Sienna</span>
-                                                </div>
+                                                            <div className={`${cx('info')} ps-3`}>
+                                                                <div className="dFlexAli-center w-100">
+                                                                    <div className="dFlexAli-center">
+                                                                        <h6 className="text-light">
+                                                                            {formattedDate(reviewItem.updatedAt)}
+                                                                        </h6>
+                                                                        <div className="ms-2">
+                                                                            <Rating
+                                                                                className="half-rating-read"
+                                                                                name="read-only"
+                                                                                value={reviewItem.rating}
+                                                                                readOnly
+                                                                                size="small"
+                                                                                precision={0.5}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
 
-                                                <div className={`${cx('info')} ps-5`}>
-                                                    <div className="dFlexAli-center w-100">
-                                                        <h5 className="text-light">12/07/2025</h5>
-                                                        <div className="ms-auto">
-                                                            <Rating
-                                                                className="half-rating-read"
-                                                                name="read-only"
-                                                                value={3.5}
-                                                                readOnly
-                                                                size="small"
-                                                                precision={0.5}
-                                                            />
+                                                                    <div className="dFlexAli-center ms-auto">
+                                                                        <Button
+                                                                            onClick={() => openReply(reviewItem._id)}
+                                                                            className="btn-sm btn-round btn-green btn-hover"
+                                                                        >
+                                                                            <FaReply />
+                                                                        </Button>
+
+                                                                        {reviewItem.userId === currUserId && (
+                                                                            <Button
+                                                                                onClick={() =>
+                                                                                    deleteComment(
+                                                                                        'review',
+                                                                                        reviewItem._id,
+                                                                                    )
+                                                                                }
+                                                                                className="btn-sm btn-round btn-red btn-hover ms-2"
+                                                                            >
+                                                                                <RiDeleteBack2Fill />
+                                                                            </Button>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+
+                                                                <p>{reviewItem.review}</p>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <p>
-                                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                                        Delectus, suscipit exercitationem accusantium obcaecati quos
-                                                        voluptate nesciunt facilis itaque modi commodi dignissimos sequi
-                                                        repudiandae minus ab deleniti totam officia id incidunt?
-                                                    </p>
-                                                </div>
-                                            </div>
+                                                        {openReplyForms.includes(reviewItem._id) && (
+                                                            <form
+                                                                onSubmit={(e) => submitReply(e, reviewItem._id)}
+                                                                className="mt-2 ps-4 ms-4"
+                                                            >
+                                                                <textarea
+                                                                    className="form-control"
+                                                                    placeholder="Write your reply..."
+                                                                    value={replyText}
+                                                                    onChange={(e) => setReplyText(e.target.value)}
+                                                                    required
+                                                                />
+                                                                <div className="mt-2">
+                                                                    <Button
+                                                                        type="submit"
+                                                                        className="btn-green btn-round btn-sm"
+                                                                    >
+                                                                        Submit
+                                                                    </Button>
+                                                                    <Button
+                                                                        type="button"
+                                                                        onClick={() => cancelReply(reviewItem._id)}
+                                                                        className="btn-gray btn-round btn-sm ms-2 text-capitalize"
+                                                                    >
+                                                                        Cancel
+                                                                    </Button>
+                                                                </div>
+                                                            </form>
+                                                        )}
+
+                                                        {renderReplies(reviewItem._id)}
+                                                    </div>
+                                                ))
+                                            )}
                                         </div>
 
                                         <div className="col-md-4">

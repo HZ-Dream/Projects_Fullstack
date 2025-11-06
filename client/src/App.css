@@ -193,6 +193,10 @@ a {
     font-size: 18px !important;
 }
 
+.btn-hover:hover {
+    opacity: 0.9 !important;
+}
+
 /* Other css */
 .section {
     padding: 45px 0;
