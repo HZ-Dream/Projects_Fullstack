@@ -54,6 +54,22 @@ const QuizDetail = () => {
     const [passField, setPassField] = useState('');
     const [takenQuiz, setTakenQuiz] = useState(null);
 
+    const [reviewData, setReviewData] = useState([]);
+    const [replyData, setReplyData] = useState([]);
+
+    // State cho form review
+    const [rate, setRate] = useState(0);
+    const [reviews, setReviews] = useState({
+        review: '',
+        userName: '',
+        rating: 0,
+    });
+
+    // State cho phần reply
+    const [replyText, setReplyText] = useState('');
+    const [openReplyForms, setOpenReplyForms] = useState([]);
+    const [showReplyInput, setShowReplyInput] = useState(false);
+
     useEffect(() => {
         window.scrollTo(0, 0);
 

@@ -4,6 +4,9 @@ import './Responsive.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+// Material UI
+import { useSnackbar } from 'notistack';
+
 // React
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState, useEffect, createContext } from 'react';
@@ -14,12 +17,15 @@ import Sidebar from './Components/Sidebar';
 
 // Pages
 import Dashboard from './Pages/Dashboard';
-import ProductDetails from './Pages/ProductDetails';
-import ProductUpload from './Pages/ProductUpload';
+import FieldList from './Pages/Field/index';
+import CreateField from './Pages/Field/createField';
 
 const MyContext = createContext();
 
 function App() {
+    // Notice
+    const { enqueueSnackbar } = useSnackbar();
+
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [menuBtn, setMenuBtn] = useState(true);
     const [darkMode, setDarkMode] = useState(() => {
@@ -50,12 +56,19 @@ function App() {
         };
     }, []);
 
+    const handleClickVariant = (message, variant) => {
+        console.log(`Message: ${message}, Variant: ${variant}`);
+
+        enqueueSnackbar(message, { variant });
+    };
+
     const values = {
         windowWidth,
         menuBtn,
         setMenuBtn,
         darkMode,
         setDarkMode,
+        handleClickVariant,
     };
 
     return (
@@ -76,8 +89,10 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/product/detail/:id" element={<ProductDetails />} />
-                            <Route path="/product/upload" element={<ProductUpload />} />
+
+                            {/* Field */}
+                            <Route path="/field/list" element={<FieldList />} />
+                            <Route path="/field/create" element={<CreateField />} />
                         </Routes>
                     </div>
                 </div>

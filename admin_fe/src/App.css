@@ -1223,3 +1223,17 @@ body.dark .imgUploadBox .uploadBox {
     text-align: center;
     opacity: 0.5;
 }
+
+.list .dashboardBoxWrapper .dashboardBox {
+    width: 32%;
+}
+
+body.dark .css-113d811-MuiFormLabel-root-MuiInputLabel-root,
+body.dark .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input,
+body.dark .css-w4nesw-MuiInputBase-input-MuiOutlinedInput-input {
+    color: #fff !important;
+}
+
+body.dark .css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline {
+    border-color: #ffffff3b !important;
+}

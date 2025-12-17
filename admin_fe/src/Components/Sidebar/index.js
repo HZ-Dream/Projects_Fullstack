@@ -1,7 +1,7 @@
 // Icons
 import { FaAngleRight } from 'react-icons/fa6';
 import { MdDashboard } from 'react-icons/md';
-import { FaProductHunt } from 'react-icons/fa6';
+import { MdCategory } from 'react-icons/md';
 import { FaCartArrowDown } from 'react-icons/fa';
 import { MdMessage } from 'react-icons/md';
 import { FaBell } from 'react-icons/fa';
@@ -47,9 +47,9 @@ const Sidebar = () => {
                     <li>
                         <Button className={`w-100 ${actClass === 2 ? 'act' : ''}`} onClick={() => setAct(2)}>
                             <span className="icon">
-                                <FaProductHunt />
+                                <MdCategory />
                             </span>
-                            <span className="name">Products</span>
+                            <span className="name">Fields</span>
                             <span className="arrow">
                                 <FaAngleRight />
                             </span>
@@ -57,13 +57,10 @@ const Sidebar = () => {
                         <div className={`submenuWrapper ${actClass === 2 ? 'open' : ''}`}>
                             <ul className="submenu">
                                 <li>
-                                    <Link to="/">Product List</Link>
+                                    <Link to="/field/list">Field List</Link>
                                 </li>
                                 <li>
-                                    <Link to="/">Product View</Link>
-                                </li>
-                                <li>
-                                    <Link to="/product/upload">Product Upload</Link>
+                                    <Link to="/field/create">Field Create</Link>
                                 </li>
                             </ul>
                         </div>

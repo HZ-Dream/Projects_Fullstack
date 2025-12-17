@@ -3,6 +3,7 @@ const quizRouter = require('./quiz');
 const takeQuizRouter = require('./takeQuiz');
 const quizReviewRouter = require('./quizReview');
 const replyRouter = require('./reply');
+const fieldRouter = require('./field');
 
 function route(app) {
     app.use('/api/auth', authRouter);
@@ -12,6 +13,7 @@ function route(app) {
     app.use('/api/quizReview', quizReviewRouter);
 
     app.use('/api/reply', replyRouter);
+    app.use('/api/field', fieldRouter);
 }
 
 module.exports = route;
