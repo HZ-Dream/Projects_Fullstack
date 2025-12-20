@@ -125,6 +125,19 @@ class TakeQuizController {
             res.status(500).json({ msg: 'Something went wrong on the server!' });
         }
     }
+
+    // [GET] /takeQuiz/historyTakenQuiz/:quizId
+    async historyTakenQuiz(req, res) {
+        const quizId = req.params.quizId;
+
+        try {
+            const takenQuizzes = await TakeQuiz.findById(quizId);
+            res.status(200).json(takenQuizzes);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong on the server!' });
+        }
+    }
 }
 
 module.exports = new TakeQuizController();

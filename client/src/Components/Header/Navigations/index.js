@@ -111,37 +111,22 @@ const Navigation = () => {
 
                     <div className={`${cx('navPart2')} d-flex align-items-center`}>
                         <ul className="list list-inline ms-auto">
-                            <li className="list-inline-item">
+                            <li className="list-inline-item mx-3">
                                 <Link to="/">
                                     <Button>Home</Button>
                                 </Link>
                             </li>
-                            <li className="list-inline-item">
+                            <li className="list-inline-item mx-3">
                                 <Link to="/quiz">
                                     <Button>Quiz</Button>
                                 </Link>
                             </li>
-                            <li className="list-inline-item">
-                                <Link to="/">
-                                    <Button>Highest Rated</Button>
-                                </Link>
-                            </li>
-                            <li className="list-inline-item">
-                                <Link to="/">
-                                    <Button>Most Favorite</Button>
-                                </Link>
-                            </li>
-                            <li className="list-inline-item">
-                                <Link to="/">
-                                    <Button>Latest</Button>
-                                </Link>
-                            </li>
-                            <li className="list-inline-item">
+                            <li className="list-inline-item mx-3">
                                 <Link to="/">
                                     <Button>Blog</Button>
                                 </Link>
                             </li>
-                            <li className="list-inline-item">
+                            <li className="list-inline-item mx-3">
                                 <Link to="/">
                                     <Button>Contact</Button>
                                 </Link>

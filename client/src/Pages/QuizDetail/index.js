@@ -817,7 +817,13 @@ const QuizDetail = () => {
                                                             <td>{quiz.correct}</td>
                                                             <td>{quiz.score}</td>
                                                             <td>{formatDuration(quiz.duration)}</td>
-                                                            <td>Review Quiz Details</td>
+                                                            <td>
+                                                                <Link to={`/historyQuiz/${quiz._id}`}>
+                                                                    <Button className="btn-primary btn-round btn-small text-capitalize">
+                                                                        Details
+                                                                    </Button>
+                                                                </Link>
+                                                            </td>
                                                         </tr>
                                                     ))}
                                             </tbody>

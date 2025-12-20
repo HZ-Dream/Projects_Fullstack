@@ -14,7 +14,8 @@ import Quiz from './Pages/Quiz';
 import QuizDetail from './Pages/QuizDetail';
 import SignIn from './Pages/Account/SignIn';
 import SignUp from './Pages/Account/SignUp';
-import TakeQuiz from './Pages/TakeQuiz';
+import TakeQuiz from './Pages/TakeQuiz/index';
+import HistoryQuiz from './Pages/TakeQuiz/historyQuiz';
 import Profile from './Pages/Profile';
 
 // Components Dashboard
@@ -138,6 +139,7 @@ function App() {
                         <Route path="/signUp" element={<SignUp />} />
 
                         <Route path="/takeQuiz/:quizId" element={<TakeQuiz />} />
+                        <Route path="/historyQuiz/:quizId" element={<HistoryQuiz />} />
                     </Route>
 
                     <Route element={<DashboardLayout />}>
