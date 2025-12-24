@@ -31,7 +31,9 @@ const CreateQuiz = () => {
     const context = useContext(MyContext);
     const [isLoad, setIsLoad] = useState(false);
 
+    const [fieldData, setFieldData] = useState([]);
     const [fieldVal, setFieldVal] = useState('');
+
     const [levelVal, setLevelVal] = useState('');
     const [selectedImg, setSelectedImg] = useState(null);
 
@@ -57,6 +59,8 @@ const CreateQuiz = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        setFieldData(context.fieldData.fieldList);
     }, []);
 
     // Image Quiz
@@ -336,9 +340,11 @@ const CreateQuiz = () => {
                                             required
                                         >
                                             <option value="">None</option>
-                                            <option value="1">Math</option>
-                                            <option value="2">English</option>
-                                            <option value="3">History</option>
+                                            {fieldData?.map((field) => (
+                                                <option key={field.id} value={field.id}>
+                                                    {field.name}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>

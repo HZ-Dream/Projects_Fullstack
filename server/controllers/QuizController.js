@@ -15,11 +15,58 @@ class QuizController {
     // [GET] /quiz/getAllQuizzes
     async getAllQuizzes(req, res) {
         try {
-            const quizzes = await Quiz.find();
+            const quizzes = await Quiz.find().populate('field');
 
             res.status(200).json(quizzes);
         } catch (error) {
             console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
+    // [GET] /quiz/quizList?page=num
+    async getQuizList(req, res) {
+        const page = parseInt(req.query.page) || 1;
+        const limit = 2;
+        const skip = (page - 1) * limit;
+        const { field, most, sort } = req.query;
+
+        try {
+            const query = {};
+
+            // Filter by field
+            if (field) {
+                const fieldArray = field.split(',').map((id) => id.trim());
+                query.field = { $in: fieldArray };
+            }
+
+            // Sort
+            let listSort = {};
+            if (most === 'rated') {
+                listSort = { rate: -1 };
+            }
+
+            if (sort === 'latest') {
+                listSort = { updatedAt: -1 };
+            } else if (sort === 'oldest') {
+                listSort = { updatedAt: 1 };
+            } else if (sort === 'rate_low') {
+                listSort = { rate: 1 };
+            } else if (sort === 'rate_high') {
+                listSort = { rate: -1 };
+            }
+
+            const totalQuizzes = await Quiz.countDocuments(query);
+
+            const quizzes = await Quiz.find(query).populate('field').sort(listSort).skip(skip).limit(limit);
+
+            res.status(200).json({
+                quizzes,
+                totalPages: Math.ceil(totalQuizzes / limit),
+                currentPage: page,
+            });
+        } catch (error) {
+            console.error(error);
             res.status(500).json({ msg: 'Something went wrong!' });
         }
     }
@@ -29,7 +76,7 @@ class QuizController {
         const userId = req.params.userId;
 
         try {
-            const quizzes = await Quiz.find({ userId });
+            const quizzes = await Quiz.find({ userId }).populate('field');
 
             res.status(200).json(quizzes);
         } catch (error) {

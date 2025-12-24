@@ -45,9 +45,9 @@ const QuizItem = (props) => {
 
     return (
         <div className={`item ${cx('productItem', props.className, props.itemView)}`}>
-            <Link to={`quiz/${quizData?.id}`}>
+            <Link to={`/quiz/${quizData?.id}`}>
                 <div className={cx('imgWrapper')}>
-                    <img className="w-100" src={quizData?.image} alt={quizData?.title} style={{ height: 123 }} />
+                    <img className="w-100" src={quizData?.image} alt={quizData?.title} />
                 </div>
 
                 <div className={cx('info')}>

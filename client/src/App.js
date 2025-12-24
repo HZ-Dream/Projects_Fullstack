@@ -28,6 +28,7 @@ import EditQuiz from './Pages/Dashboard/ManageQuiz/EditQuiz';
 import MainLayout from './Layouts/MainLayout';
 import NoneLayout from './Layouts/NoneLayout';
 import DashboardLayout from './Layouts/DanshboardLayout';
+import { fetchDataFromApi } from './utils/api';
 
 const MyContext = createContext();
 
@@ -48,6 +49,9 @@ function App() {
         return darkModeLocal !== null ? darkModeLocal === 'true' : true;
     });
 
+    // Data Context
+    const [fieldData, setFieldData] = useState([]);
+
     // QuizDetail
     const [activeTabs, setActiveTabs] = useState(null);
 
@@ -67,6 +71,9 @@ function App() {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
         };
+
+        // Fetch Data
+        fetchData();
 
         window.addEventListener('resize', handleResize);
 
@@ -92,6 +99,7 @@ function App() {
             if (user) {
                 setUserData(user);
                 setIsUserLogin(true);
+                fetchData();
             } else {
                 setIsUserLogin(false);
             }
@@ -99,6 +107,17 @@ function App() {
             setIsUserLogin(false);
         }
     }, [tokenData]);
+
+    const fetchData = async () => {
+        try {
+            // Field
+            fetchDataFromApi('/api/field/all').then((res) => {
+                setFieldData(res);
+            });
+        } catch (error) {
+            console.error('Error fetching field data:', error);
+        }
+    };
 
     const handleClickVariant = (message, variant) => {
         console.log(`Message: ${message}, Variant: ${variant}`);
@@ -111,6 +130,8 @@ function App() {
         setUserData,
         tokenData,
         setTokenData,
+        fieldData,
+        setFieldData,
         isUserLogin,
         setIsUserLogin,
         handleClickVariant,

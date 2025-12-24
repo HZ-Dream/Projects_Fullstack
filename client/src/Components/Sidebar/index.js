@@ -1,49 +1,78 @@
 // Tools
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
 // React
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 // CSS
 import styles from './Sidebar.module.scss';
 import classNames from 'classnames/bind';
 
+// API
+import { fetchDataFromApi } from '../../utils/api';
+
+// My Context
+import { MyContext } from '../../App';
+
 const cx = classNames.bind(styles);
 
-const Sidebar = (props) => {
+const Sidebar = ({ className, filters, onFilterChange }) => {
     const [value, setValue] = useState([1, 5]);
+    const context = useContext(MyContext);
+
+    const fieldData = context.fieldData?.fieldList || [];
+
+    const handleMostChange = (event) => {
+        const value = event.target.value;
+        const newMost = value === filters.most ? '' : value;
+
+        onFilterChange({
+            fields: filters.fields,
+            most: newMost,
+            sort: filters.sort,
+        });
+    };
+
+    const handleFilterChange = (fieldId) => {
+        const updated = filters.fields.includes(fieldId)
+            ? filters.fields.filter((f) => f !== fieldId)
+            : [...filters.fields, fieldId];
+
+        onFilterChange({
+            fields: updated,
+            most: filters.most,
+            sort: filters.sort,
+        });
+    };
 
     return (
         <>
-            <div className={cx('sidebar', props.className)}>
+            <div className={cx('sidebar', className)}>
                 <div className={cx('filterBox')}>
                     <h6>Fields Of Studdy</h6>
 
                     <div className={cx('scroll')}>
                         <ul>
-                            <li>
-                                <FormControlLabel className="w-100" control={<Checkbox />} label="Natural Sciences" />
-                            </li>
-                            <li>
-                                <FormControlLabel className="w-100" control={<Checkbox />} label="Social Sciences" />
-                            </li>
-                            <li>
-                                <FormControlLabel className="w-100" control={<Checkbox />} label="Math" />
-                            </li>
-                            <li>
-                                <FormControlLabel
-                                    className="w-100"
-                                    control={<Checkbox />}
-                                    label="Infomation Technology"
-                                />
-                            </li>
-                            <li>
-                                <FormControlLabel className="w-100" control={<Checkbox />} label="Literature" />
-                            </li>
+                            {fieldData?.map((field) => (
+                                <li key={field.id}>
+                                    <FormControlLabel
+                                        className="w-100"
+                                        control={
+                                            <Checkbox
+                                                checked={filters.fields.includes(field.id)}
+                                                onChange={() => handleFilterChange(field.id)}
+                                            />
+                                        }
+                                        label={field.name}
+                                    />
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>
@@ -67,16 +96,26 @@ const Sidebar = (props) => {
                 <div className={cx('filterBox')}>
                     <h6>Most</h6>
 
-                    <div className={cx('scroll')}>
-                        <ul>
-                            <li>
-                                <FormControlLabel className="w-100" control={<Checkbox />} label="Most Taken" />
-                            </li>
-                            <li>
-                                <FormControlLabel className="w-100" control={<Checkbox />} label="Most Favorited" />
-                            </li>
-                        </ul>
-                    </div>
+                    <RadioGroup value={filters.most} className={cx('scroll')}>
+                        <FormControlLabel
+                            onClick={handleMostChange}
+                            value="rated"
+                            control={<Radio size="small" />}
+                            label="Most Rated"
+                        />
+                        <FormControlLabel
+                            onClick={handleMostChange}
+                            value="taken"
+                            control={<Radio size="small" />}
+                            label="Most Taken"
+                        />
+                        <FormControlLabel
+                            onClick={handleMostChange}
+                            value="favorited"
+                            control={<Radio size="small" />}
+                            label="Most Favorited"
+                        />
+                    </RadioGroup>
                 </div>
 
                 <Link to="#">

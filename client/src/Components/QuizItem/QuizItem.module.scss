@@ -42,7 +42,13 @@
         background: var(--white-color) !important;
 
         & .imgWrapper {
-            width: 34%;
+            width: 197px !important;
+            height: 167px !important;
+
+            img {
+                height: 100% !important;
+                object-fit: fill !important;
+            }
         }
 
         a {
@@ -69,7 +75,9 @@
     overflow: hidden;
 
     img {
+        height: 150px;
         transition: all 0.3s ease-in-out;
+        object-fit: fill;
     }
 }
 

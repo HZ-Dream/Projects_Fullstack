@@ -3,6 +3,7 @@ import { TiThMenu } from 'react-icons/ti';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { TfiLayoutGrid4Alt } from 'react-icons/tfi';
 import { FaAngleDown } from 'react-icons/fa6';
+import { FaSort } from 'react-icons/fa';
 import Button from '@mui/material/Button';
 
 // Menu
@@ -19,6 +20,9 @@ import { useEffect, useState } from 'react';
 import Sidebar from '../../Components/Sidebar';
 import QuizItem from '../../Components/QuizItem';
 
+// API
+import { fetchDataFromApi } from '../../utils/api';
+
 // CSS
 import styles from './QuizIndex.module.scss';
 import classNames from 'classnames/bind';
@@ -28,12 +32,49 @@ const cx = classNames.bind(styles);
 const Quiz = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [sortBy, setSortBy] = useState('');
-    const [productView, setProductView] = useState('four');
+    const [quizView, setQuizView] = useState('four');
+    const [quizData, setQuizData] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const act = cx('act');
+
+    const [filters, setFilters] = useState({
+        fields: [],
+        most: '',
+        sort: '',
+    });
 
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        fetchDataFromApi(`/api/quiz/quizList?page=1`).then((res) => {
+            setQuizData(res.quizzes);
+            setTotalPages(res.totalPages);
+        });
     }, []);
+
+    useEffect(() => {
+        const params = new URLSearchParams();
+
+        params.append('page', page);
+
+        if (filters.fields.length > 0) {
+            params.append('field', filters.fields.join(','));
+        }
+
+        if (filters.most) {
+            params.append('most', filters.most);
+        }
+
+        if (filters.sort) {
+            params.append('sort', filters.sort);
+        }
+
+        fetchDataFromApi(`/api/quiz/quizList?${params.toString()}`).then((res) => {
+            setQuizData(res.quizzes);
+            setTotalPages(res.totalPages);
+        });
+    }, [page, filters]);
 
     const openDrop = Boolean(anchorEl);
     const handleClick = (e) => {
@@ -47,6 +88,25 @@ const Quiz = () => {
     const handleSortBy = (value) => {
         setSortBy(value);
         closeDrop();
+
+        let sortValue = '';
+        if (value === 'Sort by Latest') {
+            sortValue = 'latest';
+        } else if (value === 'Sort by Oldest') {
+            sortValue = 'oldest';
+        } else if (value === 'Sort by Rate: low to high') {
+            sortValue = 'rate_low';
+        } else if (value === 'Sort by Rate: high to low') {
+            sortValue = 'rate_high';
+        }
+
+        setFilters({
+            fields: [],
+            most: '',
+            sort: sortValue,
+        });
+
+        setPage(1);
     };
 
     return (
@@ -54,7 +114,14 @@ const Quiz = () => {
             <section className={cx('product_Listing_Page')}>
                 <div className="container">
                     <div className={`${cx('productListing')} d-flex`}>
-                        <Sidebar className={cx('sidebar')} />
+                        <Sidebar
+                            className={cx('sidebar')}
+                            filters={filters}
+                            onFilterChange={(filters) => {
+                                setFilters(filters);
+                                setPage(1);
+                            }}
+                        />
 
                         <div className={cx('content_right')}>
                             <img
@@ -67,20 +134,20 @@ const Quiz = () => {
                             <div className={`${cx('showBy')} mt-3 mb-3 d-flex align-items-center`}>
                                 <div className={`d-flex align-items-center ${cx('btnWrapper')}`}>
                                     <Button
-                                        className={productView === 'one' ? act : ''}
-                                        onClick={() => setProductView('one')}
+                                        className={quizView === 'one' ? act : ''}
+                                        onClick={() => setQuizView('one')}
                                     >
                                         <TiThMenu />
                                     </Button>
                                     <Button
-                                        className={productView === 'three' ? act : ''}
-                                        onClick={() => setProductView('three')}
+                                        className={quizView === 'three' ? act : ''}
+                                        onClick={() => setQuizView('three')}
                                     >
                                         <BsGrid3X3GapFill />
                                     </Button>
                                     <Button
-                                        className={productView === 'four' ? act : ''}
-                                        onClick={() => setProductView('four')}
+                                        className={quizView === 'four' ? act : ''}
+                                        onClick={() => setQuizView('four')}
                                     >
                                         <TfiLayoutGrid4Alt />
                                     </Button>
@@ -88,7 +155,7 @@ const Quiz = () => {
 
                                 <div className={`ms-auto ${cx('showByFilter')}`}>
                                     <Button className="text-capitalize" onClick={handleClick}>
-                                        Sort {sortBy} <FaAngleDown />
+                                        {sortBy} <FaSort />
                                     </Button>
 
                                     <Menu
@@ -103,34 +170,31 @@ const Quiz = () => {
                                             },
                                         }}
                                     >
-                                        <MenuItem onClick={() => handleSortBy('')}>Show All</MenuItem>
-                                        <MenuItem onClick={() => handleSortBy('by Lastest')}>By Lastest</MenuItem>
-                                        <MenuItem onClick={() => handleSortBy('by Popularity')}>By Popularity</MenuItem>
-                                        <MenuItem onClick={() => handleSortBy('by Rate: low to high')}>
-                                            By Rate: low to high
+                                        <MenuItem onClick={() => handleSortBy('Show All')}>Show All</MenuItem>
+                                        <MenuItem onClick={() => handleSortBy('Sort by Latest')}>Latest</MenuItem>
+                                        <MenuItem onClick={() => handleSortBy('Sort by Oldest')}>Oldest</MenuItem>
+                                        <MenuItem onClick={() => handleSortBy('Sort by Rate: low to high')}>
+                                            Rate: low to high
                                         </MenuItem>
-                                        <MenuItem onClick={() => handleSortBy('By Rate: high to low')}>
-                                            By Rate: high to low
+                                        <MenuItem onClick={() => handleSortBy('Sort by Rate: high to low')}>
+                                            Rate: high to low
                                         </MenuItem>
                                     </Menu>
                                 </div>
                             </div>
 
                             <div className={cx('productListing')}>
-                                <QuizItem itemView={productView} />
-                                <QuizItem itemView={productView} />
-                                <QuizItem itemView={productView} />
-                                <QuizItem itemView={productView} />
-                                <QuizItem itemView={productView} />
-                                <QuizItem itemView={productView} />
-                                <QuizItem itemView={productView} />
-                                <QuizItem itemView={productView} />
+                                {quizData?.length > 0 &&
+                                    quizData.map((item) => {
+                                        return <QuizItem key={item._id} itemView={quizView} data={item} />;
+                                    })}
                             </div>
 
                             <div className="d-flex align-items-center justify-content-center mt-5">
                                 <Stack spacing={2}>
                                     <Pagination
-                                        count={10}
+                                        onChange={(e, value) => setPage(value)}
+                                        count={totalPages}
                                         color="primary"
                                         size="large"
                                         showFirstButton
