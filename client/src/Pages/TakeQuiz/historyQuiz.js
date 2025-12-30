@@ -90,6 +90,12 @@ const HistoryQuiz = () => {
 
                                     <h5 className="mt-3 mb-4">{q.questionText}</h5>
 
+                                    {q.questionImage && (
+                                        <div className={cx('questionImageWrapper', 'mb-4')}>
+                                            <img src={q.questionImage} alt="Question" />
+                                        </div>
+                                    )}
+
                                     <div className={cx('optionsList')}>
                                         {q.options.map((option, optIndex) => {
                                             const isUserPicked = q.yourAnswers.includes(option);

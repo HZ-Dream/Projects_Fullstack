@@ -1,24 +1,17 @@
-// Icons, Button
-import { IoCloseCircleOutline, IoBookmarkOutline, IoBookmark } from 'react-icons/io5';
-import Button from '@mui/material/Button';
-
-// Material UI
-import Dialog from '@mui/material/Dialog';
-import Slide from '@mui/material/Slide';
-import CircularProgress from '@mui/material/CircularProgress';
-
-// React
 import React, { useState, useContext, useEffect, useMemo } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-
-// Context
-import { MyContext } from '../../App';
-
-// CSS
-import styles from './TakeQuiz.module.scss';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Button, Dialog, Slide, CircularProgress, Divider, Tooltip, LinearProgress } from '@mui/material';
+import {
+    IoTimeOutline,
+    IoBookmarkOutline,
+    IoBookmark,
+    IoCheckmarkCircle,
+    IoSendOutline,
+    IoAlertCircleOutline,
+} from 'react-icons/io5';
 import classNames from 'classnames/bind';
-
-// API
+import styles from './TakeQuiz.module.scss';
+import { MyContext } from '../../App';
 import { fetchDataFromApi, postData } from '../../utils/api';
 
 const cx = classNames.bind(styles);
@@ -29,13 +22,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const TakeQuiz = () => {
     const context = useContext(MyContext);
-    let { quizId } = useParams();
+    const { quizId } = useParams();
     const navigate = useNavigate();
 
     const [isLoad, setIsLoad] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [quizData, setQuizData] = useState(null);
-
     const [userAnswers, setUserAnswers] = useState([]);
     const [timeLeft, setTimeLeft] = useState(null);
     const [markedQuestions, setMarkedQuestions] = useState([]);
@@ -52,9 +44,7 @@ const TakeQuiz = () => {
                 setUserAnswers(initialAnswers);
                 setTimeLeft(res.duration * 60);
             })
-            .catch((err) => {
-                console.error('Error fetching quiz data:', err);
-            });
+            .catch((err) => console.error('Error:', err));
     }, [quizId]);
 
     useEffect(() => {
@@ -63,42 +53,31 @@ const TakeQuiz = () => {
             finishQuiz();
             return;
         }
-
-        const timerId = setInterval(() => {
-            setTimeLeft(timeLeft - 1);
-        }, 1000);
-
+        const timerId = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
         return () => clearInterval(timerId);
     }, [timeLeft]);
 
     const handleAnswerChange = (questionId, option, isCheckbox) => {
-        setUserAnswers((prevAnswers) => {
-            const newAnswers = JSON.parse(JSON.stringify(prevAnswers));
-            const questionIndex = newAnswers.findIndex((ans) => ans.questionId === questionId);
+        setUserAnswers((prevAnswers) =>
+            prevAnswers.map((ans) => {
+                if (ans.questionId === questionId) {
+                    let newSelectedOptions;
 
-            if (questionIndex === -1) {
-                console.error('Question not found in userAnswers state!');
-                return prevAnswers;
-            }
-
-            const currentSelectedOptions = newAnswers[questionIndex].selectedOptions;
-
-            if (isCheckbox) {
-                const isAlreadySelected = currentSelectedOptions.includes(option);
-
-                if (isAlreadySelected) {
-                    newAnswers[questionIndex].selectedOptions = currentSelectedOptions.filter(
-                        (item) => item !== option,
-                    );
-                } else {
-                    newAnswers[questionIndex].selectedOptions.push(option);
+                    if (isCheckbox) {
+                        const isAlreadySelected = ans.selectedOptions.includes(option);
+                        if (isAlreadySelected) {
+                            newSelectedOptions = ans.selectedOptions.filter((item) => item !== option);
+                        } else {
+                            newSelectedOptions = [...ans.selectedOptions, option];
+                        }
+                    } else {
+                        newSelectedOptions = [option];
+                    }
+                    return { ...ans, selectedOptions: newSelectedOptions };
                 }
-            } else {
-                newAnswers[questionIndex].selectedOptions = [option];
-            }
-
-            return newAnswers;
-        });
+                return ans;
+            }),
+        );
     };
 
     const toggleMarkQuestion = (questionId) => {
@@ -107,20 +86,20 @@ const TakeQuiz = () => {
         );
     };
 
-    const { answeredCount, unansweredCount } = useMemo(() => {
+    const { answeredCount, unansweredCount, progress } = useMemo(() => {
         const answered = userAnswers.filter((ans) => ans.selectedOptions.length > 0).length;
+        const total = quizData?.quiz?.length || 1;
         return {
             answeredCount: answered,
             unansweredCount: (quizData?.quiz?.length || 0) - answered,
+            progress: (answered / total) * 100,
         };
     }, [userAnswers, quizData]);
 
     const finishQuiz = async () => {
         setIsLoad(true);
         setIsOpenModal(false);
-
         const timeTakenInSeconds = quizData.duration * 60 - timeLeft;
-
         const payload = {
             quizId: quizId,
             userId: context.userData.userId,
@@ -129,12 +108,11 @@ const TakeQuiz = () => {
         };
 
         try {
-            const res = await postData('/api/takeQuiz/submitQuiz', payload);
+            await postData('/api/takeQuiz/submitQuiz', payload);
             context.setActiveTabs(2);
             navigate(`/quiz/${quizId}`);
         } catch (err) {
-            const errorMessage = err.response?.data?.msg || 'An error occurred while submitting.';
-            context.handleClickVariant(errorMessage, 'error');
+            context.handleClickVariant('Submission failed', 'error');
         } finally {
             setIsLoad(false);
         }
@@ -143,152 +121,175 @@ const TakeQuiz = () => {
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
+    if (!quizData)
+        return (
+            <div className={cx('loader')}>
+                <CircularProgress />
+            </div>
+        );
+
     return (
-        <section className={`section ${cx('takeQuiz')}`}>
-            {isLoad && (
-                <div className="loading_overlay">
-                    <CircularProgress />
+        <section className={cx('takeQuizWrapper')}>
+            <div className="container">
+                <div className={cx('quizHeader')}>
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                        <h4 className="fw-bold mb-0">{quizData.title}</h4>
+                        <div className={cx('timerBadge', { warning: timeLeft < 60 })}>
+                            <IoTimeOutline />
+                            <span>{formatTime(timeLeft)}</span>
+                        </div>
+                    </div>
+                    <LinearProgress variant="determinate" value={progress} className={cx('progressBar')} />
                 </div>
-            )}
-            <div className="row">
-                <h4 className="text-center">{quizData?.title}</h4>
-                <div className="col-md-9">
-                    <div className="card p-3 ms-4">
-                        {quizData?.quiz.map((question, index) => {
+
+                <div className="row mt-4">
+                    <div className="col-lg-8">
+                        {quizData.quiz.map((question, index) => {
                             const isCheckbox = question.correctAnswers.length > 1;
                             const userAnswer = userAnswers.find((a) => a.questionId === question._id);
                             const isMarked = markedQuestions.includes(question._id);
 
                             return (
-                                <div key={question._id} className={`${cx('quizItem')} mb-4`}>
-                                    <div className="d-flex justify-content-between align-items-center">
+                                <div key={question._id} className={cx('questionCard')}>
+                                    <div className="d-flex justify-content-between">
                                         <div className="d-flex align-items-center">
-                                            <span className="quizNumber">{index + 1}</span>
-                                            <p className="fz17 mb-0">{question.questionText}</p>
+                                            <span className={cx('qBadge')}>Question {index + 1}</span>
+                                            {isCheckbox && <small className="ms-2 text-muted">(Multiple Choice)</small>}
                                         </div>
-                                        <Button
-                                            onClick={() => toggleMarkQuestion(question._id)}
-                                            title="Mark for review"
-                                        >
-                                            {isMarked ? (
-                                                <IoBookmark size={24} color="orange" />
-                                            ) : (
-                                                <IoBookmarkOutline size={24} />
-                                            )}
-                                        </Button>
+                                        <Tooltip title="Mark for review">
+                                            <Button
+                                                onClick={() => toggleMarkQuestion(question._id)}
+                                                className={cx('markBtn', { active: isMarked })}
+                                            >
+                                                {isMarked ? <IoBookmark size={22} /> : <IoBookmarkOutline size={22} />}
+                                            </Button>
+                                        </Tooltip>
                                     </div>
-                                    <ul className="list list-inline ms-auto mb-0 pl40 mt-2">
-                                        {question.options.map((option, optIndex) => (
-                                            <li key={optIndex}>
-                                                <input
-                                                    className="me-2"
-                                                    type={isCheckbox ? 'checkbox' : 'radio'}
-                                                    name={`answerQuiz_${question._id}`}
-                                                    id={`answer_${question._id}_${optIndex}`}
-                                                    value={option}
-                                                    checked={userAnswer?.selectedOptions.includes(option)}
-                                                    onChange={() =>
-                                                        handleAnswerChange(question._id, option, isCheckbox)
-                                                    }
-                                                />
-                                                <label htmlFor={`answer_${question._id}_${optIndex}`}>{option}</label>
-                                            </li>
-                                        ))}
-                                    </ul>
+
+                                    <h5 className="my-4 fw-semibold">{question.questionText}</h5>
+
+                                    {question.questionImage && (
+                                        <div className={cx('questionImageWrapper', 'mb-4')}>
+                                            <img src={question.questionImage} alt="Question" />
+                                        </div>
+                                    )}
+
+                                    <div className={cx('optionsGrid')}>
+                                        {question.options.map((option, optIndex) => {
+                                            const isSelected = userAnswer?.selectedOptions.includes(option);
+
+                                            return (
+                                                <label
+                                                    key={optIndex}
+                                                    className={cx('optionBox', {
+                                                        selected: isSelected,
+                                                        multiChoice: isCheckbox,
+                                                        singleChoice: !isCheckbox,
+                                                    })}
+                                                    htmlFor={`q_${question._id}_${optIndex}`}
+                                                >
+                                                    <input
+                                                        id={`q_${question._id}_${optIndex}`}
+                                                        type={isCheckbox ? 'checkbox' : 'radio'}
+                                                        name={
+                                                            isCheckbox
+                                                                ? `q_${question._id}_${optIndex}`
+                                                                : `q_${question._id}`
+                                                        }
+                                                        checked={isSelected}
+                                                        onChange={() =>
+                                                            handleAnswerChange(question._id, option, isCheckbox)
+                                                        }
+                                                        style={{ display: 'none' }}
+                                                    />
+                                                    <span className={cx('customCheck')}></span>
+                                                    <span className={cx('optionContent')}>{option}</span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
                             );
                         })}
                     </div>
-                </div>
 
-                <div className="col-md-3">
-                    <div className={`card p-3 me-4 ${cx('infoProcess')}`}>
-                        <div className="dFlexAli-center mb-3">
-                            <span>Time Left</span>
-                            <span className="ms-auto text-red fw-bold">{formatTime(timeLeft)}</span>
-                        </div>
-                        <div className="dFlexAli-center mb-3">
-                            <span>Questions Answered</span>
-                            <span className="ms-auto text-red fw-bold">{answeredCount}</span>
-                        </div>
-                        <div className="dFlexAli-center mb-3">
-                            <span>Questions Marked</span>
-                            <span className="ms-auto text-red fw-bold">{markedQuestions.length}</span>
-                        </div>
-                        <div className="dFlexAli-center mb-3">
-                            <span>Questions Left</span>
-                            <span className="ms-auto text-red fw-bold">{unansweredCount}</span>
-                        </div>
-                        <hr />
-                        <div className={`${cx('listQuiz')} mt-2`}>
-                            {quizData?.quiz.map((q, index) => {
-                                const isAnswered =
-                                    userAnswers.find((a) => a.questionId === q._id)?.selectedOptions.length > 0;
-                                const isMarked = markedQuestions.includes(q._id);
-                                return (
-                                    <div
-                                        key={q._id}
-                                        className={cx('listItem', {
-                                            check: isAnswered,
-                                            mark: isMarked,
-                                        })}
-                                    >
-                                        <span>{index + 1}</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <Button
-                            onClick={() => setIsOpenModal(true)}
-                            className="btn-red btn-lg btn-big mt-4 fw-bold text-capitalize"
-                        >
-                            Finish Quiz
-                        </Button>
-
-                        <Dialog
-                            open={isOpenModal}
-                            onClose={() => setIsOpenModal(false)}
-                            slots={{ transition: Transition }}
-                            className="locationModal"
-                        >
-                            <div className={cx('modal')}>
-                                <h4 className="mb-0 text-danger">Are you sure you want to finish the quiz?</h4>
-                                <hr />
-                                <p className="fz17">
-                                    You currently have{' '}
-                                    <b className="text-red">{markedQuestions.length} marked questions</b> and
-                                    <b className="text-red"> {unansweredCount} unanswered questions</b>.
-                                </p>
-                                <div className={cx('modalBtn')}>
-                                    <Button
-                                        disabled={isLoad === true ? true : false}
-                                        onClick={finishQuiz}
-                                        className="btn-primary btn-lg btn-big"
-                                    >
-                                        <span className="dFlexAli-center me-2">Finish</span>
-                                        {isLoad === true && (
-                                            <CircularProgress
-                                                className="loader"
-                                                color="inherit"
-                                                style={{ width: 20, height: 20 }}
-                                            />
-                                        )}
-                                    </Button>
-                                    <Button
-                                        className="btn-white btn-lg btn-big ms-3"
-                                        onClick={() => setIsOpenModal(false)}
-                                    >
-                                        Cancel
-                                    </Button>
+                    <div className="col-lg-4">
+                        <div className={cx('sidebarSticky')}>
+                            <div className={cx('statusCard')}>
+                                <h6 className="fw-bold mb-3">Quiz Summary</h6>
+                                <div className={cx('statRow')}>
+                                    <span>Answered:</span>
+                                    <strong className="text-primary">{answeredCount}</strong>
                                 </div>
+                                <div className={cx('statRow')}>
+                                    <span>Marked:</span>
+                                    <strong className="text-warning">{markedQuestions.length}</strong>
+                                </div>
+                                <div className={cx('statRow')}>
+                                    <span>Remaining:</span>
+                                    <strong>{unansweredCount}</strong>
+                                </div>
+
+                                <Divider className="my-3" />
+
+                                <div className={cx('questionNav')}>
+                                    {quizData.quiz.map((q, idx) => {
+                                        const isAnswered =
+                                            userAnswers.find((a) => a.questionId === q._id)?.selectedOptions.length > 0;
+                                        const isMarked = markedQuestions.includes(q._id);
+                                        return (
+                                            <div
+                                                key={idx}
+                                                className={cx('navBox', {
+                                                    answered: isAnswered,
+                                                    marked: isMarked,
+                                                })}
+                                            >
+                                                {idx + 1}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    size="large"
+                                    color="error"
+                                    startIcon={<IoSendOutline />}
+                                    className="mt-4"
+                                    onClick={() => setIsOpenModal(true)}
+                                    sx={{ borderRadius: '10px', fontWeight: 'bold' }}
+                                >
+                                    Submit Quiz
+                                </Button>
                             </div>
-                        </Dialog>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <Dialog open={isOpenModal} onClose={() => setIsOpenModal(false)} TransitionComponent={Transition}>
+                <div className={cx('submitModal')}>
+                    <IoAlertCircleOutline size={60} className="text-warning mb-3" />
+                    <h3>Are you sure?</h3>
+                    <p className="text-muted">
+                        You have <b>{unansweredCount}</b> questions left. <br />
+                        Once submitted, you cannot change your answers.
+                    </p>
+                    <div className="d-flex gap-3 mt-4 w-100">
+                        <Button fullWidth variant="outlined" onClick={() => setIsOpenModal(false)}>
+                            Cancel
+                        </Button>
+                        <Button fullWidth variant="contained" color="error" onClick={finishQuiz} disabled={isLoad}>
+                            {isLoad ? <CircularProgress size={24} color="inherit" /> : 'Yes, Submit'}
+                        </Button>
+                    </div>
+                </div>
+            </Dialog>
         </section>
     );
 };

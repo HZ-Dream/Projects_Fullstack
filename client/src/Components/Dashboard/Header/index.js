@@ -19,7 +19,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Logout from '@mui/icons-material/Logout';
 
 // React
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 
 // Components
@@ -30,6 +30,7 @@ import UserAvatarImgComponent from '../UserAvatarImg';
 const HeaderDashboard = () => {
     const context = useContext(MyContext);
 
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const [notificationDrop, setNotificationDrop] = useState(null);
     const open = Boolean(anchorEl);
@@ -48,6 +49,18 @@ const HeaderDashboard = () => {
         setNotificationDrop(false);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+
+        context.setUserData(null);
+        context.setTokenData(null);
+        context.setIsUserLogin(false);
+
+        handleClose();
+        navigate('/');
+    };
+
     return (
         <>
             <header className="dFlexAli-center dashboard">
@@ -55,7 +68,7 @@ const HeaderDashboard = () => {
                     <div className="row dFlexAli-center">
                         {/* Logo Wrapper */}
                         <div className="part1 col-sm-3 ps-4">
-                            <Link to="/" className="dFlexAli-center logo">
+                            <Link to="/dashboard" className="dFlexAli-center logo">
                                 <img src={Logo} alt="Logo" />
                                 <span className="ms-2">Dream</span>
                             </Link>
@@ -259,18 +272,14 @@ const HeaderDashboard = () => {
                                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                             >
                                 <MenuItem onClick={handleClose}>
-                                    <ListItemIcon>
-                                        <FaUser fontSize="medium" />
-                                    </ListItemIcon>
-                                    My Account
+                                    <Link to={`/profile/${context.userData.userId}`}>
+                                        <ListItemIcon>
+                                            <FaUser fontSize="medium" />
+                                        </ListItemIcon>
+                                        My Account
+                                    </Link>
                                 </MenuItem>
-                                <MenuItem onClick={handleClose}>
-                                    <ListItemIcon>
-                                        <IoSettingsSharp fontSize="medium" />
-                                    </ListItemIcon>
-                                    Settings
-                                </MenuItem>
-                                <MenuItem onClick={handleClose}>
+                                <MenuItem onClick={handleLogout}>
                                     <ListItemIcon>
                                         <Logout fontSize="medium" />
                                     </ListItemIcon>

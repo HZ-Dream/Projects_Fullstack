@@ -2,6 +2,9 @@ const Quiz = require('../models/Quiz');
 const CryptoJS = require('crypto-js');
 const secretKey = process.env.AES_SECRET_KEY;
 
+const fs = require('fs');
+const cloudinary = require('../utils/cloudinary');
+
 function encryptWithAES(text) {
     return CryptoJS.AES.encrypt(text, secretKey).toString();
 }
@@ -11,7 +14,79 @@ function decryptWithAES(ciphertext) {
     return bytes.toString(CryptoJS.enc.Utf8);
 }
 
+const getPublicIdFromUrl = (url) => {
+    if (!url || !url.includes('res.cloudinary.com')) return null;
+
+    // URL format: https://res.cloudinary.com/cloud_name/image/upload/v1234567/folder/public_id.jpg
+    const parts = url.split('/');
+    const uploadIndex = parts.indexOf('upload');
+    if (uploadIndex === -1) return null;
+
+    let remainingParts = parts.slice(uploadIndex + 1);
+
+    if (remainingParts[0].startsWith('v') && !isNaN(remainingParts[0].substring(1))) {
+        remainingParts.shift();
+    }
+
+    const lastPart = remainingParts.pop();
+    const fileName = lastPart.split('.')[0];
+    remainingParts.push(fileName);
+
+    return remainingParts.join('/');
+};
+
+const deleteImageByUrl = async (imageUrl) => {
+    const publicId = getPublicIdFromUrl(imageUrl);
+    if (!publicId) return;
+    try {
+        await cloudinary.uploader.destroy(publicId);
+    } catch (e) {
+        console.error('Lỗi xóa ảnh Cloudinary:', e);
+    }
+};
+
+const confirmImages = async (urls) => {
+    const publicIds = urls.map((url) => getPublicIdFromUrl(url)).filter((id) => id !== null);
+
+    if (publicIds.length > 0) {
+        try {
+            const result = await cloudinary.uploader.remove_tag('temp_upload_quiz', publicIds);
+
+            console.log('--- Đã gỡ tag temp_upload_quiz cho các ảnh:', publicIds);
+            console.log('--- Kết quả từ Cloudinary:', result);
+        } catch (e) {
+            console.error('Lỗi khi gỡ tag trên Cloudinary:', e);
+        }
+    }
+};
+
 class QuizController {
+    // [POST] /quiz/uploadImage
+    async uploadImage(req, res) {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ error: true, msg: 'No file uploaded!' });
+            }
+
+            const imageFile = req.file;
+
+            const options = {
+                use_filename: true,
+                unique_filename: false,
+                overwrite: false,
+            };
+
+            const result = await cloudinary.uploader.upload(imageFile.path, { ...options, tags: ['temp_upload_quiz'] });
+
+            fs.unlinkSync(req.file.path);
+
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
     // [GET] /quiz/getAllQuizzes
     async getAllQuizzes(req, res) {
         try {
@@ -117,16 +192,19 @@ class QuizController {
     // [POST] /quiz/createQuiz
     async createQuiz(req, res) {
         const { image, title, description, field, level, duration, password, quiz, userId } = req.body;
+
         try {
             let status = password && password.trim() !== '' ? 1 : 2;
             let encryptedPassword = '';
-            try {
-                encryptedPassword = encryptWithAES(password);
-            } catch (err) {
-                console.log('Encryption failed:', err);
+            if (password) {
+                try {
+                    encryptedPassword = encryptWithAES(password);
+                } catch (err) {
+                    console.log('Encryption failed:', err);
+                }
             }
 
-            const q = new Quiz({
+            const newQuiz = new Quiz({
                 image,
                 title,
                 description,
@@ -139,7 +217,22 @@ class QuizController {
                 quiz,
             });
 
-            await q.save();
+            const savedQuiz = await newQuiz.save();
+
+            const imagesToConfirm = [];
+            if (image) imagesToConfirm.push(image);
+
+            if (quiz && quiz.length > 0) {
+                quiz.forEach((item) => {
+                    if (item.questionImage) {
+                        imagesToConfirm.push(item.questionImage);
+                    }
+                });
+            }
+
+            if (imagesToConfirm.length > 0) {
+                await confirmImages(imagesToConfirm);
+            }
 
             res.status(200).json({
                 success: true,
@@ -155,14 +248,34 @@ class QuizController {
     async updateQuiz(req, res) {
         const quizId = req.params.quizId;
         const { image, title, description, field, level, duration, password, quiz } = req.body;
+
         try {
-            let status = password && password.trim() !== '' ? 1 : 2;
-            let encryptedPassword = '';
-            try {
-                encryptedPassword = encryptWithAES(password);
-            } catch (err) {
-                console.log('Encryption failed:', err);
+            const oldQuiz = await Quiz.findById(quizId);
+            if (!oldQuiz) return res.status(404).json({ msg: 'Quiz not found!' });
+
+            if (oldQuiz.image && oldQuiz.image !== image) {
+                await deleteImageByUrl(oldQuiz.image);
             }
+
+            const oldQImages = oldQuiz.quiz.map((q) => q.questionImage).filter((img) => img);
+            const newQImages = quiz.map((q) => q.questionImage).filter((img) => img);
+
+            for (const oldImg of oldQImages) {
+                if (!newQImages.includes(oldImg)) {
+                    await deleteImageByUrl(oldImg);
+                }
+            }
+
+            const imagesToConfirm = [];
+            if (image) imagesToConfirm.push(image);
+            newQImages.forEach((img) => imagesToConfirm.push(img));
+
+            if (imagesToConfirm.length > 0) {
+                await confirmImages(imagesToConfirm);
+            }
+
+            let status = password && password.trim() !== '' ? 1 : 2;
+            let encryptedPassword = password ? encryptWithAES(password) : '';
 
             const updatedQuiz = await Quiz.findByIdAndUpdate(
                 quizId,
@@ -180,13 +293,10 @@ class QuizController {
                 { new: true },
             );
 
-            if (!updatedQuiz) {
-                return res.status(404).json({ msg: 'Quiz not found!' });
-            }
             res.status(200).json({ msg: 'Quiz updated successfully!' });
         } catch (error) {
             console.log(error);
-            res.status(500).json({ msg: 'Something went wrong!' });
+            res.status(500).json({ msg: 'Server Error!' });
         }
     }
 
@@ -194,11 +304,17 @@ class QuizController {
     async deleteQuiz(req, res) {
         const quizId = req.params.quizId;
         try {
+            const quizData = await Quiz.findById(quizId);
+            if (quizData) {
+                await deleteImageByUrl(quizData.image);
+                for (const q of quizData.quiz) {
+                    if (q.questionImage) await deleteImageByUrl(q.questionImage);
+                }
+            }
             await Quiz.findByIdAndDelete(quizId);
             res.status(200).json({ msg: 'Quiz deleted successfully!' });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ msg: 'Something went wrong!' });
+            res.status(500).json({ msg: 'Server Error!' });
         }
     }
 }

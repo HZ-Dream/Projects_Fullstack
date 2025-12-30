@@ -30,6 +30,8 @@ var TempImg3 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/ex
 const CreateQuiz = () => {
     const context = useContext(MyContext);
     const [isLoad, setIsLoad] = useState(false);
+    const [loadImg, setLoadImg] = useState(false);
+    const [loadQImg, setLoadQImg] = useState(false);
 
     const [fieldData, setFieldData] = useState([]);
     const [fieldVal, setFieldVal] = useState('');
@@ -48,6 +50,7 @@ const CreateQuiz = () => {
         userId: '',
         quiz: [
             {
+                questionImage: '',
                 questionText: '',
                 options: [{ text: '' }, { text: '' }],
                 correctAnswers: [],
@@ -64,14 +67,59 @@ const CreateQuiz = () => {
     }, []);
 
     // Image Quiz
-    const handleFileChange = (e) => {
+    const onChangeImage = async (e, index) => {
+        setSelectedImg(null);
         const file = e.target.files[0];
-        if (file) {
-            setSelectedImg(URL.createObjectURL(file));
+        if (!file) return;
+
+        if (!['image/jpg', 'image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+            context.handleClickVariant('Only JPEG, PNG, and WEBP files are allowed!', 'warning');
+            return;
+        }
+
+        console.log(file);
+
+        try {
+            index !== null ? setLoadQImg(true) : setLoadImg(true);
+
+            const formData = new FormData();
+
+            formData.append('imageQuiz', file);
+
+            postData('/api/quiz/uploadImage', formData)
+                .then((data) => {
+                    if (index === null) {
+                        setFormField((prev) => ({
+                            ...prev,
+                            image: data.secure_url,
+                        }));
+                    } else {
+                        setFormField((prev) => ({
+                            ...prev,
+                            quiz: prev.quiz.map((q, idx) =>
+                                idx === index ? { ...q, questionImage: data.secure_url } : q,
+                            ),
+                        }));
+                    }
+
+                    index !== null ? setLoadQImg(false) : setLoadImg(false);
+                    context.handleClickVariant('File uploaded successfully!', 'success');
+                })
+                .catch((err) => {
+                    context.handleClickVariant(err, 'error');
+                });
+        } catch (err) {
+            console.error('Error uploading file:', err);
+            context.handleClickVariant('File upload failed!', 'error');
+            index !== null ? setLoadQImg(false) : setLoadImg(false);
         }
     };
 
     const handleSelectDefault = (img) => {
+        setFormField((prev) => ({
+            ...prev,
+            image: img,
+        }));
         setSelectedImg(img);
     };
 
@@ -251,8 +299,9 @@ const CreateQuiz = () => {
                 userId: context.userData.userId,
                 field: fieldVal,
                 level: levelVal,
-                image: selectedImg === null ? defaultImgs[randomIndex] : selectedImg,
+                image: formField.image === '' ? defaultImgs[randomIndex] : formField.image,
                 quiz: formField.quiz.map((q) => ({
+                    questionImage: q.questionImage,
                     questionText: q.questionText,
                     options: q.options.map((opt) => opt.text),
                     correctAnswers: q.correctAnswers,
@@ -275,6 +324,7 @@ const CreateQuiz = () => {
                         userId: '',
                         quiz: [
                             {
+                                questionImage: '',
                                 questionText: '',
                                 options: [{ text: '' }, { text: '' }],
                                 correctAnswers: [],
@@ -433,22 +483,34 @@ const CreateQuiz = () => {
                                 <h6>Image</h6>
                                 <div className="imgUploadBox dFlexAliJus-center">
                                     <div className="uploadBox">
-                                        <input
-                                            className="fileInput"
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleFileChange}
-                                        />
-                                        <div className="previewArea">
-                                            {selectedImg ? (
-                                                <img src={selectedImg} alt="Selected" className="imageArea" />
-                                            ) : (
-                                                <div className="info">
-                                                    <FaRegImages />
-                                                    <h5>Image Upload</h5>
+                                        {loadImg ? (
+                                            <div className="load dFlexAliJus-center">
+                                                <CircularProgress className="loader" color="inherit" />
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <input
+                                                    className="fileInput"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => onChangeImage(e, null)}
+                                                />
+                                                <div className="previewArea">
+                                                    {formField.image ? (
+                                                        <img
+                                                            src={formField.image}
+                                                            alt="Selected"
+                                                            className="imageArea"
+                                                        />
+                                                    ) : (
+                                                        <div className="info">
+                                                            <FaRegImages />
+                                                            <h5>Image Upload</h5>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            )}
-                                        </div>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
 
@@ -492,7 +554,6 @@ const CreateQuiz = () => {
                     </div>
                 </div>
 
-                {/* Show when user clicks any specific quiz */}
                 {activeQuestionIndex !== null && formField.quiz[activeQuestionIndex] && (
                     <div className="card p-4 mt-3">
                         <div className="d-flex justify-content-between align-items-center">
@@ -500,6 +561,42 @@ const CreateQuiz = () => {
                             <Button className="btn-red mb-3" onClick={() => handleRemoveQuestion(activeQuestionIndex)}>
                                 <IoTrashBin />
                             </Button>
+                        </div>
+
+                        <div className="form-group">
+                            <h5>Question Image</h5>
+                            <div className="imgUploadBox dFlexAli-center">
+                                <div className="uploadBox">
+                                    {loadQImg ? (
+                                        <div className="load dFlexAliJus-center">
+                                            <CircularProgress className="loader" color="inherit" />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <input
+                                                className="fileInput"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => onChangeImage(e, activeQuestionIndex)}
+                                            />
+                                            <div className="previewArea">
+                                                {formField.quiz[activeQuestionIndex].questionImage ? (
+                                                    <img
+                                                        src={formField.quiz[activeQuestionIndex].questionImage}
+                                                        alt="Selected"
+                                                        className="imageArea"
+                                                    />
+                                                ) : (
+                                                    <div className="info">
+                                                        <FaRegImages />
+                                                        <h5>Image Upload</h5>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         <div className="form-group">

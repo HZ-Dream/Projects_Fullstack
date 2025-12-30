@@ -272,3 +272,238 @@
         }
     }
 }
+
+.takeQuizWrapper {
+    background: #f4f7fe;
+    padding: 30px 0 60px;
+    min-height: 100vh;
+}
+
+.quizHeader {
+    background: #fff;
+    padding: 20px 25px;
+    border-radius: 15px;
+    border: 1px solid #e5e0e0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+
+    .timerBadge {
+        background: #e3f2fd;
+        color: #1976d2;
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &.warning {
+            background: #ffebee;
+            color: #d32f2f;
+            animation: pulse 1s infinite;
+        }
+    }
+
+    .progressBar {
+        height: 8px;
+        border-radius: 5px;
+        background-color: #eee;
+    }
+}
+
+.questionImageWrapper {
+    width: 100%;
+    max-height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.questionCard {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+
+    .qBadge {
+        background: #f0f2f5;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        color: #555;
+    }
+
+    .markBtn {
+        min-width: auto;
+        color: #ccc;
+        &.active {
+            color: #ffa000;
+        }
+    }
+}
+
+.optionsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .optionBox {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        border: 2px solid #edf2f7;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: #fff;
+
+        &:hover {
+            border-color: #cbd5e0;
+            background: #f8fafc;
+        }
+
+        &.selected {
+            border-color: #1976d2;
+            background: #eff6ff;
+            .optionContent {
+                color: #1976d2;
+                font-weight: 600;
+            }
+        }
+
+        input {
+            display: none;
+        }
+
+        .customCheck {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #cbd5e0;
+            margin-right: 15px;
+            position: relative;
+            transition: all 0.2s;
+            flex-shrink: 0; // Đảm bảo không bị bóp méo khi text dài
+        }
+
+        // --- Style cho câu chọn MỘT (Hình tròn) ---
+        &.singleChoice {
+            .customCheck {
+                border-radius: 50%; // Bo tròn
+            }
+            &.selected .customCheck {
+                border-color: #1976d2;
+                background: #fff; // Giữ nền trắng
+                &::after {
+                    content: '';
+                    width: 10px;
+                    height: 10px;
+                    background: #1976d2;
+                    border-radius: 50%;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+            }
+        }
+
+        // --- Style cho câu chọn NHIỀU (Hình vuông) ---
+        &.multiChoice {
+            .customCheck {
+                border-radius: 4px; // Hình vuông bo góc nhẹ
+            }
+            &.selected .customCheck {
+                border-color: #1976d2;
+                background: #1976d2; // Nền xanh hoàn toàn
+                &::after {
+                    content: '✓'; // Dấu tích cho checkbox
+                    color: white;
+                    font-size: 14px;
+                    font-weight: bold;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+            }
+        }
+
+        // Hiệu ứng Hover
+        &:hover:not(.selected) {
+            border-color: #cbd5e0;
+            background: #f1f5f9;
+            .customCheck {
+                border-color: #94a3b8;
+            }
+        }
+    }
+}
+
+.sidebarSticky {
+    position: sticky;
+    top: 120px;
+}
+
+.statusCard {
+    background: #fff;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+
+    .statRow {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        color: #666;
+    }
+}
+
+.questionNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .navBox {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        cursor: default;
+
+        &.answered {
+            background: #1976d2;
+            color: #fff;
+            border-color: #1976d2;
+        }
+        &.marked {
+            border: 2px solid #ffa000;
+            background: #fff8e1;
+            color: #ffa000;
+        }
+    }
+}
+
+.submitModal {
+    padding: 40px;
+    text-align: center;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}

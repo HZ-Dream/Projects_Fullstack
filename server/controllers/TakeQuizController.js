@@ -62,6 +62,7 @@ class TakeQuizController {
                 const userAnswer = userAnswers.find((ans) => ans.questionId === question._id.toString());
 
                 const resultQuestion = {
+                    questionImage: question.questionImage,
                     questionText: question.questionText,
                     options: question.options,
                     correctAnswers: question.correctAnswers,

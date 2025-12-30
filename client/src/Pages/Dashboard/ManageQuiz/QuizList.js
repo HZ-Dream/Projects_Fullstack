@@ -187,7 +187,7 @@ const QuizList = () => {
                                             <td>
                                                 <div className="actions dFlexAli-center justify-content-around">
                                                     <Button className="detail">
-                                                        <Link to="/product/detail/1">
+                                                        <Link to={`/quiz/${quiz.id}`}>
                                                             <FaEye />
                                                         </Link>
                                                     </Button>

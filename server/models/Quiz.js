@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 // Question
 const QuestionSchema = new Schema({
+    questionImage: { type: String, default: '' },
     questionText: { type: String, required: true },
     options: [{ type: String, required: true }],
     correctAnswers: [{ type: String, required: true }],

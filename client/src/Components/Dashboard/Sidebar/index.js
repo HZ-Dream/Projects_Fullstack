@@ -13,7 +13,7 @@ import { MdQuiz } from 'react-icons/md';
 import Button from '@mui/material/Button';
 
 // React
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState, useContext } from 'react';
 
 // Components
@@ -21,7 +21,6 @@ import { MyContext } from '../../../App';
 
 const Sidebar = () => {
     const context = useContext(MyContext);
-    const navigate = useNavigate();
     const [actClass, setActClass] = useState();
 
     const setAct = (index) => {
@@ -30,17 +29,6 @@ const Sidebar = () => {
         } else {
             setActClass(index);
         }
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-
-        context.setUserData(null);
-        context.setTokenData(null);
-        context.setIsUserLogin(false);
-
-        navigate('/');
     };
 
     return (
@@ -125,9 +113,11 @@ const Sidebar = () => {
 
                 <div className="logoutWrapper">
                     <div className="logoutBox">
-                        <Button className="dFlexAli-center fw-bold" variant="contained" onClick={handleLogout}>
-                            <BiLogOut className="me-2" />
-                            <span>Logout</span>
+                        <Button className="dFlexAli-center fw-bold" variant="contained">
+                            <Link to="/">
+                                <BiLogOut className="me-2" />
+                                <span>Home</span>
+                            </Link>
                         </Button>
                     </div>
                 </div>
