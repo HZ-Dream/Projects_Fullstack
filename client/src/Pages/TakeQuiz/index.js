@@ -1,5 +1,10 @@
+// React
 import React, { useState, useContext, useEffect, useMemo } from 'react';
+
+// Router
 import { useParams, useNavigate } from 'react-router-dom';
+
+// MUI & Icons
 import { Button, Dialog, Slide, CircularProgress, Divider, Tooltip, LinearProgress } from '@mui/material';
 import {
     IoTimeOutline,
@@ -9,10 +14,19 @@ import {
     IoSendOutline,
     IoAlertCircleOutline,
 } from 'react-icons/io5';
+
+// API
+import { fetchDataFromApi, postData } from '../../utils/api';
+
+// Format
+import MathText from '../../Format/MathText';
+
+// Context
+import { MyContext } from '../../App';
+
+// Styles
 import classNames from 'classnames/bind';
 import styles from './TakeQuiz.module.scss';
-import { MyContext } from '../../App';
-import { fetchDataFromApi, postData } from '../../utils/api';
 
 const cx = classNames.bind(styles);
 
@@ -157,7 +171,7 @@ const TakeQuiz = () => {
                                     <div className="d-flex justify-content-between">
                                         <div className="d-flex align-items-center">
                                             <span className={cx('qBadge')}>Question {index + 1}</span>
-                                            {isCheckbox && <small className="ms-2 text-muted">(Multiple Choice)</small>}
+                                            {/* {isCheckbox && <small className="ms-2 text-muted">(Multiple Choice)</small>} */}
                                         </div>
                                         <Tooltip title="Mark for review">
                                             <Button
@@ -169,7 +183,9 @@ const TakeQuiz = () => {
                                         </Tooltip>
                                     </div>
 
-                                    <h5 className="my-4 fw-semibold">{question.questionText}</h5>
+                                    <h5 className="my-4 fw-semibold">
+                                        <MathText text={question.questionText} />
+                                    </h5>
 
                                     {question.questionImage && (
                                         <div className={cx('questionImageWrapper', 'mb-4')}>
@@ -206,7 +222,9 @@ const TakeQuiz = () => {
                                                         style={{ display: 'none' }}
                                                     />
                                                     <span className={cx('customCheck')}></span>
-                                                    <span className={cx('optionContent')}>{option}</span>
+                                                    <span className={cx('optionContent')}>
+                                                        <MathText text={option} />
+                                                    </span>
                                                 </label>
                                             );
                                         })}

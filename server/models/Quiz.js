@@ -12,7 +12,7 @@ const QuestionSchema = new Schema({
 // Quiz
 const QuizSchema = new Schema(
     {
-        image: { type: String, required: true },
+        image: { type: String, default: '' },
         title: { type: String, required: true },
         description: { type: String, required: true },
         field: { type: mongoose.Schema.Types.ObjectId, ref: 'fields', required: true },

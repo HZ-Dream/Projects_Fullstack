@@ -24,6 +24,9 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 // Components
 import RelatedQuizzes from './RelatedQuizzes';
 
+// Format
+import MathText from '../../Format/MathText';
+
 // API
 import { deleteData, fetchDataFromApi, postData } from '../../utils/api';
 
@@ -783,10 +786,12 @@ const QuizDetail = () => {
                                     ) : (
                                         quizList.map((quizItem, index) => (
                                             <div key={index} className={`${cx('tabQuizItem')} mt-2`}>
-                                                <span>{quizItem.questionText}</span>
+                                                <MathText text={quizItem.questionText} />
                                                 <ul>
                                                     {quizItem.options.map((option, idx) => (
-                                                        <li key={idx}>{option}</li>
+                                                        <li key={idx}>
+                                                            <MathText text={option} />
+                                                        </li>
                                                     ))}
                                                 </ul>
                                             </div>

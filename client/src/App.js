@@ -1,6 +1,9 @@
 // Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// KaTeX
+import 'katex/dist/katex.min.css';
+
 // Material UI
 import { useSnackbar } from 'notistack';
 
@@ -23,6 +26,7 @@ import Dashboard from './Pages/Dashboard/index';
 import QuizList from './Pages/Dashboard/ManageQuiz/QuizList';
 import CreateQuiz from './Pages/Dashboard/ManageQuiz/CreateQuiz';
 import EditQuiz from './Pages/Dashboard/ManageQuiz/EditQuiz';
+import GenerateQuiz from './Pages/Dashboard/ManageQuiz/GenerateQuiz';
 
 // Layouts
 import MainLayout from './Layouts/MainLayout';
@@ -168,6 +172,7 @@ function App() {
                         <Route path="/dashboard/quizList/:userId" element={<QuizList />} />
                         <Route path="/dashboard/quizCreate" element={<CreateQuiz />} />
                         <Route path="/dashboard/quizEdit/:quizId" element={<EditQuiz />} />
+                        <Route path="/dashboard/quizGenerate" element={<GenerateQuiz />} />
                     </Route>
                 </Routes>
             </MyContext.Provider>

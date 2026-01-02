@@ -1,50 +1,60 @@
-import { GoogleGenAI } from '@google/genai';
-import 'dotenv/config';
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+require('dotenv/config');
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-async function generateQuizAI(userPrompt) {
+async function generateQuizAI(fieldName, levelName, numberOfQuestions, multipleCorrect) {
     try {
-        const response = await ai.models.generateContent({
-            model: 'gemini-1.5-flash',
-            // Bước "Train" - System Instruction
-            systemInstruction: `
-                Bạn là một chuyên gia soạn đề thi trắc nghiệm, 
-                không cần trả lời nếu có yêu cầu khác không liên quan.
-                Nhiệm vụ của bạn chỉ là tạo ra dữ liệu JSON cho Quiz dựa trên Schema sau:
-                
-                Quiz Schema:
-                - title: Tiêu đề quiz (ngắn gọn, súc tích)
-                - description: Mô tả ngắn
-                - field: Linh vực kiến thức
-                - level: Độ khó (Dễ, Trung bình, Khó)
-                - quiz: Danh sách các Question theo định dạng bên dưới
-                
-                Question Schema:
-                - questionImage: ""
-                - questionText: Nội dung câu hỏi
-                - options: Mảng các chuỗi đáp án (ít nhất 4 đáp án)
-                - correctAnswers: Mảng các chuỗi đáp án đúng (Nếu câu hỏi có nhiều đáp án đúng, hãy đưa hết vào mảng này).
-
-                Yêu cầu: 
-                1. Trả về DUY NHẤT một đối tượng JSON hợp lệ.
-                2. Người dùng truyền thông tin gồm: field, level, số lượng câu hỏi, và yêu cầu về nhiều đáp án đúng.
-                3. Nếu người dùng yêu cầu "nhiều đáp án đúng", hãy đảm bảo mảng correctAnswers có nhiều hơn 1 phần tử ở một số câu.
-            `,
-            contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-            // JSON
-            generationConfig: {
-                responseMimeType: 'application/json',
-            },
+        const model = genAI.getGenerativeModel({
+            model: 'gemini-2.5-flash',
         });
 
-        // Parse kết quả trả về
-        const quizData = JSON.parse(response.text);
-        console.log(JSON.stringify(quizData, null, 2));
-        return quizData;
+        // Cấu hình sinh dữ liệu JSON
+        const generationConfig = {
+            temperature: 1,
+            topP: 0.95,
+            topK: 40,
+            maxOutputTokens: 8192,
+            responseMimeType: 'application/json',
+        };
+
+        const systemInstruction = `
+            Bạn là một chuyên gia soạn đề thi trắc nghiệm. 
+            Nhiệm vụ: Trả về JSON cho Quiz lĩnh vực ${fieldName}, độ khó ${levelName}.
+            Cấu trúc JSON:
+            {
+              "title": "string", // Ngắn gọn, súc tích
+              "description": "string", // Mô tả ngắn về quiz
+              "field": "${fieldName}", // Lĩnh vực của quiz
+              "level": "${levelName}", // Độ khó của quiz
+              "quiz": [
+                {
+                  "questionText": "string",
+                  "options": ["string", "string", "string", "string"], // ít nhất 2 tùy chọn và tối đa 6 tùy chọn
+                  "correctAnswers": ["string"]
+                }
+              ]
+            }
+            Lưu ý: Nếu multipleCorrect là 'true', hãy tạo một số câu có nhiều đáp án đúng.
+        `;
+
+        const userPrompt = `Tạo ${numberOfQuestions} câu hỏi. Yêu cầu nhiều đáp án đúng: ${multipleCorrect}`;
+
+        const result = await model.generateContent(systemInstruction + '\n\n' + userPrompt);
+        const response = await result.response;
+        const text = response.text();
+
+        // Extract JSON from markdown code block if present
+        let jsonString = text;
+        if (text.startsWith('```json') && text.endsWith('```')) {
+            jsonString = text.slice(7, -3).trim();
+        }
+
+        return JSON.parse(jsonString);
     } catch (error) {
-        console.error('Lỗi tạo Quiz:', error.message);
+        console.error('Lỗi tại generateQuizAI:', error.message);
+        throw error;
     }
 }
 
-export { generateQuizAI };
+module.exports = { generateQuizAI };

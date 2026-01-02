@@ -14,11 +14,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // React
 import { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Slider from 'react-slick';
 
 // API
-import { postData } from '../../../utils/api';
+import { fetchDataFromApi, postData } from '../../../utils/api';
 
 import { MyContext } from '../../../App';
 
@@ -29,6 +29,11 @@ var TempImg3 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/ex
 
 const CreateQuiz = () => {
     const context = useContext(MyContext);
+    const location = useLocation();
+    const { formGenerate, dataAI } = location.state || {};
+
+    console.log('location.state:', location.state);
+    console.log('formGenerate:', formGenerate, 'dataAI:', dataAI);
     const [isLoad, setIsLoad] = useState(false);
     const [loadImg, setLoadImg] = useState(false);
     const [loadQImg, setLoadQImg] = useState(false);
@@ -63,7 +68,32 @@ const CreateQuiz = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
 
-        setFieldData(context.fieldData.fieldList);
+        fetchDataFromApi('/api/field/all').then((res) => {
+            setFieldData(res.fieldList);
+        });
+
+        if (formGenerate && dataAI) {
+            setFormField({
+                title: dataAI.title || '',
+                description: dataAI.description || '',
+                field: formGenerate.fieldId || '',
+                level: formGenerate.levelId || '',
+                duration: '',
+                password: '',
+                image: '',
+                userId: '',
+                quiz: dataAI
+                    ? dataAI.quiz.map((q) => ({
+                          questionImage: q.questionImage || '',
+                          questionText: q.questionText || '',
+                          options: q.options ? q.options.map((opt) => ({ text: opt })) : [{ text: '' }, { text: '' }],
+                          correctAnswers: q.correctAnswers || [],
+                      }))
+                    : [{ questionText: '', options: [{ text: '' }, { text: '' }], correctAnswers: [] }],
+            });
+            setFieldVal(formGenerate.fieldId || '');
+            setLevelVal(formGenerate.levelId || '');
+        }
     }, []);
 
     // Image Quiz
@@ -136,7 +166,6 @@ const CreateQuiz = () => {
     };
 
     const defaultImgs = [TempImg1, TempImg2, TempImg3];
-    const randomIndex = Math.floor(Math.random() * defaultImgs.length);
 
     // Handle Quiz
     const onChangeInput = (e) => {
@@ -299,7 +328,7 @@ const CreateQuiz = () => {
                 userId: context.userData.userId,
                 field: fieldVal,
                 level: levelVal,
-                image: formField.image === '' ? defaultImgs[randomIndex] : formField.image,
+                image: formField.image === '' ? defaultImgs[0] : formField.image,
                 quiz: formField.quiz.map((q) => ({
                     questionImage: q.questionImage,
                     questionText: q.questionText,
