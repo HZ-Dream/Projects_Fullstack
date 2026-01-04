@@ -146,6 +146,45 @@ class QuizController {
         }
     }
 
+    // [GET] /quiz/getQuizDashboard/:userId
+    async getQuizDashboard(req, res) {
+        const page = parseInt(req.query.page) || 1;
+        const limit = 5;
+        const skip = (page - 1) * limit;
+        const { userId, field, level } = req.query;
+
+        try {
+            const query = {};
+            // Filter by userId
+            if (userId) {
+                query.userId = userId;
+            }
+
+            // Filter by field
+            if (field) {
+                query.field = field;
+            }
+
+            // Filter by level
+            if (level) {
+                query.level = level;
+            }
+
+            const totalQuizzes = await Quiz.countDocuments(query);
+
+            const quizzes = await Quiz.find(query).populate('field').skip(skip).limit(limit);
+
+            res.status(200).json({
+                quizzes,
+                totalPages: Math.ceil(totalQuizzes / limit),
+                currentPage: page,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
     // [GET] /quiz/getQuiz/:userId
     async getQuiz(req, res) {
         const userId = req.params.userId;

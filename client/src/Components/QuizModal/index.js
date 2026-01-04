@@ -1,9 +1,11 @@
+// React Icons
 import { IoCloseCircleOutline } from 'react-icons/io5';
 import { FaHeart } from 'react-icons/fa';
 import { MdNoteAdd } from 'react-icons/md';
 import { FaHandPointRight } from 'react-icons/fa';
-import Button from '@mui/material/Button';
 
+// MUI
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 
 // Rating
@@ -11,6 +13,9 @@ import Rating from '@mui/material/Rating';
 
 // React
 import { Link } from 'react-router-dom';
+
+// Format
+import MathText from '../../Format/MathText';
 
 // CSS
 import styles from './QuizModal.module.scss';
@@ -33,7 +38,7 @@ const QuizModal = (props) => {
                 </span>
 
                 <span className={cx('fieldQuiz')}>
-                    Field: <b className="ms-2">{quizData?.field}</b>
+                    Field: <b className="ms-2">{quizData?.field.name}</b>
                 </span>
 
                 <Rating name="read-only" value={4.5} readOnly size="small" precision={0.5} />
@@ -73,11 +78,13 @@ const QuizModal = (props) => {
                         ) : (
                             quizData.quiz.map((quizItem, index) => (
                                 <div key={index} className={`${cx('tabQuizItem')} mt-2`}>
-                                    <span>{quizItem.questionText}</span>
+                                    <span>
+                                        <MathText text={quizItem.questionText} />
+                                    </span>
                                     <ul>
                                         {quizItem.options.map((option, idx) => (
                                             <li className="ms-3" key={idx}>
-                                                {option}
+                                                <MathText text={option} />
                                             </li>
                                         ))}
                                     </ul>

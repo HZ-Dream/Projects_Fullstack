@@ -36,6 +36,8 @@ const QuizList = () => {
     const [fieldVal, setFieldVal] = useState('');
     const [levelVal, setLevelVal] = useState('');
     const [quizList, setQuizList] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [page, setPage] = useState(1);
     // Delete Modal
     const [deleteModal, setDeleteModal] = useState(false);
     const [deleteQuizId, setDeleteQuizId] = useState('');
@@ -43,12 +45,40 @@ const QuizList = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
 
-        setFieldData(context.fieldData.fieldList);
+        fetchDataFromApi('/api/field/all').then((res) => {
+            setFieldData(res.fieldList);
+        });
 
-        fetchDataFromApi(`/api/quiz/getQuiz/${userId}`).then((res) => {
-            setQuizList(res);
+        fetchDataFromApi(`/api/quiz/getQuizDashboard/${userId}?page=1`).then((res) => {
+            setQuizList(res.quizzes);
+            setTotalPages(res.totalPages);
         });
     }, []);
+
+    useEffect(() => {
+        const params = new URLSearchParams();
+
+        params.append('page', page);
+
+        if (fieldVal !== '') {
+            params.append('field', fieldVal);
+        }
+
+        if (levelVal !== '') {
+            params.append('level', levelVal);
+        }
+
+        console.log(params.toString());
+
+        fetchDataFromApi(`/api/quiz/getQuizDashboard/${userId}?${params.toString()}`).then((res) => {
+            setQuizList(res.quizzes);
+            setTotalPages(res.totalPages);
+
+            if (fieldVal !== '' || levelVal !== '') {
+                setPage(1);
+            }
+        });
+    }, [page, fieldVal, levelVal]);
 
     // Delete Quiz
     const deleteQuizModal = (id) => {
@@ -60,24 +90,43 @@ const QuizList = () => {
         setDeleteModal(false);
     };
 
+    const fetchQuizzes = (targetPage = page) => {
+        const params = new URLSearchParams();
+        params.append('page', targetPage);
+
+        if (fieldVal) params.append('field', fieldVal);
+        if (levelVal) params.append('level', levelVal);
+
+        fetchDataFromApi(`/api/quiz/getQuizDashboard/${userId}?${params.toString()}`).then((res) => {
+            setQuizList(res.quizzes);
+            setTotalPages(res.totalPages);
+            setPage(targetPage);
+        });
+    };
+
+    useEffect(() => {
+        fetchQuizzes(1);
+    }, [fieldVal, levelVal]);
+
     const deleteQuiz = (e) => {
         e.preventDefault();
         isLoad(true);
 
         deleteData('/api/quiz/deleteQuiz/', deleteQuizId)
-            .then((res) => {
-                context.handleClickVariant('Delete product successful!', 'success');
-                isLoad(false);
+            .then(() => {
+                context.handleClickVariant('Delete quiz successful!', 'success');
                 setDeleteModal(false);
-                fetchDataFromApi(`/api/quiz/getQuiz/${userId}`).then((res) => {
-                    setQuizList(res);
-                });
+
+                const isLastItemOnPage = quizList.length === 1;
+                const newPage = isLastItemOnPage && page > 1 ? page - 1 : page;
+
+                fetchQuizzes(newPage);
             })
             .catch((err) => {
-                isLoad(false);
                 context.handleClickVariant('Something went wrong!', 'error');
                 console.error(err);
-            });
+            })
+            .finally(() => isLoad(false));
     };
 
     return (
@@ -238,7 +287,14 @@ const QuizList = () => {
                                 showing <b>6</b> of <b>60</b> results
                             </p>
 
-                            <Pagination count={10} color="primary" showFirstButton showLastButton />
+                            <Pagination
+                                page={page}
+                                onChange={(e, value) => setPage(value)}
+                                count={totalPages}
+                                color="primary"
+                                showFirstButton
+                                showLastButton
+                            />
                         </div>
                     </div>
                 </div>
