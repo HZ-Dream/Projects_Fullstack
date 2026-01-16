@@ -68,8 +68,6 @@ const QuizList = () => {
             params.append('level', levelVal);
         }
 
-        console.log(params.toString());
-
         fetchDataFromApi(`/api/quiz/getQuizDashboard/${userId}?${params.toString()}`).then((res) => {
             setQuizList(res.quizzes);
             setTotalPages(res.totalPages);

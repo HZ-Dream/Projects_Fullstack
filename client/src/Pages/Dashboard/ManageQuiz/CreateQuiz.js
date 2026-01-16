@@ -23,7 +23,7 @@ import { fetchDataFromApi, postData } from '../../../utils/api';
 import { MyContext } from '../../../App';
 
 // Images
-var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/exam-01_mo1ouc.webp';
+var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1768568455/exam-01_ich5ge.webp';
 var TempImg2 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/exam-02_yudywz.avif';
 var TempImg3 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/exam-03_dcwayo.webp';
 
@@ -166,6 +166,7 @@ const CreateQuiz = () => {
     };
 
     const defaultImgs = [TempImg1, TempImg2, TempImg3];
+    const randomIndex = Math.floor(Math.random() * defaultImgs.length);
 
     // Handle Quiz
     const onChangeInput = (e) => {
@@ -328,7 +329,7 @@ const CreateQuiz = () => {
                 userId: context.userData.userId,
                 field: fieldVal,
                 level: levelVal,
-                image: formField.image === '' ? defaultImgs[0] : formField.image,
+                image: formField.image === '' ? defaultImgs[randomIndex] : formField.image,
                 quiz: formField.quiz.map((q) => ({
                     questionImage: q.questionImage,
                     questionText: q.questionText,

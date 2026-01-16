@@ -23,7 +23,7 @@ import { fetchDataFromApi, editData, postData } from '../../../utils/api';
 import { MyContext } from '../../../App';
 
 // Images
-var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/exam-01_mo1ouc.webp';
+var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1768568455/exam-01_ich5ge.webp';
 var TempImg2 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/exam-02_yudywz.avif';
 var TempImg3 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/exam-03_dcwayo.webp';
 
@@ -65,7 +65,9 @@ const EditQuiz = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
 
-        setFieldData(context.fieldData.fieldList);
+        fetchDataFromApi('/api/field/all').then((res) => {
+            setFieldData(res.fieldList);
+        });
 
         fetchDataFromApi(`/api/quiz/getQuizDetail/${quizId}`)
             .then((res) => {
@@ -151,6 +153,10 @@ const EditQuiz = () => {
     };
 
     const handleSelectDefault = (img) => {
+        setFormField((prev) => ({
+            ...prev,
+            image: img,
+        }));
         setSelectedImg(img);
     };
 
