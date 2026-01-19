@@ -2,19 +2,20 @@
 import { TiThMenu } from 'react-icons/ti';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { TfiLayoutGrid4Alt } from 'react-icons/tfi';
-import { FaAngleDown } from 'react-icons/fa6';
 import { FaSort } from 'react-icons/fa';
 import Button from '@mui/material/Button';
 
 // Menu
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+
 // Pagination
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
 // React
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 // Components
 import Sidebar from '../../Components/Sidebar';
@@ -30,10 +31,14 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
 const Quiz = () => {
+    const location = useLocation();
+    const { searchResults } = location.state || {};
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [sortBy, setSortBy] = useState('');
     const [quizView, setQuizView] = useState('four');
     const [quizData, setQuizData] = useState([]);
+    const [showPage, setShowPage] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const act = cx('act');
@@ -47,11 +52,32 @@ const Quiz = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
 
-        fetchDataFromApi(`/api/quiz/quizList?page=1`).then((res) => {
-            setQuizData(res.quizzes);
-            setTotalPages(res.totalPages);
-        });
+        if (searchResults) {
+            setQuizData(searchResults);
+            setShowPage(false);
+            return;
+        } else {
+            fetchDataFromApi(`/api/quiz/quizList?page=1`).then((res) => {
+                setQuizData(res.quizzes);
+                setTotalPages(res.totalPages);
+                setShowPage(true);
+            });
+        }
     }, []);
+
+    useEffect(() => {
+        if (searchResults) {
+            setQuizData(searchResults);
+            setShowPage(false);
+            return;
+        } else {
+            fetchDataFromApi(`/api/quiz/quizList?page=1`).then((res) => {
+                setQuizData(res.quizzes);
+                setTotalPages(res.totalPages);
+                setShowPage(true);
+            });
+        }
+    }, [searchResults]);
 
     useEffect(() => {
         const params = new URLSearchParams();
@@ -71,8 +97,14 @@ const Quiz = () => {
         }
 
         fetchDataFromApi(`/api/quiz/quizList?${params.toString()}`).then((res) => {
+            if (searchResults) {
+                setQuizData(searchResults);
+                setShowPage(false);
+                return;
+            }
             setQuizData(res.quizzes);
             setTotalPages(res.totalPages);
+            setShowPage(true);
         });
     }, [page, filters]);
 
@@ -107,6 +139,7 @@ const Quiz = () => {
         });
 
         setPage(1);
+        setShowPage(true);
     };
 
     return (
@@ -184,23 +217,27 @@ const Quiz = () => {
                             </div>
 
                             <div className={cx('productListing')}>
+                                {quizData.length === 0 && <h3>No quizzes found.</h3>}
+
                                 {quizData?.length > 0 &&
                                     quizData.map((item) => {
                                         return <QuizItem key={item._id} itemView={quizView} data={item} />;
                                     })}
                             </div>
 
-                            <div className="d-flex align-items-center justify-content-center mt-5">
-                                <Stack spacing={2}>
-                                    <Pagination
-                                        onChange={(e, value) => setPage(value)}
-                                        count={totalPages}
-                                        color="primary"
-                                        size="large"
-                                        showFirstButton
-                                        showLastButton
-                                    />
-                                </Stack>
+                            <div style={{ display: showPage ? 'block' : 'none' }}>
+                                <div className="d-flex align-items-center justify-content-center mt-5">
+                                    <Stack spacing={2}>
+                                        <Pagination
+                                            onChange={(e, value) => setPage(value)}
+                                            count={totalPages}
+                                            color="primary"
+                                            size="large"
+                                            showFirstButton
+                                            showLastButton
+                                        />
+                                    </Stack>
+                                </div>
                             </div>
                         </div>
                     </div>

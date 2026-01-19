@@ -5,9 +5,11 @@ const quizReviewRouter = require('./quizReview');
 const replyRouter = require('./reply');
 const fieldRouter = require('./field');
 const geminiRouter = require('./gemini');
+const searchRouter = require('./search');
 
 function route(app) {
     app.use('/api/gemini', geminiRouter);
+    app.use('/api/search', searchRouter);
 
     app.use('/api/auth', authRouter);
 

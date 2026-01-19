@@ -139,20 +139,20 @@ const Footer = () => {
             </div>
 
             <div className={`${cx('copyright')} mt-3 pt-3 pb-3 d-flex align-items-center`}>
-                <p className="mb-0">Copyright 2025 ©. All rights reserved. Powered by Dream.</p>
+                <p className="mb-0">Copyright 2026 ©. All rights reserved. Powered by Dream.</p>
                 <ul className="list list-inline ms-auto mb-0">
                     <li className="list-inline-item">
-                        <Link to="#">
+                        <Link target="_blank" to="https://www.facebook.com/ngochoai.120904">
                             <FaFacebookF />
                         </Link>
                     </li>
                     <li className="list-inline-item">
-                        <Link to="#">
+                        <Link target="_blank" to="https://www.tiktok.com/@nhoai1209">
                             <FaTiktok />
                         </Link>
                     </li>
                     <li className="list-inline-item">
-                        <Link to="#">
+                        <Link target="_blank" to="https://www.youtube.com/@ngochoai1209">
                             <FaYoutube />
                         </Link>
                     </li>

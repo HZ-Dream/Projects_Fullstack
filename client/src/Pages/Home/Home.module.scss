@@ -19,7 +19,7 @@
 .viewAllBtn {
     padding: 6px 23px !important;
     background-color: var(--white-color) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border: 3px solid rgba(0, 0, 0, 0.4) !important;
     border-radius: 30px !important;
     color: var(--gray-color) !important;
     text-transform: capitalize !important;
@@ -30,7 +30,7 @@
 }
 
 .product_row {
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    // border-right: 1px solid rgba(0, 0, 0, 0.1);
 
     :global(.slick-arrow) {
         position: absolute;

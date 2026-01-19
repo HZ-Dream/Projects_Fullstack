@@ -102,7 +102,7 @@ class QuizController {
     // [GET] /quiz/quizList?page=num
     async getQuizList(req, res) {
         const page = parseInt(req.query.page) || 1;
-        const limit = 2;
+        const limit = 5;
         const skip = (page - 1) * limit;
         const { field, most, sort } = req.query;
 

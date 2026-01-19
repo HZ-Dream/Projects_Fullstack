@@ -1,9 +1,8 @@
 .productItem {
-    width: 100%;
+    width: 97%;
     height: auto;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border: 3px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 15px;
     cursor: pointer;
     position: relative;
 
@@ -21,12 +20,6 @@
         }
     }
 
-    &.four,
-    &.three,
-    &.one {
-        border-right: 1px solid rgba(0, 0, 0, 0.1);
-    }
-
     &.four {
         width: 24.05%;
     }
@@ -42,8 +35,9 @@
         background: var(--white-color) !important;
 
         & .imgWrapper {
-            width: 197px !important;
-            height: 167px !important;
+            width: 300px !important;
+            border-bottom-left-radius: 11px;
+            border-top-right-radius: 0 !important;
 
             img {
                 height: 100% !important;
@@ -54,12 +48,21 @@
         a {
             display: flex;
         }
+
+        &:hover {
+            .actions {
+                opacity: 1;
+                visibility: inherit;
+                right: 30px;
+            }
+        }
     }
 }
 
 .productItem.itemRow_4 {
     width: 24%;
-    border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border: 3px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 15px;
     overflow: hidden;
 }
 
@@ -73,6 +76,8 @@
 
 .imgWrapper {
     overflow: hidden;
+    border-top-left-radius: 11px;
+    border-top-right-radius: 11px;
 
     img {
         height: 150px;
@@ -100,6 +105,7 @@
         border-radius: 50% !important;
         border: 1px solid rgba(0, 0, 0, 0.1);
         box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+        background: var(--bs-body-bg);
 
         svg {
             font-size: 15px;
@@ -107,10 +113,8 @@
         }
 
         &:hover {
-            background-color: var(--primary-color);
-
             svg {
-                color: var(--white-color);
+                color: red;
             }
         }
     }
@@ -119,6 +123,8 @@
 .info {
     padding: 15px;
     background: var(--white-color);
+    border-bottom-left-radius: 11px;
+    border-bottom-right-radius: 11px;
 
     h4 {
         height: 36px;
