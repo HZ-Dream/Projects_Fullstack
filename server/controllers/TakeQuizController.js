@@ -48,7 +48,8 @@ class TakeQuizController {
         const { quizId, userId, userAnswers, duration } = req.body;
 
         try {
-            const originalQuiz = await Quiz.findById(quizId);
+            const originalQuiz = await Quiz.findByIdAndUpdate(quizId, { $inc: { attempts: 1 } }, { new: false });
+
             if (!originalQuiz) {
                 return res.status(404).json({ msg: 'Quiz not found!' });
             }

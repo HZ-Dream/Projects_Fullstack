@@ -1,4 +1,5 @@
 const QuizReview = require('../models/QuizReview');
+const Quiz = require('../models/Quiz');
 const Reply = require('../models/Reply');
 
 async function deleteRepliesRecursively(parentId) {
@@ -10,6 +11,47 @@ async function deleteRepliesRecursively(parentId) {
 }
 
 class QuizReviewController {
+    // [GET] /quizReview/getRates/:quizId
+    async getRates(req, res) {
+        try {
+            const { quizId } = req.params;
+            const reviews = await QuizReview.find({ quizId }).lean();
+
+            if (reviews.length === 0) {
+                return res.status(200).json({
+                    averageRating: 0,
+                    totalReviews: 0,
+                    fiveStarCount: 0,
+                    fourStarCount: 0,
+                    threeStarCount: 0,
+                    twoStarCount: 0,
+                    oneStarCount: 0,
+                });
+            }
+
+            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+            const averageRating = Math.round((totalRating / reviews.length) * 10) / 10;
+
+            const fiveStarCount = reviews.filter((review) => review.rating === 4.5 || review.rating === 5).length;
+            const fourStarCount = reviews.filter((review) => review.rating === 3.5 || review.rating === 4).length;
+            const threeStarCount = reviews.filter((review) => review.rating === 2.5 || review.rating === 3).length;
+            const twoStarCount = reviews.filter((review) => review.rating === 1.5 || review.rating === 2).length;
+            const oneStarCount = reviews.filter((review) => review.rating === 0.5 || review.rating === 1).length;
+
+            res.status(200).json({
+                averageRating: parseFloat(averageRating.toFixed(2)),
+                totalReviews: reviews.length,
+                fiveStarCount,
+                fourStarCount,
+                threeStarCount,
+                twoStarCount,
+                oneStarCount,
+            });
+        } catch (error) {
+            res.status(500).json({ message: 'Server error', error: error.message });
+        }
+    }
+
     // [GET] /quizReview/getReviews/:quizId
     async getReviews(req, res) {
         try {
@@ -34,6 +76,10 @@ class QuizReviewController {
     async submitReview(req, res) {
         try {
             const { quizId, userId, userName, userImage, review, rating } = req.body;
+            const originalQuiz = await Quiz.findById(quizId).lean();
+            if (!originalQuiz) {
+                return res.status(404).json({ msg: 'Quiz not found!' });
+            }
 
             const newReview = new QuizReview({
                 quizId,
@@ -45,6 +91,16 @@ class QuizReviewController {
             });
 
             const savedReview = await newReview.save();
+
+            const reviews = await QuizReview.find({ quizId }).lean();
+
+            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+            const averageRating = Math.round((totalRating / reviews.length) * 10) / 10;
+
+            await Quiz.findByIdAndUpdate(quizId, {
+                rate: averageRating.toFixed(1),
+                totalRate: reviews.length,
+            });
 
             res.status(201).json({
                 msg: 'Review submitted successfully',

@@ -17,6 +17,8 @@ const QuizSchema = new Schema(
         description: { type: String, required: true },
         field: { type: mongoose.Schema.Types.ObjectId, ref: 'fields', required: true },
         rate: { type: String, default: '' },
+        totalRate: { type: Number, default: 0 },
+        attempts: { type: Number, default: 0 },
         level: { type: String, required: true },
         duration: { type: Number, required: true },
         password: { type: String },

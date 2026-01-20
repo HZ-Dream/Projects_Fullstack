@@ -56,29 +56,29 @@ const QuizItem = (props) => {
                         <FaClock />
                         <span className="ms-1">{formattedDate(quizData?.updatedAt)}</span>
                     </span>
-                    <div className="d-flex align-items-center">
+                    <div title="rate" className="d-flex align-items-center">
                         <Rating
                             className="mt-2 mb-2"
                             name="read-only"
-                            value={4.5}
+                            value={quizData?.rate}
                             readOnly
                             size="small"
-                            precision={0.5}
+                            precision={0.1}
                         />
                         <div className="ms-2 d-flex align-items-center">
-                            <div className="me-1">245</div>
+                            <div className="me-1">{quizData?.totalRate}</div>
                             <RiNumbersFill />
                         </div>
                     </div>
 
                     <div className="d-flex">
-                        <div className={`${cx('numberOfQuiz')} d-flex align-items-center`}>
+                        <div title="Number of Quiz" className={`${cx('numberOfQuiz')} d-flex align-items-center`}>
                             <MdQuiz />
-                            <span className="text ms-1">23</span>
+                            <span className="text ms-1">{quizData?.quiz?.length}</span>
                         </div>
-                        <span className={`${cx('numberOfUser')} ms-3 d-flex align-items-center`}>
+                        <span title="Attempts" className={`${cx('numberOfUser')} ms-3 d-flex align-items-center`}>
                             <FaUserEdit />
-                            <span className="text ms-1">456</span>
+                            <span className="text ms-1">{quizData?.attempts}</span>
                         </span>
                     </div>
 

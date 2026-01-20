@@ -63,9 +63,28 @@ const QuizDetail = () => {
     // State cho form review
     const [rate, setRate] = useState(0);
     const [reviews, setReviews] = useState({
+        quizId: quizId,
         review: '',
         userName: '',
         rating: 0,
+    });
+
+    const [rateData, setRateData] = useState({
+        averageRating: 0,
+        totalReviews: 0,
+        fiveStarCount: 0,
+        fourStarCount: 0,
+        threeStarCount: 0,
+        twoStarCount: 0,
+        oneStarCount: 0,
+    });
+
+    const [percenRateData, setPercenRateData] = useState({
+        fiveStarPercen: 0,
+        fourStarPercen: 0,
+        threeStarPercen: 0,
+        twoStarPercen: 0,
+        oneStarPercen: 0,
     });
 
     // State cho phần reply
@@ -106,6 +125,31 @@ const QuizDetail = () => {
                     setTakenQuiz([]);
                 });
         }
+
+        fetchDataFromApi(`/api/quizReview/getRates/${quizId}`)
+            .then((res) => {
+                setRateData(res);
+
+                setPercenRateData({
+                    fiveStarPercen: formatPercentage(res.fiveStarCount, res.totalReviews),
+                    fourStarPercen: formatPercentage(res.fourStarCount, res.totalReviews),
+                    threeStarPercen: formatPercentage(res.threeStarCount, res.totalReviews),
+                    twoStarPercen: formatPercentage(res.twoStarCount, res.totalReviews),
+                    oneStarPercen: formatPercentage(res.oneStarCount, res.totalReviews),
+                });
+            })
+            .catch((err) => {
+                console.error('Error fetching rate data:', err);
+                setRateData({
+                    averageRating: 0,
+                    totalReviews: 0,
+                    fiveStarCount: 0,
+                    fourStarCount: 0,
+                    threeStarCount: 0,
+                    twoStarCount: 0,
+                    oneStarCount: 0,
+                });
+            });
     }, [quizId, userData?.userId, context]);
 
     const loadReviews = useCallback(() => {
@@ -117,6 +161,33 @@ const QuizDetail = () => {
             .catch((err) => {
                 console.error('Error fetching review data:', err);
                 setReviewData([]);
+            });
+    }, [quizId]);
+
+    const loadRateData = useCallback(() => {
+        fetchDataFromApi(`/api/quizReview/getRates/${quizId}`)
+            .then((res) => {
+                setRateData(res);
+
+                setPercenRateData({
+                    fiveStarPercen: formatPercentage(res.fiveStarCount, res.totalReviews),
+                    fourStarPercen: formatPercentage(res.fourStarCount, res.totalReviews),
+                    threeStarPercen: formatPercentage(res.threeStarCount, res.totalReviews),
+                    twoStarPercen: formatPercentage(res.twoStarCount, res.totalReviews),
+                    oneStarPercen: formatPercentage(res.oneStarCount, res.totalReviews),
+                });
+            })
+            .catch((err) => {
+                console.error('Error fetching rate data:', err);
+                setRateData({
+                    averageRating: 0,
+                    totalReviews: 0,
+                    fiveStarCount: 0,
+                    fourStarCount: 0,
+                    threeStarCount: 0,
+                    twoStarCount: 0,
+                    oneStarCount: 0,
+                });
             });
     }, [quizId]);
 
@@ -142,6 +213,12 @@ const QuizDetail = () => {
         const formattedSeconds = String(seconds).padStart(2, '0');
 
         return `${formattedMinutes}:${formattedSeconds}`;
+    };
+
+    const formatPercentage = (score, total) => {
+        if (total === 0) return '0%';
+        const percentage = (score / total) * 100;
+        return `${percentage.toFixed(1)}%`;
     };
 
     const confirmPassword = () => {
@@ -230,6 +307,8 @@ const QuizDetail = () => {
 
         reviews.rating = rate;
 
+        console.log('Review to submit:', reviews);
+
         postData('/api/quizReview/submitReview', reviews)
             .then((res) => {
                 context.handleClickVariant('Review submitted successfully!', 'success');
@@ -241,6 +320,7 @@ const QuizDetail = () => {
                 setRate(0);
 
                 loadReviews();
+                loadRateData();
             })
             .catch((err) => {
                 console.error('Error submitting review:', err);
@@ -434,7 +514,7 @@ const QuizDetail = () => {
                             <div className="dFlexAli-center mb-2">
                                 <RiNumbersFill />
                                 <span className="mx-2">Number of Attempts:</span>
-                                <b>245</b>
+                                <b>{quizData?.attempts}</b>
                             </div>
 
                             <div className="dFlexAli-center my-3">
@@ -724,50 +804,65 @@ const QuizDetail = () => {
                                                 <Rating
                                                     className="me-1"
                                                     name="read-only"
-                                                    value={4.5}
+                                                    value={rateData?.averageRating || 0}
                                                     readOnly
                                                     size="small"
-                                                    precision={0.5}
+                                                    precision={0.1}
                                                 />
-                                                <h6>4.5 out of 5</h6>
+                                                <h6>{rateData?.averageRating || 0} out of 5</h6>
                                             </div>
                                             <div className={`${cx('progressBarBox')} dFlexAli-center`}>
-                                                <span className="me-3">5 star</span>
+                                                <span className="me-4">5 star</span>
                                                 <div className={cx('progress')}>
-                                                    <div className={cx('progress-bar')} style={{ width: '78%' }}>
-                                                        78%
+                                                    <div
+                                                        className={cx('progress-bar')}
+                                                        style={{ width: percenRateData?.fiveStarPercen || '0%' }}
+                                                    >
+                                                        {percenRateData?.fiveStarPercen || '0%'}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className={`${cx('progressBarBox')} dFlexAli-center`}>
-                                                <span className="me-3">4 star</span>
+                                                <span className="me-4">4 star</span>
                                                 <div className={cx('progress')}>
-                                                    <div className={cx('progress-bar')} style={{ width: '85%' }}>
-                                                        85%
+                                                    <div
+                                                        className={cx('progress-bar')}
+                                                        style={{ width: percenRateData?.fourStarPercen || '0%' }}
+                                                    >
+                                                        {percenRateData?.fourStarPercen || '0%'}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className={`${cx('progressBarBox')} dFlexAli-center`}>
-                                                <span className="me-3">3 star</span>
+                                                <span className="me-4">3 star</span>
                                                 <div className={cx('progress')}>
-                                                    <div className={cx('progress-bar')} style={{ width: '70%' }}>
-                                                        70%
+                                                    <div
+                                                        className={cx('progress-bar')}
+                                                        style={{ width: percenRateData?.threeStarPercen || '0%' }}
+                                                    >
+                                                        {percenRateData?.threeStarPercen || '0%'}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className={`${cx('progressBarBox')} dFlexAli-center`}>
-                                                <span className="me-3">2 star</span>
+                                                <span className="me-4">2 star</span>
                                                 <div className={cx('progress')}>
-                                                    <div className={cx('progress-bar')} style={{ width: '40%' }}>
-                                                        40%
+                                                    <div
+                                                        className={cx('progress-bar')}
+                                                        style={{ width: percenRateData?.twoStarPercen || '0%' }}
+                                                    >
+                                                        {percenRateData?.twoStarPercen || '0%'}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className={`${cx('progressBarBox')} dFlexAli-center mb-3`}>
-                                                <span className="me-3">1 star</span>
+                                                <span className="me-4">1 star</span>
                                                 <div className={cx('progress')}>
-                                                    <div className={cx('progress-bar')} style={{ width: '18%' }}>
-                                                        18%
+                                                    <div
+                                                        className={cx('progress-bar')}
+                                                        style={{ width: percenRateData?.oneStarPercen || '0%' }}
+                                                    >
+                                                        {percenRateData?.oneStarPercen || '0%'}
                                                     </div>
                                                 </div>
                                             </div>

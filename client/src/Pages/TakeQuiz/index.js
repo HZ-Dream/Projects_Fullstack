@@ -171,7 +171,6 @@ const TakeQuiz = () => {
                                     <div className="d-flex justify-content-between">
                                         <div className="d-flex align-items-center">
                                             <span className={cx('qBadge')}>Question {index + 1}</span>
-                                            {/* {isCheckbox && <small className="ms-2 text-muted">(Multiple Choice)</small>} */}
                                         </div>
                                         <Tooltip title="Mark for review">
                                             <Button

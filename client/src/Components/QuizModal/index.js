@@ -41,7 +41,7 @@ const QuizModal = (props) => {
                     Field: <b className="ms-2">{quizData?.field.name}</b>
                 </span>
 
-                <Rating name="read-only" value={4.5} readOnly size="small" precision={0.5} />
+                <Rating name="read-only" value={quizData?.rate} readOnly size="small" precision={0.1} />
             </div>
 
             <hr />
