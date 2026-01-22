@@ -184,11 +184,7 @@ const Dashboard = () => {
                                         <div className="dFlexAli-center productBox">
                                             <div className="imgWrapper">
                                                 <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
-                                                        alt="Image"
-                                                    />
+                                                    <img className="w-100" src="" alt="Image" />
                                                 </div>
                                             </div>
 

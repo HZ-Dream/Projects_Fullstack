@@ -13,6 +13,7 @@ import couponImg from '../../assets/images/coupon.png';
 // React
 import { useState, useEffect } from 'react';
 import Slider from 'react-slick';
+import { Link } from 'react-router-dom';
 
 // Components
 import HomeBanner from '../../Components/HomeBanner';
@@ -74,7 +75,9 @@ const Home = () => {
                                 </div>
 
                                 <Button className={`${cx('viewAllBtn')} ms-auto`}>
-                                    View All <IoIosArrowRoundForward />
+                                    <Link to="/quiz">
+                                        View All <IoIosArrowRoundForward />
+                                    </Link>
                                 </Button>
                             </div>
 
@@ -94,13 +97,15 @@ const Home = () => {
                                 </div>
 
                                 <Button className={`${cx('viewAllBtn')} ms-auto`}>
-                                    View All <IoIosArrowRoundForward />
+                                    <Link to="/quiz">
+                                        View All <IoIosArrowRoundForward />
+                                    </Link>
                                 </Button>
                             </div>
 
                             <div className={`${cx('productNew_row')} w-100 mt-4 d-flex`}>
                                 {quizData?.length > 0 &&
-                                    quizData.map((item, index) => {
+                                    quizData.slice(0, 8).map((item, index) => {
                                         return <QuizItem key={index} className="itemRow_4" data={item} />;
                                     })}
                             </div>

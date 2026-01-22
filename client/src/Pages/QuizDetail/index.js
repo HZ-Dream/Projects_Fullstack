@@ -271,6 +271,36 @@ const QuizDetail = () => {
         }
     };
 
+    // Change Wishlist
+    const changeHeartColor = () => {
+        if (context.userData?.wishlist?.includes(quizId)) {
+            return { color: 'red' };
+        }
+        return { color: 'gray' };
+    };
+
+    const handleHeartClick = (e) => {
+        e.preventDefault();
+
+        if (!context.userData || !context.userData.userId) {
+            context.handleClickVariant('Please sign in to add to wishlist', 'warning');
+            return;
+        }
+
+        const data = {
+            userId: context.userData.userId,
+            quizId: quizId,
+        };
+
+        postData('/api/user/addToWishlist', data)
+            .then((res) => {
+                context.updateWishlist(res.wishlist);
+            })
+            .catch((err) => {
+                context.handleClickVariant('Failed to add quiz to wishlist', 'error');
+            });
+    };
+
     // Handle review
     const onChangeInput = (e) => {
         setReviews(() => ({
@@ -323,8 +353,7 @@ const QuizDetail = () => {
                 loadRateData();
             })
             .catch((err) => {
-                console.error('Error submitting review:', err);
-                context.handleClickVariant('Failed to submit review. Please try again later.', 'error');
+                context.handleClickVariant(err.response.data.msg, 'warning');
             });
     };
 
@@ -457,6 +486,7 @@ const QuizDetail = () => {
                     context.handleClickVariant('Review deleted successfully!', 'success');
 
                     loadReviews();
+                    loadRateData();
                 })
                 .catch((err) => {
                     console.error('Error delete review:', err);
@@ -523,8 +553,13 @@ const QuizDetail = () => {
                             </div>
 
                             <div className="dFlexAli-center mt-3 actions">
-                                <Button className="btn-gray btn-round text-capitalize btn-sml" variant="outlined">
-                                    <FaHeart className="me-2" /> Add Wishlist
+                                <Button
+                                    onClick={handleHeartClick}
+                                    className="btn-gray btn-round text-capitalize btn-sml"
+                                    variant="outlined"
+                                >
+                                    <FaHeart className="me-2" style={changeHeartColor()} />
+                                    <span style={changeHeartColor()}>Add Wishlist</span>
                                 </Button>
 
                                 <Button className="btn-gray btn-round text-capitalize btn-sml ms-2" variant="outlined">

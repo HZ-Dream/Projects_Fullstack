@@ -20,6 +20,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { fetchDataFromApi, postData, editData } from '../../utils/api';
 
 import { MyContext } from '../../App';
+import MyQuizzes from './myQuizzes';
 
 const Profile = () => {
     const context = useContext(MyContext);
@@ -47,7 +48,7 @@ const Profile = () => {
         window.scrollTo(0, 0);
 
         if (userId) {
-            fetchDataFromApi(`/api/auth/getUser/${userId}`).then((res) => {
+            fetchDataFromApi(`/api/user/getUser/${userId}`).then((res) => {
                 setFormFields({
                     name: res.name,
                     email: res.email,
@@ -128,7 +129,7 @@ const Profile = () => {
         setIsLoad(true);
         console.log(formFields);
 
-        editData(`/api/auth/updateUser/${userId}`, formFields)
+        editData(`/api/user/updateUser/${userId}`, formFields)
             .then((res) => {
                 if (res) {
                     setIsLoad(false);
@@ -162,7 +163,7 @@ const Profile = () => {
             setIsLoad(true);
             console.log(passwordFormFields);
 
-            editData(`/api/auth/updatePassword/${userId}`, passwordFormFields)
+            editData(`/api/user/updatePassword/${userId}`, passwordFormFields)
                 .then((res) => {
                     context.handleClickVariant('Password changed successfully!', 'success');
                     setIsLoad(false);
@@ -210,7 +211,7 @@ const Profile = () => {
                                                         <IoMdCloudUpload />
                                                         <input
                                                             type="file"
-                                                            onChange={(e) => onChangeFile(e, '/api/auth/uploadAvatar')}
+                                                            onChange={(e) => onChangeFile(e, '/api/user/uploadAvatar')}
                                                         />
                                                     </div>
                                                 </>
@@ -222,7 +223,7 @@ const Profile = () => {
                                                         <input
                                                             type="file"
                                                             onChange={(e) =>
-                                                                onChangeFile(e, `/api/auth/replaceAvatar/${userId}`)
+                                                                onChangeFile(e, `/api/user/replaceAvatar/${userId}`)
                                                             }
                                                         />
                                                     </div>
@@ -335,6 +336,8 @@ const Profile = () => {
                     </TabContext>
                 </Box>
             </div>
+
+            <MyQuizzes />
         </section>
     );
 };

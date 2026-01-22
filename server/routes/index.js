@@ -1,4 +1,4 @@
-const authRouter = require('./auth');
+const userRouter = require('./user');
 const quizRouter = require('./quiz');
 const takeQuizRouter = require('./takeQuiz');
 const quizReviewRouter = require('./quizReview');
@@ -11,7 +11,7 @@ function route(app) {
     app.use('/api/gemini', geminiRouter);
     app.use('/api/search', searchRouter);
 
-    app.use('/api/auth', authRouter);
+    app.use('/api/user', userRouter);
 
     app.use('/api/quiz', quizRouter);
     app.use('/api/takeQuiz', takeQuizRouter);

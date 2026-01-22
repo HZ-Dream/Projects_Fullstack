@@ -12,19 +12,55 @@ import Dialog from '@mui/material/Dialog';
 import Rating from '@mui/material/Rating';
 
 // React
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 // Format
 import MathText from '../../Format/MathText';
 
+// API
+import { postData } from '../../utils/api';
+
 // CSS
 import styles from './QuizModal.module.scss';
 import classNames from 'classnames/bind';
 
+import { MyContext } from '../../App';
+
 const cx = classNames.bind(styles);
 
 const QuizModal = (props) => {
+    const context = useContext(MyContext);
     const quizData = props?.data;
+
+    const changeHeartColor = () => {
+        if (context.userData?.wishlist?.includes(quizData.id) || quizData.isInWishlist) {
+            return { color: 'red' };
+        }
+        return { color: 'gray' };
+    };
+
+    const handleHeartClick = (e) => {
+        e.preventDefault();
+
+        if (!context.userData || !context.userData.userId) {
+            context.handleClickVariant('Please sign in to add to wishlist', 'warning');
+            return;
+        }
+
+        const data = {
+            userId: context.userData.userId,
+            quizId: quizData.id,
+        };
+
+        postData('/api/user/addToWishlist', data)
+            .then((res) => {
+                context.updateWishlist(res.wishlist);
+            })
+            .catch((err) => {
+                context.handleClickVariant('Failed to add quiz to wishlist', 'error');
+            });
+    };
 
     return (
         <Dialog className={cx('quizModal')} open={props.isOpen}>
@@ -60,8 +96,13 @@ const QuizModal = (props) => {
                             </Link>
                         </Button>
 
-                        <Button className="btn-round text-capitalize btn-sml ms-2 me-2" variant="outlined">
-                            <FaHeart className="me-2" /> Add Wishlist
+                        <Button
+                            onClick={handleHeartClick}
+                            className="btn-round text-capitalize btn-sml ms-2 me-2"
+                            variant="outlined"
+                        >
+                            <FaHeart className="me-2" style={changeHeartColor()} />
+                            <span style={changeHeartColor()}>Add Wishlist</span>
                         </Button>
 
                         <Button className="btn-round text-capitalize btn-sml" variant="outlined">

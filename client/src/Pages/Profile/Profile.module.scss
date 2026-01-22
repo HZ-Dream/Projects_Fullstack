@@ -1,0 +1,10 @@
+.quizList_row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+.quizItem {
+    width: 253px !important;
+}

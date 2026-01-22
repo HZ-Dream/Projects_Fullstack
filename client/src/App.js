@@ -123,6 +123,18 @@ function App() {
         }
     };
 
+    const updateWishlist = (newWishlist) => {
+        const wishlist = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).wishlist : null;
+        if (wishlist) {
+            const updatedUser = {
+                ...userData,
+                wishlist: newWishlist,
+            };
+            setUserData(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
+    };
+
     const handleClickVariant = (message, variant) => {
         console.log(`Message: ${message}, Variant: ${variant}`);
 
@@ -146,6 +158,7 @@ function App() {
         setDarkMode,
         activeTabs,
         setActiveTabs,
+        updateWishlist,
     };
 
     return (

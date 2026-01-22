@@ -81,6 +81,11 @@ class QuizReviewController {
                 return res.status(404).json({ msg: 'Quiz not found!' });
             }
 
+            const existingReview = await QuizReview.findOne({ quizId, userId });
+            if (existingReview) {
+                return res.status(400).json({ msg: 'You have already submitted a review for this quiz!' });
+            }
+
             const newReview = new QuizReview({
                 quizId,
                 userId,
@@ -116,6 +121,17 @@ class QuizReviewController {
         const id = req.params.id;
         try {
             const deletedReview = await QuizReview.findByIdAndDelete(id);
+            const quizId = deletedReview.quizId;
+
+            const reviews = await QuizReview.find({ quizId }).lean();
+
+            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+            const averageRating = reviews.length > 0 ? Math.round((totalRating / reviews.length) * 10) / 10 : 0;
+            await Quiz.findByIdAndUpdate(quizId, {
+                rate: averageRating.toFixed(1),
+                totalRate: reviews.length,
+            });
+
             if (!deletedReview) {
                 return res.status(404).json({ msg: 'Review not found!' });
             }

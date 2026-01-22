@@ -14,19 +14,25 @@ import AvatarImg from '../../assets/images/avatar.jpg';
 import Rating from '@mui/material/Rating';
 
 // React
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 // Components
 import QuizModal from '../QuizModal';
 
+// API
+import { postData } from '../../utils/api';
+
 // CSS
 import styles from './QuizItem.module.scss';
 import classNames from 'classnames/bind';
 
+import { MyContext } from '../../App';
+
 const cx = classNames.bind(styles);
 
 const QuizItem = (props) => {
+    const context = useContext(MyContext);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [quizData, setQuizData] = useState(props.data);
 
@@ -41,6 +47,39 @@ const QuizItem = (props) => {
     const formattedDate = (dateString) => {
         const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
         return new Date(dateString).toLocaleDateString('vi-VN', options);
+    };
+
+    const changeHeartColor = () => {
+        if (context.userData?.wishlist?.includes(quizData.id) || quizData.isInWishlist) {
+            return { color: 'red' };
+        }
+        return { color: 'gray' };
+    };
+
+    const handleHeartClick = (e) => {
+        e.preventDefault();
+
+        if (!context.userData || !context.userData.userId) {
+            context.handleClickVariant('Please sign in to add to wishlist', 'warning');
+            return;
+        }
+
+        const data = {
+            userId: context.userData.userId,
+            quizId: quizData.id,
+        };
+
+        postData('/api/user/addToWishlist', data)
+            .then((res) => {
+                context.updateWishlist(res.wishlist);
+
+                if (props.onRemoveFromWishlist) {
+                    props.onRemoveFromWishlist(quizData._id);
+                }
+            })
+            .catch((err) => {
+                context.handleClickVariant('Failed to add quiz to wishlist', 'error');
+            });
     };
 
     return (
@@ -90,8 +129,8 @@ const QuizItem = (props) => {
             </Link>
 
             <div className={cx('actions')}>
-                <Button>
-                    <FaHeart />
+                <Button onClick={handleHeartClick}>
+                    <FaHeart style={changeHeartColor()} />
                 </Button>
                 <Button onClick={() => viewQuizDetails(1)}>
                     <LuScanEye />

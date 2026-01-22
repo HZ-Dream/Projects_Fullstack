@@ -51,7 +51,7 @@ const SignIn = () => {
 
             setIsLoad(true);
 
-            postData('/api/auth/signIn', formfields)
+            postData('/api/user/signIn', formfields)
                 .then((res) => {
                     setIsLoad(false);
                     context.handleClickVariant('Sign In account success!', 'success');
@@ -65,6 +65,7 @@ const SignIn = () => {
                         email: res.user?.email,
                         userId: res.user?.id,
                         userImage: res.user?.image,
+                        wishlist: res.user?.wishlist,
                     };
 
                     localStorage.setItem('user', JSON.stringify(user));

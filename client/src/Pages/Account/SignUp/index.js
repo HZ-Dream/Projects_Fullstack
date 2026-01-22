@@ -60,7 +60,7 @@ const SignUp = () => {
             setIsLoad(true);
             console.log(formfields);
 
-            postData('/api/auth/signUp', formfields)
+            postData('/api/user/signUp', formfields)
                 .then((res) => {
                     setIsLoad(false);
                     context.handleClickVariant('Sign Up account success!', 'success');

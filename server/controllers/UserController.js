@@ -1,12 +1,12 @@
-const Auth = require('../models/Auth');
+const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const fs = require('fs');
 const cloudinary = require('../utils/cloudinary');
 
-class AuthController {
-    // [POST] /auth/uploadAvatar
+class UserController {
+    // [POST] /user/uploadAvatar
     async uploadAvatar(req, res) {
         try {
             if (!req.file) {
@@ -32,7 +32,7 @@ class AuthController {
         }
     }
 
-    // [POST] /auth/replaceAvatar/:userId
+    // [POST] /user/replaceAvatar/:userId
     async replaceAvatar(req, res) {
         try {
             const userId = req.params.userId;
@@ -41,7 +41,7 @@ class AuthController {
                 return res.status(400).json({ error: true, msg: 'No file uploaded!' });
             }
 
-            const user = await Auth.findById(userId);
+            const user = await User.findById(userId);
             if (!user) {
                 return res.status(404).json({ msg: 'User not found!' });
             }
@@ -76,19 +76,19 @@ class AuthController {
         }
     }
 
-    // [POST] /auth/signUp
+    // [POST] /user/signUp
     async signUp(req, res) {
         const { name, email, phone, password, isAdmin } = req.body;
 
         try {
-            const existingUser = await Auth.findOne({ email });
+            const existingUser = await User.findOne({ email });
             if (existingUser) {
                 return res.status(400).json({ error: true, msg: 'Email already exists!' });
             }
 
             const hashPassword = await bcrypt.hash(password, 10);
 
-            const user = new Auth({
+            const user = new User({
                 name,
                 email,
                 phone,
@@ -112,12 +112,12 @@ class AuthController {
         }
     }
 
-    // [POST] /auth/signIn
+    // [POST] /user/signIn
     async signIn(req, res) {
         const { email, password } = req.body;
 
         try {
-            const existingUser = await Auth.findOne({ email: email });
+            const existingUser = await User.findOne({ email: email });
 
             if (!existingUser) {
                 res.status(400).json({ msg: 'User not found!' });
@@ -139,7 +139,7 @@ class AuthController {
             res.status(200).json({
                 user: existingUser,
                 token: token,
-                msg: 'User Authenticated',
+                msg: 'User Userenticated',
             });
         } catch (error) {
             console.log(error);
@@ -147,11 +147,11 @@ class AuthController {
         }
     }
 
-    // [GET] /auth/getUser/:userId
+    // [GET] /user/getUser/:userId
     async getUser(req, res) {
         const userId = req.params.userId;
         try {
-            const user = await Auth.findById(userId);
+            const user = await User.findById(userId);
             res.status(200).json(user);
         } catch (error) {
             console.log(error);
@@ -159,12 +159,12 @@ class AuthController {
         }
     }
 
-    // [PUT] /auth/updateUser/:userId
+    // [PUT] /user/updateUser/:userId
     async updateUser(req, res) {
         const userId = req.params.userId;
         const { name, email, phone, image } = req.body;
         try {
-            const user = await Auth.findById(userId);
+            const user = await User.findById(userId);
             if (!user) {
                 return res.status(404).json({ msg: 'User not found!' });
             }
@@ -182,12 +182,12 @@ class AuthController {
         }
     }
 
-    // [PUT] /auth/updatePassword/:userId
+    // [PUT] /user/updatePassword/:userId
     async updatePassword(req, res) {
         const userId = req.params.userId;
         const { oldPassword, newPassword } = req.body;
         try {
-            const user = await Auth.findById(userId);
+            const user = await User.findById(userId);
             if (!user) {
                 return res.status(404).json({ msg: 'User not found!' });
             }
@@ -207,6 +207,54 @@ class AuthController {
             res.status(500).json({ msg: 'Something went wrong!' });
         }
     }
+
+    // [GET] /user/getUserWishlist/:userId?page=?
+    async getUserWishlist(req, res) {
+        const userId = req.params.userId;
+        const page = parseInt(req.query.page) || 1;
+        const limit = 4;
+        const skip = (page - 1) * limit;
+
+        try {
+            const user = await User.findById(userId).populate('wishlist');
+            const totalWishlistItems = user.wishlist.length;
+            const totalPages = Math.ceil(totalWishlistItems / limit);
+            user.wishlist = user.wishlist.slice(skip, skip + limit);
+
+            if (!user) {
+                return res.status(404).json({ msg: 'User not found!' });
+            }
+            res.status(200).json({ wishlist: user.wishlist, totalPages, currentPage: page });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
+    // [POST] /user/addToWishlist
+    async addToWishlist(req, res) {
+        const { userId, quizId } = req.body;
+        try {
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ msg: 'User not found!' });
+            }
+            if (user.wishlist.includes(quizId)) {
+                user.wishlist = user.wishlist.filter((id) => id.toString() !== quizId);
+                await user.save();
+                return res
+                    .status(200)
+                    .json({ msg: 'Quiz removed from wishlist successfully!', wishlist: user.wishlist });
+            } else {
+                user.wishlist.push(quizId);
+                await user.save();
+                res.status(200).json({ msg: 'Quiz added to wishlist successfully!', wishlist: user.wishlist });
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
 }
 
-module.exports = new AuthController();
+module.exports = new UserController();
