@@ -1,0 +1,175 @@
+.loginWrapper {
+    background: #f0f4f8; // Màu nền đồng bộ với trang Quiz
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+
+    .backHome {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        text-decoration: none;
+        color: #555;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+        &:hover {
+            color: #1976d2;
+            transform: translateX(-5px);
+        }
+    }
+}
+
+.loginCard {
+    background: #fff;
+    width: 100%;
+    max-width: 1000px;
+    height: 555px;
+    display: flex;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+
+    .cardLeft {
+        flex: 1;
+        background: #0d47a1; // Tone xanh Admin chuyên nghiệp
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: #fff;
+        text-align: center;
+
+        @media (max-width: 768px) {
+            display: none;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            img {
+                width: 45px;
+            }
+            h3 {
+                font-weight: 800;
+                letter-spacing: 1px;
+                margin: 0;
+            }
+        }
+
+        .illustration {
+            position: relative;
+            img {
+                width: 90%;
+                z-index: 2;
+                position: relative;
+                border-radius: 50%;
+                width: 200px;
+                height: 200px;
+            }
+            .circle-bg {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 250px;
+                height: 250px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+            }
+        }
+        .quote {
+            font-style: italic;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+    }
+
+    .cardRight {
+        flex: 1;
+        padding: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .formHeader {
+            h2 {
+                font-weight: 800;
+                color: #1e293b;
+                margin-bottom: 5px;
+            }
+            p {
+                color: #64748b;
+                font-size: 15px;
+            }
+        }
+
+        .roleTabs {
+            margin-bottom: 25px;
+            .MuiTabs-root {
+                min-height: 40px;
+                background: #f1f5f9;
+                border-radius: 12px;
+                padding: 4px;
+            }
+            .MuiTab-root {
+                min-height: 35px;
+                border-radius: 8px;
+                text-transform: none;
+                font-weight: 600;
+                transition: 0.3s;
+            }
+        }
+    }
+}
+
+.loginForm {
+    .MuiOutlinedInput-root {
+        border-radius: 12px;
+        background: #f8fafc;
+        &:hover fieldset {
+            border-color: #cbd5e1;
+        }
+    }
+
+    .forgotBtn {
+        text-decoration: none;
+        color: #1976d2;
+        font-size: 14px;
+        font-weight: 600;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .submitBtn {
+        height: 52px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: none;
+        font-size: 16px;
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+    }
+
+    .footerLink {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 14px;
+        color: #64748b;
+        a {
+            color: #1976d2;
+            font-weight: 700;
+            text-decoration: none;
+        }
+    }
+}

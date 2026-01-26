@@ -18,6 +18,11 @@ const upload = multer({ storage: storage });
 // Routers for QuizController
 router.post('/uploadImage', upload.single('imageQuiz'), QuizController.uploadImage);
 
+// Dashboard
+router.get('/getQuizListAdmin', QuizController.getQuizListAdmin);
+router.get('/getQuizListApprove', QuizController.getQuizListApprove);
+router.put('/approveQuiz/:quizId', QuizController.approveQuiz);
+
 router.get('/getAllQuizzes', QuizController.getAllQuizzes);
 router.get('/quizList', QuizController.getQuizList);
 router.get('/getQuizDashboard/:userId', QuizController.getQuizDashboard);

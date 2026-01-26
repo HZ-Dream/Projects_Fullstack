@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './Responsive.css';
+import './Dashboard.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -11,14 +12,18 @@ import { useSnackbar } from 'notistack';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState, useEffect, createContext } from 'react';
 
-// Components
-import Header from './Components/Header';
-import Sidebar from './Components/Sidebar';
+// Layouts
+import MainLayout from './Layouts/MainLayout';
+import NoneLayout from './Layouts/NoneLayout';
 
 // Pages
 import Dashboard from './Pages/Dashboard';
 import FieldList from './Pages/Field/index';
+import QuizList from './Pages/Quiz/index';
+import QuizApprove from './Pages/Quiz/quizApprove';
+import DetailQuiz from './Pages/Quiz/detailQuiz';
 import CreateField from './Pages/Field/createField';
+import SignIn from './Pages/SignIn';
 
 const MyContext = createContext();
 
@@ -74,28 +79,24 @@ function App() {
     return (
         <BrowserRouter>
             <MyContext.Provider value={values}>
-                <Header />
-                <div className="main d-flex">
-                    <div
-                        className={`sidebarOverlay ${menuBtn ? 'd-one' : 'toggle'}`}
-                        onClick={() => setMenuBtn(true)}
-                    ></div>
+                <Routes>
+                    <Route element={<MainLayout />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
 
-                    <div className={`sidebarWrapper ${menuBtn === true ? '' : 'toggle'}`}>
-                        <Sidebar />
-                    </div>
+                        {/* Field */}
+                        <Route path="/field/list" element={<FieldList />} />
+                        <Route path="/field/create" element={<CreateField />} />
 
-                    <div className={`content ${menuBtn === true ? '' : 'toggle'}`}>
-                        <Routes>
-                            <Route path="/" element={<Dashboard />} />
-                            <Route path="/dashboard" element={<Dashboard />} />
+                        {/* Quiz */}
+                        <Route path="/quiz/list" element={<QuizList />} />
+                        <Route path="/quiz/approve" element={<QuizApprove />} />
+                        <Route path="/quiz/detail/:quizId" element={<DetailQuiz />} />
+                    </Route>
 
-                            {/* Field */}
-                            <Route path="/field/list" element={<FieldList />} />
-                            <Route path="/field/create" element={<CreateField />} />
-                        </Routes>
-                    </div>
-                </div>
+                    <Route element={<NoneLayout />}>
+                        <Route path="/" element={<SignIn />} />
+                    </Route>
+                </Routes>
             </MyContext.Provider>
         </BrowserRouter>
     );

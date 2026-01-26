@@ -2,7 +2,7 @@
 import { FaAngleRight } from 'react-icons/fa6';
 import { MdDashboard } from 'react-icons/md';
 import { MdCategory } from 'react-icons/md';
-import { FaCartArrowDown } from 'react-icons/fa';
+import { MdQuiz } from 'react-icons/md';
 import { MdMessage } from 'react-icons/md';
 import { FaBell } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
@@ -35,7 +35,7 @@ const Sidebar = () => {
             <div className="sidebar">
                 <ul>
                     <li>
-                        <Link to="/">
+                        <Link to="/dashboard">
                             <Button className={`w-100 ${actClass === 1 ? 'act' : ''}`} onClick={() => setAct(1)}>
                                 <span className="icon">
                                     <MdDashboard />
@@ -68,13 +68,23 @@ const Sidebar = () => {
                     <li>
                         <Button className={`w-100 ${actClass === 3 ? 'act' : ''}`} onClick={() => setAct(3)}>
                             <span className="icon">
-                                <FaCartArrowDown />
+                                <MdQuiz />
                             </span>
-                            <span className="name">Orders</span>
+                            <span className="name">Quizzes</span>
                             <span className="arrow">
                                 <FaAngleRight />
                             </span>
                         </Button>
+                        <div className={`submenuWrapper ${actClass === 3 ? 'open' : ''}`}>
+                            <ul className="submenu">
+                                <li>
+                                    <Link to="/quiz/list">Quiz List</Link>
+                                </li>
+                                <li>
+                                    <Link to="/quiz/approve">Quiz Approve</Link>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                     <li>
                         <Link to="/">

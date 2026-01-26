@@ -184,7 +184,11 @@ const Dashboard = () => {
                                         <div className="dFlexAli-center productBox">
                                             <div className="imgWrapper">
                                                 <div className="img card m-0">
-                                                    <img className="w-100" src="" alt="Image" />
+                                                    <img
+                                                        className="w-100"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
+                                                        alt="Image"
+                                                    />
                                                 </div>
                                             </div>
 
@@ -230,7 +234,7 @@ const Dashboard = () => {
                                                 <div className="img card m-0">
                                                     <img
                                                         className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
                                                         alt="Image"
                                                     />
                                                 </div>
@@ -278,7 +282,7 @@ const Dashboard = () => {
                                                 <div className="img card m-0">
                                                     <img
                                                         className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
                                                         alt="Image"
                                                     />
                                                 </div>
@@ -326,7 +330,7 @@ const Dashboard = () => {
                                                 <div className="img card m-0">
                                                     <img
                                                         className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
                                                         alt="Image"
                                                     />
                                                 </div>
@@ -374,7 +378,7 @@ const Dashboard = () => {
                                                 <div className="img card m-0">
                                                     <img
                                                         className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
                                                         alt="Image"
                                                     />
                                                 </div>
@@ -422,7 +426,7 @@ const Dashboard = () => {
                                                 <div className="img card m-0">
                                                     <img
                                                         className="w-100"
-                                                        src="https://mironcoder-hotash.netlify.app/images/product/01.webp"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
                                                         alt="Image"
                                                     />
                                                 </div>

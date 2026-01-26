@@ -22,9 +22,10 @@ const QuizSchema = new Schema(
         level: { type: String, required: true },
         duration: { type: Number, required: true },
         password: { type: String },
-        status: { type: String, default: null },
+        status: { type: String, default: '0' },
         userId: { type: String, required: true },
         quiz: { type: [QuestionSchema], required: true },
+        approveQuizBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admins' },
     },
     { timestamps: true },
 );

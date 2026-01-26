@@ -78,7 +78,7 @@ class UserController {
 
     // [POST] /user/signUp
     async signUp(req, res) {
-        const { name, email, phone, password, isAdmin } = req.body;
+        const { name, email, phone, password } = req.body;
 
         try {
             const existingUser = await User.findOne({ email });
@@ -93,7 +93,6 @@ class UserController {
                 email,
                 phone,
                 password: hashPassword,
-                isAdmin: isAdmin || false,
             });
 
             await user.save();

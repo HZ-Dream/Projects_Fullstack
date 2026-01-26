@@ -6,10 +6,13 @@ const replyRouter = require('./reply');
 const fieldRouter = require('./field');
 const geminiRouter = require('./gemini');
 const searchRouter = require('./search');
+const adminRouter = require('./admin');
 
 function route(app) {
     app.use('/api/gemini', geminiRouter);
     app.use('/api/search', searchRouter);
+
+    app.use('/api/admin', adminRouter);
 
     app.use('/api/user', userRouter);
 

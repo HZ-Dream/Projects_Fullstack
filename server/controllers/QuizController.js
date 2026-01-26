@@ -146,6 +146,76 @@ class QuizController {
         }
     }
 
+    // [GET] /quiz/getQuizDashboard?page=num
+    async getQuizListAdmin(req, res) {
+        const page = parseInt(req.query.page) || 1;
+        const limit = 5;
+        const skip = (page - 1) * limit;
+
+        try {
+            const totalQuizzes = await Quiz.countDocuments();
+
+            const quizzes = await Quiz.find().populate('field').skip(skip).limit(limit);
+            res.status(200).json({
+                quizzes,
+                totalPages: Math.ceil(totalQuizzes / limit),
+                currentPage: page,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
+    // [GET] /quiz/getQuizListApprove?page=num
+    async getQuizListApprove(req, res) {
+        const page = parseInt(req.query.page) || 1;
+        const limit = 5;
+        const skip = (page - 1) * limit;
+
+        try {
+            const totalQuizzes = await Quiz.countDocuments({ status: '0' });
+
+            const quizzes = await Quiz.find({ status: '0' }).populate('field').skip(skip).limit(limit);
+            res.status(200).json({
+                quizzes,
+                totalPages: Math.ceil(totalQuizzes / limit),
+                currentPage: page,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
+    // [PUT] /quiz/approveQuiz/:quizId
+    async approveQuiz(req, res) {
+        const quizId = req.params.quizId;
+
+        try {
+            const { status, adminId } = req.body;
+
+            const quizData = await Quiz.findById(quizId);
+            if (!quizData) {
+                return res.status(404).json({ msg: 'Quiz not found!' });
+            }
+
+            const updatedQuiz = await Quiz.findByIdAndUpdate(
+                quizId,
+                {
+                    status,
+                    approveQuizBy: adminId,
+                },
+                { new: true },
+            );
+
+            res.status(200).json({ msg: 'Quiz approved successfully!' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
     // [GET] /quiz/getQuizDashboard/:userId
     async getQuizDashboard(req, res) {
         const page = parseInt(req.query.page) || 1;
@@ -233,7 +303,6 @@ class QuizController {
         const { image, title, description, field, level, duration, password, quiz, userId } = req.body;
 
         try {
-            let status = password && password.trim() !== '' ? 1 : 2;
             let encryptedPassword = '';
             if (password) {
                 try {
@@ -251,7 +320,6 @@ class QuizController {
                 level,
                 duration,
                 password: encryptedPassword,
-                status,
                 userId,
                 quiz,
             });
@@ -313,7 +381,6 @@ class QuizController {
                 await confirmImages(imagesToConfirm);
             }
 
-            let status = password && password.trim() !== '' ? 1 : 2;
             let encryptedPassword = password ? encryptWithAES(password) : '';
 
             const updatedQuiz = await Quiz.findByIdAndUpdate(
@@ -326,7 +393,7 @@ class QuizController {
                     level,
                     duration,
                     password: encryptedPassword,
-                    status: status,
+                    status: '0',
                     quiz,
                 },
                 { new: true },
