@@ -1,5 +1,5 @@
 .loginWrapper {
-    background: #f0f4f8; // Màu nền đồng bộ với trang Quiz
+    background: #f0f4f8;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -37,7 +37,7 @@
 
     .cardLeft {
         flex: 1;
-        background: #0d47a1; // Tone xanh Admin chuyên nghiệp
+        background: #0d47a1;
         padding: 40px;
         display: flex;
         flex-direction: column;
@@ -105,11 +105,11 @@
         .formHeader {
             h2 {
                 font-weight: 800;
-                color: #1e293b;
+                color: #1e293b !important;
                 margin-bottom: 5px;
             }
             p {
-                color: #64748b;
+                color: #64748b !important;
                 font-size: 15px;
             }
         }

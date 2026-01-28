@@ -1,4 +1,5 @@
 const Quiz = require('../models/Quiz');
+const User = require('../models/User');
 const CryptoJS = require('crypto-js');
 const secretKey = process.env.AES_SECRET_KEY;
 
@@ -193,23 +194,31 @@ class QuizController {
         const quizId = req.params.quizId;
 
         try {
-            const { status, adminId } = req.body;
+            const status = Number(req.body.status);
+            const { adminId } = req.body;
 
             const quizData = await Quiz.findById(quizId);
             if (!quizData) {
                 return res.status(404).json({ msg: 'Quiz not found!' });
             }
 
-            const updatedQuiz = await Quiz.findByIdAndUpdate(
-                quizId,
-                {
-                    status,
-                    approveQuizBy: adminId,
-                },
-                { new: true },
-            );
+            const isCountedStatus = (s) => s === 1 || s === 2;
 
-            res.status(200).json({ msg: 'Quiz approved successfully!' });
+            const oldCounted = isCountedStatus(Number(quizData.status));
+            const newCounted = isCountedStatus(status);
+
+            await Quiz.findByIdAndUpdate(quizId, {
+                status,
+                approveQuizBy: adminId,
+            });
+
+            if (oldCounted !== newCounted) {
+                await User.findByIdAndUpdate(quizData.userId, {
+                    $inc: { quizCreated: newCounted ? 1 : -1 },
+                });
+            }
+
+            res.status(200).json({ msg: 'Approve quiz successfully!' });
         } catch (error) {
             console.error(error);
             res.status(500).json({ msg: 'Something went wrong!' });

@@ -21,6 +21,8 @@ const upload = multer({ storage: storage });
 
 router.post('/signUp', AdminController.signUp);
 router.post('/signIn', AdminController.signIn);
+
+router.get('/getAccount', AdminController.getAccount);
 //router.put('/updateInfo/:adminId', AdminController.updateUser);
 //router.put('/updatePassword/:adminId', AdminController.updatePassword);
 

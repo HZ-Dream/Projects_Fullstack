@@ -96,7 +96,6 @@ const SignIn = () => {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleInputChange}
-                                label="Email Address"
                                 variant="outlined"
                                 placeholder="name@example.com"
                                 InputProps={{
@@ -116,7 +115,6 @@ const SignIn = () => {
                                 name="password"
                                 value={formData.password}
                                 onChange={handleInputChange}
-                                label="Password"
                                 type={showPassword ? 'text' : 'password'}
                                 variant="outlined"
                                 placeholder="••••••••"

@@ -146,6 +146,23 @@ class UserController {
         }
     }
 
+    // [GET] /user/getAccount?page=number
+    async getAccount(req, res) {
+        const page = parseInt(req.query.page) || 1;
+        const limit = 5;
+        const skip = (page - 1) * limit;
+
+        try {
+            const totalUsers = await User.countDocuments();
+            const totalPages = Math.ceil(totalUsers / limit);
+            const users = await User.find().skip(skip).limit(limit);
+            res.status(200).json({ users, totalPages, currentPage: page });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
     // [GET] /user/getUser/:userId
     async getUser(req, res) {
         const userId = req.params.userId;

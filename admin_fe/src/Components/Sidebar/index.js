@@ -7,20 +7,33 @@ import { MdMessage } from 'react-icons/md';
 import { FaBell } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
 import { BiLogOut } from 'react-icons/bi';
+import { RiAccountCircleFill } from 'react-icons/ri';
 
 // Material UI
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import { Link } from 'react-router-dom';
-import { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
 
 // Components
 import { MyContext } from '../../App';
 
 const Sidebar = () => {
     const context = useContext(MyContext);
+    const navigate = useNavigate();
     const [actClass, setActClass] = useState();
+    const [isLoad, setIsLoad] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const adminInfo = JSON.parse(localStorage.getItem('adminInfo'));
+
+        if (adminInfo.isAdmin === true) {
+            setIsAdmin(true);
+        }
+    }, []);
 
     const setAct = (index) => {
         if (index === actClass) {
@@ -28,6 +41,17 @@ const Sidebar = () => {
         } else {
             setActClass(index);
         }
+    };
+
+    const handleLogout = () => {
+        setIsLoad(true);
+        localStorage.removeItem('adminInfo');
+        localStorage.removeItem('tokenAdmin');
+
+        setTimeout(() => {
+            setIsLoad(false);
+            navigate('/');
+        }, [2000]);
     };
 
     return (
@@ -86,9 +110,23 @@ const Sidebar = () => {
                             </ul>
                         </div>
                     </li>
+                    {isAdmin === true ? (
+                        <li>
+                            <Link to="/account">
+                                <Button className={`w-100 ${actClass === 4 ? 'act' : ''}`} onClick={() => setAct(4)}>
+                                    <span className="icon">
+                                        <RiAccountCircleFill />
+                                    </span>
+                                    <span className="name">Accounts</span>
+                                </Button>
+                            </Link>
+                        </li>
+                    ) : (
+                        ''
+                    )}
                     <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 4 ? 'act' : ''}`} onClick={() => setAct(4)}>
+                            <Button className={`w-100 ${actClass === 5 ? 'act' : ''}`} onClick={() => setAct(5)}>
                                 <span className="icon">
                                     <MdMessage />
                                 </span>
@@ -98,7 +136,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 5 ? 'act' : ''}`} onClick={() => setAct(5)}>
+                            <Button className={`w-100 ${actClass === 6 ? 'act' : ''}`} onClick={() => setAct(6)}>
                                 <span className="icon">
                                     <FaBell />
                                 </span>
@@ -108,7 +146,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 6 ? 'act' : ''}`} onClick={() => setAct(6)}>
+                            <Button className={`w-100 ${actClass === 7 ? 'act' : ''}`} onClick={() => setAct(7)}>
                                 <span className="icon">
                                     <IoIosSettings />
                                 </span>
@@ -122,9 +160,23 @@ const Sidebar = () => {
 
                 <div className="logoutWrapper">
                     <div className="logoutBox">
-                        <Button className="dFlexAli-center fw-bold" variant="contained">
-                            <BiLogOut className="me-2" />
-                            Logout
+                        <Button
+                            disabled={isLoad === true ? true : false}
+                            onClick={handleLogout}
+                            className="dFlexAli-center fw-bold"
+                            variant="contained"
+                        >
+                            {isLoad === true && (
+                                <CircularProgress
+                                    className="loader"
+                                    color="inherit"
+                                    style={{ width: 20, height: 20 }}
+                                />
+                            )}
+                            <span className="dFlexAli-center ms-2">
+                                <BiLogOut className="me-2" />
+                                Logout
+                            </span>
                         </Button>
                     </div>
                 </div>

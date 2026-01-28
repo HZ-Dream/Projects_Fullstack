@@ -156,7 +156,7 @@ const DetailQuiz = () => {
             }
 
             const adminFormData = {
-                status: '-1',
+                status: '3',
                 adminId: adminId,
             };
 

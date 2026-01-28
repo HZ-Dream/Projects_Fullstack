@@ -23,6 +23,7 @@ import QuizList from './Pages/Quiz/index';
 import QuizApprove from './Pages/Quiz/quizApprove';
 import DetailQuiz from './Pages/Quiz/detailQuiz';
 import CreateField from './Pages/Field/createField';
+import Account from './Pages/Account';
 import SignIn from './Pages/SignIn';
 
 const MyContext = createContext();
@@ -91,6 +92,9 @@ function App() {
                         <Route path="/quiz/list" element={<QuizList />} />
                         <Route path="/quiz/approve" element={<QuizApprove />} />
                         <Route path="/quiz/detail/:quizId" element={<DetailQuiz />} />
+
+                        {/* Account */}
+                        <Route path="/account" element={<Account />} />
                     </Route>
 
                     <Route element={<NoneLayout />}>

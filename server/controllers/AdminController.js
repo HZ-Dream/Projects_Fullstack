@@ -1,4 +1,5 @@
 const Admin = require('../models/Admin');
+const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -76,7 +77,7 @@ class AdminController {
         }
     }
 
-    // [POST] /user/signUp
+    // [POST] /admin/signUp
     async signUp(req, res) {
         const { name, email, phone, password } = req.body;
 
@@ -139,6 +140,23 @@ class AdminController {
                 token: token,
                 msg: 'Admin authenticated successfully!',
             });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
+    // [GET] /admin/getAccount?page=number
+    async getAccount(req, res) {
+        const page = parseInt(req.query.page) || 1;
+        const limit = 5;
+        const skip = (page - 1) * limit;
+
+        try {
+            const adminList = await Admin.find().skip(skip).limit(limit);
+            const totalAccount = await Admin.countDocuments();
+
+            res.status(200).json({ adminList, totalPages: Math.ceil(totalAccount / limit), currentPage: page });
         } catch (error) {
             console.log(error);
             res.status(500).json({ msg: 'Something went wrong!' });

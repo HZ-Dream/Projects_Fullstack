@@ -9,6 +9,7 @@ const UserSchema = new Schema(
         phone: { type: String },
         password: { type: String, required: true },
         image: { type: String, default: '' },
+        quizCreated: { type: Number, default: 0, min: 0 },
         wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'quizzes' }],
     },
     {
