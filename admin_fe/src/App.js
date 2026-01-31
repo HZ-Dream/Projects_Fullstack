@@ -23,7 +23,10 @@ import QuizList from './Pages/Quiz/index';
 import QuizApprove from './Pages/Quiz/quizApprove';
 import DetailQuiz from './Pages/Quiz/detailQuiz';
 import CreateField from './Pages/Field/createField';
-import Account from './Pages/Account';
+import Account from './Pages/Account/index';
+import CreateAccount from './Pages/Account/createAccount';
+import ChangeProfile from './Pages/Setting/changeProfile';
+import ChangePassword from './Pages/Setting/changePassword';
 import SignIn from './Pages/SignIn';
 
 const MyContext = createContext();
@@ -94,7 +97,12 @@ function App() {
                         <Route path="/quiz/detail/:quizId" element={<DetailQuiz />} />
 
                         {/* Account */}
-                        <Route path="/account" element={<Account />} />
+                        <Route path="/account/list" element={<Account />} />
+                        <Route path="/account/create" element={<CreateAccount />} />
+
+                        {/* Setting */}
+                        <Route path="/setting/profile/:adminId" element={<ChangeProfile />} />
+                        <Route path="/setting/password" element={<ChangePassword />} />
                     </Route>
 
                     <Route element={<NoneLayout />}>

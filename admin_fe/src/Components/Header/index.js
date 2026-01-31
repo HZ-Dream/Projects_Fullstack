@@ -20,7 +20,7 @@ import Logout from '@mui/icons-material/Logout';
 
 // React
 import { Link } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 // Components
 import SearchBox from '../SearchBox';
@@ -32,14 +32,16 @@ const Header = () => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [notificationDrop, setNotificationDrop] = useState(null);
-    const open = Boolean(anchorEl);
     const open2 = Boolean(notificationDrop);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    const [infoLogin, setInfoLogin] = useState({});
+
+    useEffect(() => {
+        const info = JSON.parse(localStorage.getItem('adminInfo'));
+
+        if (info) {
+            setInfoLogin(info);
+        }
+    }, []);
 
     const handleOpenNotice = () => {
         setNotificationDrop(true);
@@ -235,7 +237,7 @@ const Header = () => {
                                 </Button>
                             )}
 
-                            <Button onClick={handleClick} className="myAcc dFlexAli-center">
+                            <Button className="myAcc dFlexAli-center">
                                 <div className="userImg">
                                     <span className="rounded-circle">
                                         <img src={avatarImg} alt="Avatar" />
@@ -243,40 +245,10 @@ const Header = () => {
                                 </div>
 
                                 <div className="userInfo d-flex flex-column pt-2 ps-2 res-hide">
-                                    <h5 className="mb-0">Dream</h5>
-                                    <p className="mb-0">@dream1209</p>
+                                    <h5 className="mb-0">{infoLogin.name}</h5>
+                                    <p className="mb-0">{infoLogin.email}</p>
                                 </div>
                             </Button>
-
-                            <Menu
-                                className="optionsAcc"
-                                anchorEl={anchorEl}
-                                id="account-menu"
-                                open={open}
-                                onClose={handleClose}
-                                onClick={handleClose}
-                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                            >
-                                <MenuItem onClick={handleClose}>
-                                    <ListItemIcon>
-                                        <FaUser fontSize="medium" />
-                                    </ListItemIcon>
-                                    My Account
-                                </MenuItem>
-                                <MenuItem onClick={handleClose}>
-                                    <ListItemIcon>
-                                        <IoSettingsSharp fontSize="medium" />
-                                    </ListItemIcon>
-                                    Settings
-                                </MenuItem>
-                                <MenuItem onClick={handleClose}>
-                                    <ListItemIcon>
-                                        <Logout fontSize="medium" />
-                                    </ListItemIcon>
-                                    Logout
-                                </MenuItem>
-                            </Menu>
                         </div>
                     </div>
                 </div>

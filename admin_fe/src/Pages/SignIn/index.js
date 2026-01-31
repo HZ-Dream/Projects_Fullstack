@@ -50,9 +50,23 @@ const SignIn = () => {
             .then((response) => {
                 setIsLoading(false);
                 if (response && response.token) {
-                    localStorage.setItem('adminInfo', JSON.stringify(response.user));
-                    localStorage.setItem('tokenAdmin', response.token);
-                    window.location.href = '/dashboard';
+                    if (role === 0) {
+                        if (response.user.isAdmin) {
+                            context.handleClickVariant('Please log in using your role admin!', 'warning');
+                            return;
+                        }
+                        localStorage.setItem('adminInfo', JSON.stringify(response.user));
+                        localStorage.setItem('tokenAdmin', response.token);
+                        window.location.href = '/dashboard';
+                    } else {
+                        if (!response.user.isAdmin) {
+                            context.handleClickVariant('Please log in using your role manager!', 'warning');
+                            return;
+                        }
+                        localStorage.setItem('adminInfo', JSON.stringify(response.user));
+                        localStorage.setItem('tokenAdmin', response.token);
+                        window.location.href = '/dashboard';
+                    }
                 }
             })
             .catch((err) => {

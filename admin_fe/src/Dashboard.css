@@ -472,10 +472,23 @@ body.dark .main .sidebarWrapper .sidebar ul li button.act .arrow svg {
 
 .main .sidebarWrapper .sidebar ul .submenu li {
     width: 100%;
+    cursor: pointer;
     list-style: none;
     padding-top: 15px;
     padding-left: 20px;
-    padding-bottom: 0px !important;
+    padding-bottom: 15px !important;
+}
+
+.main .sidebarWrapper .sidebar ul .submenu li:hover {
+    background: #f5f5f5;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+body.dark .main .sidebarWrapper .sidebar ul .submenu li:hover {
+    background: #425170;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .main .sidebarWrapper .sidebar ul .submenu li a {

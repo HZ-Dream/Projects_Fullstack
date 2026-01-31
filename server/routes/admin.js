@@ -16,14 +16,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Routers for AdminController
-//router.post('/uploadAvatar', upload.single('file'), AdminController.uploadAvatar);
-//router.post('/replaceAvatar/:adminId', upload.single('file'), AdminController.replaceAvatar);
+router.post('/uploadImage', upload.single('imageAvatarAdmin'), AdminController.uploadImage);
 
-router.post('/signUp', AdminController.signUp);
 router.post('/signIn', AdminController.signIn);
 
 router.get('/getAccount', AdminController.getAccount);
-//router.put('/updateInfo/:adminId', AdminController.updateUser);
-//router.put('/updatePassword/:adminId', AdminController.updatePassword);
+router.get('/getInfo/:adminId', AdminController.getInfo);
+router.post('/createAccount', AdminController.createAccount);
+router.put('/changeProfile/:adminId', AdminController.changeProfile);
+router.put('/changePassword/:adminId', AdminController.changePassword);
 
 module.exports = router;

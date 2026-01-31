@@ -26,9 +26,14 @@ const Sidebar = () => {
     const [actClass, setActClass] = useState();
     const [isLoad, setIsLoad] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [adminId, setAdminId] = useState('');
 
     useEffect(() => {
         const adminInfo = JSON.parse(localStorage.getItem('adminInfo'));
+
+        if (adminInfo) {
+            setAdminId(adminInfo._id);
+        }
 
         if (adminInfo.isAdmin === true) {
             setIsAdmin(true);
@@ -68,27 +73,31 @@ const Sidebar = () => {
                             </Button>
                         </Link>
                     </li>
-                    <li>
-                        <Button className={`w-100 ${actClass === 2 ? 'act' : ''}`} onClick={() => setAct(2)}>
-                            <span className="icon">
-                                <MdCategory />
-                            </span>
-                            <span className="name">Fields</span>
-                            <span className="arrow">
-                                <FaAngleRight />
-                            </span>
-                        </Button>
-                        <div className={`submenuWrapper ${actClass === 2 ? 'open' : ''}`}>
-                            <ul className="submenu">
-                                <li>
-                                    <Link to="/field/list">Field List</Link>
-                                </li>
-                                <li>
-                                    <Link to="/field/create">Field Create</Link>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                    {isAdmin === true ? (
+                        <li>
+                            <Button className={`w-100 ${actClass === 2 ? 'act' : ''}`} onClick={() => setAct(2)}>
+                                <span className="icon">
+                                    <MdCategory />
+                                </span>
+                                <span className="name">Fields</span>
+                                <span className="arrow">
+                                    <FaAngleRight />
+                                </span>
+                            </Button>
+                            <div className={`submenuWrapper ${actClass === 2 ? 'open' : ''}`}>
+                                <ul className="submenu">
+                                    <li>
+                                        <Link to="/field/list">Field List</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/field/create">Field Create</Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    ) : (
+                        ''
+                    )}
                     <li>
                         <Button className={`w-100 ${actClass === 3 ? 'act' : ''}`} onClick={() => setAct(3)}>
                             <span className="icon">
@@ -112,14 +121,25 @@ const Sidebar = () => {
                     </li>
                     {isAdmin === true ? (
                         <li>
-                            <Link to="/account">
-                                <Button className={`w-100 ${actClass === 4 ? 'act' : ''}`} onClick={() => setAct(4)}>
-                                    <span className="icon">
-                                        <RiAccountCircleFill />
-                                    </span>
-                                    <span className="name">Accounts</span>
-                                </Button>
-                            </Link>
+                            <Button className={`w-100 ${actClass === 4 ? 'act' : ''}`} onClick={() => setAct(4)}>
+                                <span className="icon">
+                                    <RiAccountCircleFill />
+                                </span>
+                                <span className="name">Accounts</span>
+                                <span className="arrow">
+                                    <FaAngleRight />
+                                </span>
+                            </Button>
+                            <div className={`submenuWrapper ${actClass === 4 ? 'open' : ''}`}>
+                                <ul className="submenu">
+                                    <li>
+                                        <Link to="/account/list">Account List</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/account/create">Account Create</Link>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                     ) : (
                         ''
@@ -145,14 +165,25 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/">
-                            <Button className={`w-100 ${actClass === 7 ? 'act' : ''}`} onClick={() => setAct(7)}>
-                                <span className="icon">
-                                    <IoIosSettings />
-                                </span>
-                                <span className="name">Settings</span>
-                            </Button>
-                        </Link>
+                        <Button className={`w-100 ${actClass === 7 ? 'act' : ''}`} onClick={() => setAct(7)}>
+                            <span className="icon">
+                                <IoIosSettings />
+                            </span>
+                            <span className="name">Settings</span>
+                            <span className="arrow">
+                                <FaAngleRight />
+                            </span>
+                        </Button>
+                        <div className={`submenuWrapper ${actClass === 7 ? 'open' : ''}`}>
+                            <ul className="submenu">
+                                <li>
+                                    <Link to={`/setting/profile/${adminId}`}>Change Profile</Link>
+                                </li>
+                                <li>
+                                    <Link to="/setting/password">Change Password</Link>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                 </ul>
 

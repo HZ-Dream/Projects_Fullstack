@@ -63,7 +63,7 @@ const CreateField = () => {
                         <div className="col-sm-7 mx-auto">
                             <div className="card p-4">
                                 <div className="dFlexAli-center mb-3">
-                                    <h5>Basic Information</h5>
+                                    <h5 className="mb-0">Basic Information</h5>
 
                                     <Button variant="contained" className="ms-auto">
                                         <Link to="/field/list">Field List</Link>
