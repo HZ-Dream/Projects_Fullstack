@@ -202,6 +202,10 @@ class AdminController {
                 }
             }
 
+            if (admin.image && admin.image !== image) {
+                await deleteImageByUrl(admin.image);
+            }
+
             const imagesToConfirm = [];
             if (image && image.trim() !== '') {
                 imagesToConfirm.push(image);

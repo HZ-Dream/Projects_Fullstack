@@ -22,6 +22,7 @@ router.post('/replaceAvatar/:userId', upload.single('file'), UserController.repl
 router.post('/signUp', UserController.signUp);
 router.post('/signIn', UserController.signIn);
 
+router.get('/getAllUser', UserController.getAllUser);
 router.get('/getAccount', UserController.getAccount);
 router.get('/getUser/:userId', UserController.getUser);
 router.put('/updateUser/:userId', UserController.updateUser);

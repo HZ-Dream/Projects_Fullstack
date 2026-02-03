@@ -33,15 +33,6 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [notificationDrop, setNotificationDrop] = useState(null);
     const open2 = Boolean(notificationDrop);
-    const [infoLogin, setInfoLogin] = useState({});
-
-    useEffect(() => {
-        const info = JSON.parse(localStorage.getItem('adminInfo'));
-
-        if (info) {
-            setInfoLogin(info);
-        }
-    }, []);
 
     const handleOpenNotice = () => {
         setNotificationDrop(true);
@@ -240,13 +231,13 @@ const Header = () => {
                             <Button className="myAcc dFlexAli-center">
                                 <div className="userImg">
                                     <span className="rounded-circle">
-                                        <img src={avatarImg} alt="Avatar" />
+                                        <img src={context.adminInfo.image} alt="Avatar" />
                                     </span>
                                 </div>
 
                                 <div className="userInfo d-flex flex-column pt-2 ps-2 res-hide">
-                                    <h5 className="mb-0">{infoLogin.name}</h5>
-                                    <p className="mb-0">{infoLogin.email}</p>
+                                    <h5 className="mb-0">{context.adminInfo.name}</h5>
+                                    <p className="mb-0">{context.adminInfo.email}</p>
                                 </div>
                             </Button>
                         </div>

@@ -180,7 +180,7 @@ const Sidebar = () => {
                                     <Link to={`/setting/profile/${adminId}`}>Change Profile</Link>
                                 </li>
                                 <li>
-                                    <Link to="/setting/password">Change Password</Link>
+                                    <Link to={`/setting/password/${adminId}`}>Change Password</Link>
                                 </li>
                             </ul>
                         </div>

@@ -7,7 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // React
 import { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 // Other
 import { editData } from '../../utils/api';
@@ -17,10 +17,10 @@ import { MyContext } from '../../App';
 
 const ChangePassword = () => {
     const context = useContext(MyContext);
+    let { adminId } = useParams();
 
     // Set load
     const [load, isLoad] = useState(false);
-    const [adminId, setAdminId] = useState('');
     const [formFields, setFormFields] = useState({
         password: '',
         newPassword: '',
@@ -29,12 +29,6 @@ const ChangePassword = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-
-        const loginInfo = JSON.parse(localStorage.getItem('adminInfo'));
-
-        if (loginInfo) {
-            setAdminId(loginInfo._id);
-        }
     }, []);
 
     const changeInput = (e) => {

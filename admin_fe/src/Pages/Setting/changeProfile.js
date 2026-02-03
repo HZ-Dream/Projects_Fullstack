@@ -101,19 +101,8 @@ const ChangeProfile = () => {
                 .then((res) => {
                     setIsLoad(false);
                     localStorage.setItem('adminInfo', JSON.stringify(res.admin));
+                    context.setAdminInfo(res.admin);
                     context.handleClickVariant('Update your profile is successful!', 'success');
-                    fetchDataFromApi(`/api/admin/getInfo/${adminId}`)
-                        .then((res) => {
-                            setFormField({
-                                name: res.name,
-                                email: res.email,
-                                phone: res.phone,
-                                image: res.image,
-                            });
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
                 })
                 .catch((err) => {
                     setIsLoad(false);

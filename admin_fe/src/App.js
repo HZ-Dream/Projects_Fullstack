@@ -41,6 +41,9 @@ function App() {
         const darkModeLocal = localStorage.getItem('darkMode');
         return darkModeLocal !== null ? darkModeLocal === 'true' : true;
     });
+    const [adminInfo, setAdminInfo] = useState(() => {
+        return JSON.parse(localStorage.getItem('adminInfo')) || {};
+    });
 
     useEffect(() => {
         if (darkMode) {
@@ -78,6 +81,8 @@ function App() {
         darkMode,
         setDarkMode,
         handleClickVariant,
+        adminInfo,
+        setAdminInfo,
     };
 
     return (
@@ -102,7 +107,7 @@ function App() {
 
                         {/* Setting */}
                         <Route path="/setting/profile/:adminId" element={<ChangeProfile />} />
-                        <Route path="/setting/password" element={<ChangePassword />} />
+                        <Route path="/setting/password/:adminId" element={<ChangePassword />} />
                     </Route>
 
                     <Route element={<NoneLayout />}>

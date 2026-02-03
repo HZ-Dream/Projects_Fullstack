@@ -31,6 +31,7 @@ const cx = classNames.bind(styles);
 
 const Home = () => {
     const [quizData, setQuizData] = useState([]);
+    const [userData, setUserData] = useState([]);
 
     var quizItemSettings = {
         dots: false,
