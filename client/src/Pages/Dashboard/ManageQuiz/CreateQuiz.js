@@ -72,12 +72,12 @@ const CreateQuiz = () => {
             setFieldData(res.fieldList);
         });
 
-        if (formGenerate && dataAI) {
+        if (formGenerate || dataAI) {
             setFormField({
-                title: dataAI.title || '',
-                description: dataAI.description || '',
-                field: formGenerate.fieldId || '',
-                level: formGenerate.levelId || '',
+                title: dataAI?.title || '',
+                description: dataAI?.description || '',
+                field: formGenerate?.fieldId || '',
+                level: formGenerate?.levelId || '',
                 duration: '',
                 password: '',
                 image: '',
@@ -91,8 +91,11 @@ const CreateQuiz = () => {
                       }))
                     : [{ questionText: '', options: [{ text: '' }, { text: '' }], correctAnswers: [] }],
             });
-            setFieldVal(formGenerate.fieldId || '');
-            setLevelVal(formGenerate.levelId || '');
+
+            if (formGenerate) {
+                setFieldVal(formGenerate.fieldId || '');
+                setLevelVal(formGenerate.levelId || '');
+            }
         }
     }, []);
 

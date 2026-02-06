@@ -6,8 +6,8 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import { useState, useContext, useEffect, use } from 'react';
-import { data, useNavigate } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Other
 import { fetchDataFromApi, postData } from '../../../utils/api';

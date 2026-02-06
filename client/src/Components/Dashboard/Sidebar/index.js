@@ -66,6 +66,9 @@ const Sidebar = () => {
                                 <li>
                                     <Link to="/dashboard/quizGenerate">Generate Quiz</Link>
                                 </li>
+                                <li>
+                                    <Link to="/dashboard/uploadText">Upload Text</Link>
+                                </li>
                             </ul>
                         </div>
                     </li>
