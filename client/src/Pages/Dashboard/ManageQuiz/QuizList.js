@@ -200,7 +200,7 @@ const QuizList = () => {
                                     <th>Level</th>
                                     <th>Status</th>
                                     <th>Rating</th>
-                                    <th>Quantity Quiz</th>
+                                    <th>Quantity Question</th>
                                     <th>Duration</th>
                                     <th>Actions</th>
                                 </tr>
@@ -228,7 +228,7 @@ const QuizList = () => {
                                             <td>{quiz.field.name}</td>
                                             <td>{quiz.level}</td>
                                             <td>{quiz.status}</td>
-                                            <td>4.9 (15)</td>
+                                            <td title="rate (totalRate)">{`${quiz.rate} (${quiz.totalRate})`}</td>
                                             <td>{quiz.quiz.length}</td>
                                             <td>{quiz.duration}'</td>
                                             <td>

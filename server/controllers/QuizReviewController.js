@@ -57,9 +57,9 @@ class QuizReviewController {
         try {
             const { quizId } = req.params;
 
-            const reviews = await QuizReview.find({ quizId }).sort({ createdAt: -1 }).lean();
+            const reviews = await QuizReview.find({ quizId }).populate('userId').sort({ createdAt: -1 }).lean();
 
-            const replies = await Reply.find({ reviewId: quizId }).sort({ createdAt: 1 }).lean();
+            const replies = await Reply.find({ reviewId: quizId }).populate('userId').sort({ createdAt: 1 }).lean();
 
             console.log(replies);
 
@@ -75,7 +75,7 @@ class QuizReviewController {
     // [POST] /quizReview/submitReview
     async submitReview(req, res) {
         try {
-            const { quizId, userId, userName, userImage, review, rating } = req.body;
+            const { quizId, userId, review, rating } = req.body;
             const originalQuiz = await Quiz.findById(quizId).lean();
             if (!originalQuiz) {
                 return res.status(404).json({ msg: 'Quiz not found!' });
@@ -89,8 +89,6 @@ class QuizReviewController {
             const newReview = new QuizReview({
                 quizId,
                 userId,
-                userName,
-                userImage,
                 review,
                 rating,
             });

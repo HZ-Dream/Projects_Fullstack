@@ -5,9 +5,7 @@ const Schema = mongoose.Schema;
 const QuizReviewSchema = new Schema(
     {
         quizId: { type: String, required: true },
-        userId: { type: String, required: true },
-        userName: { type: String, required: true },
-        userImage: { type: String, default: '' },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
         review: { type: String, required: true },
         rating: { type: Number, required: true },
     },

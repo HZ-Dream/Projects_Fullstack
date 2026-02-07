@@ -4,14 +4,12 @@ class ReplyController {
     // [POST] /reply/submitReply
     async submitReply(req, res) {
         try {
-            const { reviewId, parentReplyId, userId, userName, userImage, replyText } = req.body;
+            const { reviewId, parentReplyId, userId, replyText } = req.body;
 
             const newReply = new Reply({
                 reviewId,
                 parentReplyId: parentReplyId || null,
                 userId,
-                userName,
-                userImage,
                 replyText,
             });
 

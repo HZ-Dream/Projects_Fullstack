@@ -65,7 +65,6 @@ const QuizDetail = () => {
     const [reviews, setReviews] = useState({
         quizId: quizId,
         review: '',
-        userName: '',
         rating: 0,
     });
 
@@ -313,13 +312,12 @@ const QuizDetail = () => {
         const userId = userData?.userId;
 
         if (userId) {
-            if (reviews.userName.trim() === '' || reviews.review.trim() === '' || rate === 0) {
+            if (reviews.review.trim() === '' || rate === 0) {
                 context.handleClickVariant('Please fill in all the fields and provide a rating!', 'warning');
                 return false;
             }
 
             reviews.userId = userId;
-            reviews.userImage = userData?.userImage || '';
 
             return true;
         } else {
@@ -345,7 +343,6 @@ const QuizDetail = () => {
                 setReviews({
                     ...reviews,
                     review: '',
-                    userName: '',
                 });
                 setRate(0);
 
@@ -388,8 +385,6 @@ const QuizDetail = () => {
             reviewId: quizId,
             parentReplyId: parentId,
             userId: userId,
-            userName: userData?.name || 'Anonymous',
-            userImage: userData?.userImage || '',
             replyText: replyText.trim(),
         };
 
@@ -415,9 +410,12 @@ const QuizDetail = () => {
                 <div className={`card p-3 ${cx('reviewsCard')} flex-row`}>
                     <div className="image">
                         <div className={cx('rounded-circle')}>
-                            <img src={replyItem.userImage === '' ? defaultAvatar : replyItem.userImage} alt="User" />
+                            <img
+                                src={replyItem.userId.image === '' ? defaultAvatar : replyItem.userId.image}
+                                alt="User"
+                            />
                         </div>
-                        <span className="text-g d-block text-center fw-bold">{replyItem.userName}</span>
+                        <span className="text-g d-block text-center fw-bold">{replyItem.userId.name}</span>
                     </div>
 
                     <div className={`${cx('info')} ps-3`}>
@@ -432,7 +430,7 @@ const QuizDetail = () => {
                                     <FaReply />
                                 </Button>
 
-                                {replyItem.userId === currUserId && (
+                                {replyItem.userId._id.toString() === currUserId && (
                                     <Button
                                         onClick={() => deleteComment('reply', replyItem._id)}
                                         className="btn-sm btn-round btn-red btn-hover ms-2"
@@ -524,7 +522,7 @@ const QuizDetail = () => {
                                 <li className="list-inline-item">
                                     <div className="dFlexAli-center">
                                         <span className="text-light me-1">Field:</span>
-                                        <span>{quizData?.field}</span>
+                                        <span>{quizData?.field.name}</span>
                                     </div>
                                 </li>
                             </ul>
@@ -548,8 +546,8 @@ const QuizDetail = () => {
                             </div>
 
                             <div className="dFlexAli-center my-3">
-                                <img className={`${cx('imgAvatar')} me-2`} src={defaultAvatar} alt="Avatar" />
-                                <span>Dream</span>
+                                <img className={`${cx('imgAvatar')} me-2`} src={quizData?.userId.image} alt="Avatar" />
+                                <span>{quizData?.userId.name}</span>
                             </div>
 
                             <div className="dFlexAli-center mt-3 actions">
@@ -695,23 +693,11 @@ const QuizDetail = () => {
                                                 <div className="row">
                                                     <div className="col-md-6">
                                                         <div className={cx('form-group')}>
-                                                            <input
-                                                                onChange={onChangeInput}
-                                                                value={reviews.userName}
-                                                                className={cx('form-control')}
-                                                                type="text"
-                                                                name="userName"
-                                                                placeholder="Name"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <div className={cx('form-group')}>
                                                             <Rating
                                                                 onChange={(event, newValue) => setRate(newValue)}
                                                                 name="rating"
                                                                 value={rate}
-                                                                size="small"
+                                                                size="medium"
                                                                 precision={0.5}
                                                             />
                                                         </div>
@@ -739,15 +725,15 @@ const QuizDetail = () => {
                                                                 <div className={cx('rounded-circle')}>
                                                                     <img
                                                                         src={
-                                                                            reviewItem.userImage === ''
+                                                                            reviewItem.userId.image === ''
                                                                                 ? defaultAvatar
-                                                                                : reviewItem.userImage
+                                                                                : reviewItem.userId.image
                                                                         }
                                                                         alt="User"
                                                                     />
                                                                 </div>
                                                                 <span className="text-g d-block text-center fw-bold">
-                                                                    {reviewItem.userName}
+                                                                    {reviewItem.userId.name}
                                                                 </span>
                                                             </div>
 
@@ -777,7 +763,8 @@ const QuizDetail = () => {
                                                                             <FaReply />
                                                                         </Button>
 
-                                                                        {reviewItem.userId === currUserId && (
+                                                                        {reviewItem.userId._id.toString() ===
+                                                                            currUserId && (
                                                                             <Button
                                                                                 onClick={() =>
                                                                                     deleteComment(

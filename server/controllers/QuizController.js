@@ -91,7 +91,7 @@ class QuizController {
     // [GET] /quiz/getAllQuizzes
     async getAllQuizzes(req, res) {
         try {
-            const quizzes = await Quiz.find().populate('field');
+            const quizzes = await Quiz.find().populate('field').populate('userId');
 
             res.status(200).json(quizzes);
         } catch (error) {
@@ -134,7 +134,12 @@ class QuizController {
 
             const totalQuizzes = await Quiz.countDocuments(query);
 
-            const quizzes = await Quiz.find(query).populate('field').sort(listSort).skip(skip).limit(limit);
+            const quizzes = await Quiz.find(query)
+                .populate('field')
+                .populate('userId')
+                .sort(listSort)
+                .skip(skip)
+                .limit(limit);
 
             res.status(200).json({
                 quizzes,
@@ -147,7 +152,7 @@ class QuizController {
         }
     }
 
-    // [GET] /quiz/getQuizDashboard?page=num
+    // [GET] /quiz/getQuizListAdmin?page=num
     async getQuizListAdmin(req, res) {
         const page = parseInt(req.query.page) || 1;
         const limit = 5;
@@ -156,7 +161,7 @@ class QuizController {
         try {
             const totalQuizzes = await Quiz.countDocuments();
 
-            const quizzes = await Quiz.find().populate('field').skip(skip).limit(limit);
+            const quizzes = await Quiz.find().populate('field').populate('userId').skip(skip).limit(limit);
             res.status(200).json({
                 quizzes,
                 totalPages: Math.ceil(totalQuizzes / limit),
@@ -177,7 +182,11 @@ class QuizController {
         try {
             const totalQuizzes = await Quiz.countDocuments({ status: '0' });
 
-            const quizzes = await Quiz.find({ status: '0' }).populate('field').skip(skip).limit(limit);
+            const quizzes = await Quiz.find({ status: '0' })
+                .populate('field')
+                .populate('userId')
+                .skip(skip)
+                .limit(limit);
             res.status(200).json({
                 quizzes,
                 totalPages: Math.ceil(totalQuizzes / limit),
@@ -230,7 +239,8 @@ class QuizController {
         const page = parseInt(req.query.page) || 1;
         const limit = 5;
         const skip = (page - 1) * limit;
-        const { userId, field, level } = req.query;
+        const { field, level } = req.query;
+        const { userId } = req.params;
 
         try {
             const query = {};
@@ -251,7 +261,7 @@ class QuizController {
 
             const totalQuizzes = await Quiz.countDocuments(query);
 
-            const quizzes = await Quiz.find(query).populate('field').skip(skip).limit(limit);
+            const quizzes = await Quiz.find(query).populate('field').populate('userId').skip(skip).limit(limit);
 
             res.status(200).json({
                 quizzes,
@@ -269,7 +279,7 @@ class QuizController {
         const userId = req.params.userId;
 
         try {
-            const quizzes = await Quiz.find({ userId }).populate('field');
+            const quizzes = await Quiz.find({ userId }).populate('field').populate('userId');
 
             res.status(200).json(quizzes);
         } catch (error) {
@@ -283,7 +293,7 @@ class QuizController {
         const quizId = req.params.quizId;
 
         try {
-            const temp = await Quiz.findById(quizId);
+            const temp = await Quiz.findById(quizId).populate('field').populate('userId');
             if (!temp) {
                 return res.status(404).json({ msg: 'Quiz not found!' });
             }
@@ -363,7 +373,7 @@ class QuizController {
     // [PUT] /quiz/updateQuiz/:quizId
     async updateQuiz(req, res) {
         const quizId = req.params.quizId;
-        const { image, title, description, field, level, duration, password, quiz } = req.body;
+        const { image, title, description, field, level, duration, password, quiz, userId } = req.body;
 
         try {
             const oldQuiz = await Quiz.findById(quizId);
@@ -404,6 +414,7 @@ class QuizController {
                     password: encryptedPassword,
                     status: '0',
                     quiz,
+                    userId,
                 },
                 { new: true },
             );

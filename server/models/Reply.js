@@ -6,9 +6,7 @@ const ReplySchema = new Schema(
     {
         reviewId: { type: String, required: true },
         parentReplyId: { type: String, default: null },
-        userId: { type: String, required: true },
-        userName: { type: String, required: true },
-        userImage: { type: String, default: '' },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
         replyText: { type: String, required: true },
     },
     { timestamps: true },

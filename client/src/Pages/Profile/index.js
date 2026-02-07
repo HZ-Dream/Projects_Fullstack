@@ -198,7 +198,7 @@ const Profile = () => {
                         <TabPanel value="1">
                             <form onSubmit={editUser}>
                                 <div className="row">
-                                    <div className="col-md-4">
+                                    <div className="col-md-4 dFlexAliJus-center">
                                         <div className="userImage">
                                             {loadImg ? (
                                                 <div className="load dFlexAliJus-center">

@@ -55,7 +55,7 @@ const HomeCat = () => {
                         return (
                             <SwiperSlide key={item.id || index}>
                                 <div className={`${cx('item')} text-center cursor`} style={{ background: randomBg }}>
-                                    <img src={UserImg} alt="HomeCat" />
+                                    <img src={item.image} alt="HomeCat" />
                                     <h6 className="textOne_line">{item.name}</h6>
                                     <h6>{item.quizCreated} Q</h6>
                                 </div>

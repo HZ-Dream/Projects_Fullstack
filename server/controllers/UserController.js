@@ -243,7 +243,16 @@ class UserController {
         const skip = (page - 1) * limit;
 
         try {
-            const user = await User.findById(userId).populate('wishlist');
+            const user = await User.findById(userId)
+                .populate({
+                    path: 'wishlist',
+                    populate: { path: 'field' },
+                })
+                .populate({
+                    path: 'wishlist',
+                    populate: { path: 'userId', select: 'name image' },
+                });
+
             const totalWishlistItems = user.wishlist.length;
             const totalPages = Math.ceil(totalWishlistItems / limit);
             user.wishlist = user.wishlist.slice(skip, skip + limit);

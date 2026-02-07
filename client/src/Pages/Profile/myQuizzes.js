@@ -33,7 +33,6 @@ const MyQuizzes = () => {
     const fetchWishlist = async (pageNumber = page) => {
         const res = await fetchDataFromApi(`/api/user/getUserWishlist/${userData.userId}?page=${pageNumber}`);
 
-        // ⬅️ nếu page hiện tại > totalPages mới → lùi page
         if (pageNumber > res.totalPages && res.totalPages > 0) {
             setPage(res.totalPages);
             return;
@@ -48,10 +47,8 @@ const MyQuizzes = () => {
     }, [page]);
 
     const handleRemoveWishlist = async (quizId) => {
-        // 1️⃣ Optimistic UI
         setWishlistData((prev) => prev.filter((item) => item._id !== quizId));
 
-        // 2️⃣ Sync lại với backend (QUAN TRỌNG)
         await fetchWishlist(page);
     };
 

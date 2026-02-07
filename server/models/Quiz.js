@@ -23,7 +23,7 @@ const QuizSchema = new Schema(
         duration: { type: Number, required: true },
         password: { type: String },
         status: { type: String, default: '0' },
-        userId: { type: String, required: true },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
         quiz: { type: [QuestionSchema], required: true },
         approveQuizBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admins' },
     },
