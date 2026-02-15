@@ -6,6 +6,7 @@ import { FaHeart } from 'react-icons/fa';
 import { MdNoteAdd } from 'react-icons/md';
 import { FaReply } from 'react-icons/fa';
 import { RiDeleteBack2Fill } from 'react-icons/ri';
+import { MdDescription } from 'react-icons/md';
 
 // Img
 import defaultAvatar from '../../assets/images/default.jpg';
@@ -543,6 +544,18 @@ const QuizDetail = () => {
                                 <RiNumbersFill />
                                 <span className="mx-2">Number of Attempts:</span>
                                 <b>{quizData?.attempts}</b>
+                            </div>
+
+                            <div className="dFlexAli-center mb-2">
+                                <MdDescription />
+                                <span className="mx-2">Description:</span>
+                                <b>
+                                    {quizData?.description ? (
+                                        <MathText text={quizData.description} />
+                                    ) : (
+                                        'No description'
+                                    )}
+                                </b>
                             </div>
 
                             <div className="dFlexAli-center my-3">

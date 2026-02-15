@@ -82,40 +82,38 @@ const Profile = () => {
         }));
     };
 
-    const onChangeFile = async (e, url) => {
+    const onChangeImage = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        if (!['image/jpg', 'image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
             context.handleClickVariant('Only JPEG, PNG, and WEBP files are allowed!', 'warning');
             return;
         }
-
-        console.log(file);
 
         try {
             setLoadImg(true);
             const formData = new FormData();
 
-            formData.append('file', file);
+            formData.append('imageAvatarUser', file);
 
-            postData(url, formData)
+            postData('/api/user/uploadImage', formData)
                 .then((data) => {
+                    setLoadImg(false);
                     setFormFields((prev) => ({
                         ...prev,
                         image: data.secure_url,
                     }));
-
-                    setLoadImg(false);
                     context.handleClickVariant('File uploaded successfully!', 'success');
                 })
                 .catch((err) => {
+                    setLoadImg(false);
                     context.handleClickVariant(err, 'error');
                 });
         } catch (err) {
+            setLoadImg(false);
             console.error('Error uploading file:', err);
             context.handleClickVariant('File upload failed!', 'error');
-            setLoadImg(false);
         }
     };
 
@@ -138,7 +136,7 @@ const Profile = () => {
             })
             .catch((err) => {
                 console.error('Error updating user:', err);
-                context.handleClickVariant('Failed to update user!', 'error');
+                context.handleClickVariant(err.response.data.msg, 'error');
                 setIsLoad(false);
             });
     };
@@ -204,28 +202,15 @@ const Profile = () => {
                                                 <div className="load dFlexAliJus-center">
                                                     <CircularProgress className="loader" color="inherit" />
                                                 </div>
-                                            ) : formFields.image === '' ? (
-                                                <>
-                                                    <img src={defaultAvatar} alt="Avatar" />
-                                                    <div className="overlay dFlexAliJus-center">
-                                                        <IoMdCloudUpload />
-                                                        <input
-                                                            type="file"
-                                                            onChange={(e) => onChangeFile(e, '/api/user/uploadAvatar')}
-                                                        />
-                                                    </div>
-                                                </>
                                             ) : (
                                                 <>
-                                                    <img src={formFields.image} alt="Avatar" />
+                                                    <img
+                                                        src={formFields.image === '' ? defaultAvatar : formFields.image}
+                                                        alt="Avatar"
+                                                    />
                                                     <div className="overlay dFlexAliJus-center">
                                                         <IoMdCloudUpload />
-                                                        <input
-                                                            type="file"
-                                                            onChange={(e) =>
-                                                                onChangeFile(e, `/api/user/replaceAvatar/${userId}`)
-                                                            }
-                                                        />
+                                                        <input type="file" onChange={(e) => onChangeImage(e)} />
                                                     </div>
                                                 </>
                                             )}
@@ -248,7 +233,6 @@ const Profile = () => {
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <TextField
-                                                        disabled
                                                         name="email"
                                                         value={formFields.email}
                                                         className="w-100"

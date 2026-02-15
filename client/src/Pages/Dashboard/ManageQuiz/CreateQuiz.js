@@ -21,6 +21,7 @@ import Slider from 'react-slick';
 import { fetchDataFromApi, postData } from '../../../utils/api';
 
 import { MyContext } from '../../../App';
+import SymbolMath from '../../../Components/SymbolMath';
 
 // Images
 var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1768789459/exam-01_jab5xy.webp';
@@ -31,6 +32,7 @@ const CreateQuiz = () => {
     const context = useContext(MyContext);
     const location = useLocation();
     const { formGenerate, dataAI } = location.state || {};
+    const [isOpenModal, setIsOpenModal] = useState(false);
 
     console.log('location.state:', location.state);
     console.log('formGenerate:', formGenerate, 'dataAI:', dataAI);
@@ -98,6 +100,14 @@ const CreateQuiz = () => {
             }
         }
     }, []);
+
+    const openModal = () => {
+        setIsOpenModal(true);
+    };
+
+    const closeModal = () => {
+        setIsOpenModal(false);
+    };
 
     // Image Quiz
     const onChangeImage = async (e, index) => {
@@ -401,6 +411,10 @@ const CreateQuiz = () => {
                                 <input value={formField.title} onChange={onChangeInput} name="title" type="text" />
                             </div>
 
+                            <Button className="btn-primary btn-small text-capitalize me-auto mb-3" onClick={openModal}>
+                                Open Math
+                            </Button>
+
                             <div className="form-group">
                                 <h6>Description*</h6>
                                 <textarea
@@ -632,6 +646,10 @@ const CreateQuiz = () => {
                             </div>
                         </div>
 
+                        <Button className="btn-primary btn-small text-capitalize me-auto mb-3" onClick={openModal}>
+                            Open Math
+                        </Button>
+
                         <div className="form-group">
                             <h5>Question Text</h5>
                             <textarea
@@ -671,6 +689,9 @@ const CreateQuiz = () => {
                         ))}
 
                         <div className="d-flex justify-content-end mt-2">
+                            <Button className="btn-primary btn-small text-capitalize me-2" onClick={openModal}>
+                                Open Math
+                            </Button>
                             <Button
                                 className="btn-green btn-small"
                                 onClick={() => handleAddOption(activeQuestionIndex)}
@@ -698,6 +719,8 @@ const CreateQuiz = () => {
                     </div>
                 )}
             </form>
+
+            {isOpenModal && <SymbolMath isOpen={isOpenModal} closeModal={closeModal} />}
         </section>
     );
 };

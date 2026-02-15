@@ -319,7 +319,7 @@ class QuizController {
 
     // [POST] /quiz/createQuiz
     async createQuiz(req, res) {
-        const { image, title, description, field, level, duration, password, quiz, userId } = req.body;
+        const { image, title, description, field, level, duration, password, status, quiz, userId } = req.body;
 
         try {
             let encryptedPassword = '';
@@ -339,6 +339,7 @@ class QuizController {
                 level,
                 duration,
                 password: encryptedPassword,
+                status,
                 userId,
                 quiz,
             });

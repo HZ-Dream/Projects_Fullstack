@@ -221,7 +221,6 @@ const QuizList = () => {
 
                                                     <div className="info ps-2">
                                                         <h6>{quiz.title}</h6>
-                                                        <p>{quiz.description}</p>
                                                     </div>
                                                 </div>
                                             </td>

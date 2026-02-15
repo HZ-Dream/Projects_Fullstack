@@ -1,6 +1,8 @@
 import { InlineMath, BlockMath } from 'react-katex';
 
 function MathText({ text }) {
+    if (!text) return null;
+
     const parts = text.split(/(\$[^$]+\$)/g);
 
     return (

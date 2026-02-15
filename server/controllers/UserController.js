@@ -5,9 +5,52 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const cloudinary = require('../utils/cloudinary');
 
+const getPublicIdFromUrl = (url) => {
+    if (!url || !url.includes('res.cloudinary.com')) return null;
+
+    // URL format: https://res.cloudinary.com/cloud_name/image/upload/v1234567/folder/public_id.jpg
+    const parts = url.split('/');
+    const uploadIndex = parts.indexOf('upload');
+    if (uploadIndex === -1) return null;
+
+    let remainingParts = parts.slice(uploadIndex + 1);
+
+    if (remainingParts[0].startsWith('v') && !isNaN(remainingParts[0].substring(1))) {
+        remainingParts.shift();
+    }
+
+    const lastPart = remainingParts.pop();
+    const fileName = lastPart.split('.')[0];
+    remainingParts.push(fileName);
+
+    return remainingParts.join('/');
+};
+
+const deleteImageByUrl = async (imageUrl) => {
+    const publicId = getPublicIdFromUrl(imageUrl);
+    if (!publicId) return;
+    try {
+        await cloudinary.uploader.destroy(publicId);
+    } catch (e) {
+        console.error('Lỗi xóa ảnh Cloudinary:', e);
+    }
+};
+
+const confirmImages = async (urls) => {
+    const publicIds = urls.map((url) => getPublicIdFromUrl(url)).filter((id) => id !== null);
+
+    if (publicIds.length > 0) {
+        try {
+            const result = await cloudinary.uploader.remove_tag('temp_upload_avatar_user', publicIds);
+        } catch (e) {
+            console.error('Lỗi khi gỡ tag trên Cloudinary:', e);
+        }
+    }
+};
+
 class UserController {
-    // [POST] /user/uploadAvatar
-    async uploadAvatar(req, res) {
+    // [POST] /user/uploadImage
+    async uploadImage(req, res) {
         try {
             if (!req.file) {
                 return res.status(400).json({ error: true, msg: 'No file uploaded!' });
@@ -21,51 +64,10 @@ class UserController {
                 overwrite: false,
             };
 
-            const result = await cloudinary.uploader.upload(imageFile.path, options);
-
-            fs.unlinkSync(req.file.path);
-
-            return res.status(200).json(result);
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ msg: 'Something went wrong!' });
-        }
-    }
-
-    // [POST] /user/replaceAvatar/:userId
-    async replaceAvatar(req, res) {
-        try {
-            const userId = req.params.userId;
-
-            if (!req.file) {
-                return res.status(400).json({ error: true, msg: 'No file uploaded!' });
-            }
-
-            const user = await User.findById(userId);
-            if (!user) {
-                return res.status(404).json({ msg: 'User not found!' });
-            }
-
-            if (user.image && user.image !== '') {
-                try {
-                    const parts = user.image.split('/');
-                    const fileName = parts[parts.length - 1];
-                    const publicId = fileName.split('.')[0];
-                    await cloudinary.uploader.destroy(publicId);
-                } catch (e) {
-                    console.error('Error destroying old image: ', e);
-                }
-            }
-
-            const imageFile = req.file;
-
-            const options = {
-                use_filename: true,
-                unique_filename: false,
-                overwrite: true,
-            };
-
-            const result = await cloudinary.uploader.upload(imageFile.path, options);
+            const result = await cloudinary.uploader.upload(imageFile.path, {
+                ...options,
+                tags: ['temp_upload_avatar_user'],
+            });
 
             fs.unlinkSync(req.file.path);
 
@@ -194,6 +196,29 @@ class UserController {
             const user = await User.findById(userId);
             if (!user) {
                 return res.status(404).json({ msg: 'User not found!' });
+            }
+
+            const oldEmail = user.email;
+
+            if (email !== oldEmail) {
+                const existingUser = await User.findOne({ email: email });
+                if (existingUser) {
+                    res.status(400).json({ msg: 'Email already exists!' });
+                    return;
+                }
+            }
+
+            if (user.image && user.image !== image) {
+                await deleteImageByUrl(user.image);
+            }
+
+            const imagesToConfirm = [];
+            if (image && image.trim() !== '') {
+                imagesToConfirm.push(image);
+            }
+
+            if (imagesToConfirm.length > 0) {
+                await confirmImages(imagesToConfirm);
             }
 
             user.name = name || user.name;
