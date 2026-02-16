@@ -2,6 +2,10 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding-bottom: 10px;
     background: var(--white-color);
+
+    :global(body.dark) & {
+        background: #112143;
+    }
 }
 
 .headerWrapper {
@@ -40,11 +44,19 @@
         height: 40px !important;
         width: 40px !important;
         border-radius: 50% !important;
-        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border: 2px solid rgba(0, 0, 0, 0.1) !important;
+
+        :global(body.dark) & {
+            border: 2px solid white !important;
+        }
     }
 
     & .circle svg {
         font-size: 20px;
+
+        :global(body.dark) & {
+            color: white;
+        }
     }
 
     & .user-menu-container {

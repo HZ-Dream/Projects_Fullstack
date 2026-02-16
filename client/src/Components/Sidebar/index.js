@@ -56,7 +56,7 @@ const Sidebar = ({ className, filters, onFilterChange }) => {
             <div className={cx('sidebar', className)}>
                 <div className={cx('filterBox')}>
                     <h6>Fields Of Studdy</h6>
-
+                    <hr />
                     <div className={cx('scroll')}>
                         <ul>
                             {fieldData?.map((field) => (
@@ -79,7 +79,7 @@ const Sidebar = ({ className, filters, onFilterChange }) => {
 
                 <div className={cx('filterBox')}>
                     <h6>Filter by Rates</h6>
-
+                    <hr />
                     <RangeSlider className="mt-3" value={value} onInput={setValue} min={1} max={5} step={0.5} />
 
                     <div className={`d-flex pt-2 pb-2 ${cx('priceRange')}`}>
@@ -95,7 +95,7 @@ const Sidebar = ({ className, filters, onFilterChange }) => {
 
                 <div className={cx('filterBox')}>
                     <h6>Most</h6>
-
+                    <hr />
                     <RadioGroup value={filters.most} className={cx('scroll')}>
                         <FormControlLabel
                             onClick={handleMostChange}

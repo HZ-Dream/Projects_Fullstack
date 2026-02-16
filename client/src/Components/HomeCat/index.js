@@ -27,7 +27,6 @@ const cx = classNames.bind(styles);
 const HomeCat = () => {
     const [userData, setUserData] = useState([]);
     const swiperRef = useRef();
-    const itemBg = ['#feefea', '#fffceb', '#feefea', '#ecffec', '#f2fce4'];
 
     useEffect(() => {
         fetchDataFromApi('/api/user/getAllUser').then((res) => {
@@ -51,12 +50,11 @@ const HomeCat = () => {
                     modules={[Navigation]}
                 >
                     {sortedUsers.map((item, index) => {
-                        const randomBg = itemBg[Math.floor(Math.random() * itemBg.length)];
                         return (
                             <SwiperSlide key={item.id || index}>
-                                <div className={`${cx('item')} text-center cursor`} style={{ background: randomBg }}>
+                                <div className={`${cx('item')} text-center cursor`}>
                                     <img src={item.image} alt="HomeCat" />
-                                    <h6 className="textOne_line">{item.name}</h6>
+                                    <h6 className="textOne_line mt-1 mb-0">{item.name}</h6>
                                     <h6>{item.quizCreated} Q</h6>
                                 </div>
                             </SwiperSlide>

@@ -104,17 +104,17 @@ const QuizItem = (props) => {
                             size="small"
                             precision={0.1}
                         />
-                        <div className="ms-2 d-flex align-items-center">
+                        <span className="ms-2 d-flex align-items-center">
                             <div className="me-1">{quizData?.totalRate}</div>
                             <RiNumbersFill />
-                        </div>
+                        </span>
                     </div>
 
                     <div className="d-flex">
-                        <div title="Number of Quiz" className={`${cx('numberOfQuiz')} d-flex align-items-center`}>
+                        <span title="Number of Quiz" className={`${cx('numberOfQuiz')} d-flex align-items-center`}>
                             <MdQuiz />
                             <span className="text ms-1">{quizData?.quiz?.length}</span>
-                        </div>
+                        </span>
                         <span title="Attempts" className={`${cx('numberOfUser')} ms-3 d-flex align-items-center`}>
                             <FaUserEdit />
                             <span className="text ms-1">{quizData?.attempts}</span>

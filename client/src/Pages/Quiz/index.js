@@ -226,7 +226,9 @@ const Quiz = () => {
                             </div>
 
                             <div style={{ display: showPage ? 'block' : 'none' }}>
-                                <div className="d-flex align-items-center justify-content-center mt-5">
+                                <div
+                                    className={`d-flex align-items-center justify-content-center mt-5 ${cx('paginateQuizList')}`}
+                                >
                                     <Stack spacing={2}>
                                         <Pagination
                                             onChange={(e, value) => setPage(value)}

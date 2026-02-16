@@ -30,8 +30,6 @@
 }
 
 .product_row {
-    // border-right: 1px solid rgba(0, 0, 0, 0.1);
-
     :global(.slick-arrow) {
         position: absolute;
         top: 45%;
@@ -45,12 +43,20 @@
         background-color: transparent;
         border: 1px solid rgba(0, 0, 0, 0.2);
 
+        :global(body.dark) & {
+            background-color: #eee;
+        }
+
         &::before {
             color: var(--gray-color);
         }
 
         &:hover {
             background: var(--white-color);
+
+            :global(body.dark) & {
+                background-color: var(--white-color);
+            }
         }
 
         &:hover::before {

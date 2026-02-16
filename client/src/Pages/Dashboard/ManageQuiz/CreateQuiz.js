@@ -34,8 +34,6 @@ const CreateQuiz = () => {
     const { formGenerate, dataAI } = location.state || {};
     const [isOpenModal, setIsOpenModal] = useState(false);
 
-    console.log('location.state:', location.state);
-    console.log('formGenerate:', formGenerate, 'dataAI:', dataAI);
     const [isLoad, setIsLoad] = useState(false);
     const [loadImg, setLoadImg] = useState(false);
     const [loadQImg, setLoadQImg] = useState(false);

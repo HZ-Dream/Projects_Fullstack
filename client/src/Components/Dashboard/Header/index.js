@@ -251,13 +251,12 @@ const HeaderDashboard = () => {
                             <Button onClick={handleClick} className="myAcc dFlexAli-center">
                                 <div className="userImg">
                                     <span className="rounded-circle">
-                                        <img src={avatarImg} alt="Avatar" />
+                                        <img src={context.userData?.userImage} alt="Avatar" />
                                     </span>
                                 </div>
 
                                 <div className="userInfo d-flex flex-column pt-2 ps-2 res-hide">
-                                    <h5 className="mb-0">Dream</h5>
-                                    <p className="mb-0">@dream1209</p>
+                                    <h5 className="mb-0">{context.userData?.name}</h5>
                                 </div>
                             </Button>
 

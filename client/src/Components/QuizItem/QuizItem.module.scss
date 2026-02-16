@@ -6,6 +6,16 @@
     cursor: pointer;
     position: relative;
 
+    :global(body.dark) & {
+        border: 3px solid white !important;
+    }
+
+    & span {
+        :global(body.dark) & {
+            color: white;
+        }
+    }
+
     &:hover {
         .imgWrapper {
             img {
@@ -126,6 +136,10 @@
     border-bottom-left-radius: 11px;
     border-bottom-right-radius: 11px;
 
+    :global(body.dark) & {
+        background-color: #293856;
+    }
+
     h4 {
         height: 36px;
         font-size: 15px;
@@ -141,4 +155,8 @@
     height: 30px;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.2);
+
+    :global(body.dark) & {
+        border: 1px solid white;
+    }
 }

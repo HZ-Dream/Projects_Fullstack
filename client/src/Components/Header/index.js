@@ -4,7 +4,8 @@ import { FaUser } from 'react-icons/fa';
 import { LuLogOut } from 'react-icons/lu';
 import { FiUser } from 'react-icons/fi';
 import { FaRegBell } from 'react-icons/fa';
-import { BsFillBagCheckFill } from 'react-icons/bs';
+import { IoSunnyOutline } from 'react-icons/io5';
+import { FaMoon } from 'react-icons/fa';
 import Button from '@mui/material/Button';
 
 // Img
@@ -78,6 +79,12 @@ const Header = () => {
                         <div className={`${cx('part3')} d-flex align-items-center`}>
                             {context.isUserLogin === true ? (
                                 <>
+                                    <Button
+                                        className={`${cx('circle')} d-flex align-items-center me-2`}
+                                        onClick={() => context.setDarkMode(!context.darkMode)}
+                                    >
+                                        {context.darkMode === false ? <IoSunnyOutline /> : <FaMoon />}
+                                    </Button>
                                     <Button className={`${cx('circle')} d-flex align-items-center`}>
                                         <FaRegBell />
                                     </Button>

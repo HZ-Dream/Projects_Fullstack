@@ -6,9 +6,18 @@ footer {
     padding: 25px 0 0px;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 
+    :global(body.dark) & {
+        background-color: #071739;
+    }
+
     .topInfo {
         padding-bottom: 20px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+        :global(body.dark) & {
+            color: var(--white-color);
+            border-bottom: 1px solid #878d9f;
+        }
 
         span {
             font-size: 14px;
@@ -57,6 +66,10 @@ footer {
     background: var(--white-color);
     padding: 0 91px;
 
+    :global(body.dark) & {
+        background-color: var(--black-color);
+    }
+
     ul {
         li {
             a {
@@ -68,6 +81,11 @@ footer {
                 border-radius: 50%;
                 border: 1px solid rgba(0, 0, 0, 0.2);
 
+                :global(body.dark) & {
+                    background-color: var(--white-color);
+                    border: 1px solid var(--white-color);
+                }
+
                 svg {
                     font-size: 16px;
                     color: rgba(0, 0, 0, 0.8);
@@ -77,6 +95,11 @@ footer {
                     background: var(--second-color);
 
                     svg {
+                        color: var(--white-color);
+                    }
+
+                    :global(body.dark) & {
+                        background-color: var(--second-color);
                         color: var(--white-color);
                     }
                 }

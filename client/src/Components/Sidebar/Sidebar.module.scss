@@ -1,6 +1,15 @@
 .sidebar {
     & .filterBox {
         margin-bottom: 30px;
+        border-radius: 10px;
+        border: 3px solid #cce1e5;
+        padding: 10px;
+        background: var(--white-color);
+
+        :global(body.dark) & {
+            background-color: #707070 !important;
+            color: #ffffff !important;
+        }
     }
 
     h6 {
@@ -8,6 +17,16 @@
         font-size: 14px;
         text-transform: uppercase;
         margin-bottom: 10px;
+
+        :global(body.dark) & {
+            color: var(--white-color) !important;
+        }
+    }
+
+    hr {
+        :global(body.dark) & {
+            color: var(--black-color) !important;
+        }
     }
 }
 

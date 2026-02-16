@@ -10,6 +10,11 @@
     height: auto;
     border-radius: 10px;
     border: 1px solid #ccc;
+    background-color: white;
+
+    :global(body.dark) & {
+        background-color: #293856;
+    }
 
     img {
         width: 80%;
@@ -31,10 +36,14 @@
     height: 30px !important;
     border-radius: 50% !important;
     background-color: var(--white-color) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
     color: var(--black-color) !important;
     font-size: 12px !important;
     font-weight: bold !important;
+    border: 2px solid #999 !important;
+
+    :global(body.dark) & {
+        border: 3px solid rgba(0, 0, 0, 0.4) !important;
+    }
 }
 
 .homeCat_prevBtn:hover,

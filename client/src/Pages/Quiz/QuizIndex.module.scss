@@ -20,8 +20,15 @@
 .showBy {
     width: 100%;
     height: 50px;
-    background: #e7e7e7;
+    background: #7bfff3;
+    border: 2px solid white;
     padding: 15px 25px;
+    border-radius: 10px;
+
+    :global(body.dark) & {
+        background-color: var(--white-color);
+        border: 2px solid #ccc;
+    }
 }
 
 .btnWrapper {
@@ -71,4 +78,10 @@
     display: flex;
     gap: 10px !important;
     flex-wrap: wrap;
+}
+
+.paginateQuizList {
+    :global(body.dark .MuiPaginationItem-page) {
+        color: var(--white-color) !important;
+    }
 }

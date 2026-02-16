@@ -53,6 +53,8 @@ const Home = () => {
         <div>
             <HomeBanner />
 
+            <hr />
+
             <HomeCat />
 
             <section className={cx('homeProducts')}>
@@ -109,16 +111,6 @@ const Home = () => {
                                     quizData.slice(0, 8).map((item, index) => {
                                         return <QuizItem key={index} className="itemRow_4" data={item} />;
                                     })}
-                            </div>
-
-                            <div className={`${cx('bannerSec')} d-flex mt-4 mb-5`}>
-                                <div className={cx('banner')}>
-                                    <img className="w-100" src={banner3} alt="banner" />
-                                </div>
-
-                                <div className={cx('banner')}>
-                                    <img className="w-100" src={banner4} alt="banner" />
-                                </div>
                             </div>
                         </div>
                     </div>

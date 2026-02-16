@@ -13,7 +13,7 @@ body {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.8);
     overflow-x: hidden;
-    background: #ebe9e9;
+    background: #e3faff;
 }
 
 ul {
@@ -197,6 +197,15 @@ a {
     opacity: 0.9 !important;
 }
 
+/* Paginate */
+body.dark .MuiPaginationItem-text {
+    color: var(--white-color) !important;
+}
+
+body.dark .MuiSvgIcon-root {
+    fill: yellow !important;
+}
+
 /* Other css */
 .section {
     padding: 45px 0;
@@ -204,6 +213,10 @@ a {
 
 .borderRight {
     border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body.dark .borderRight {
+    border-right: 1px solid #878d9f !important;
 }
 
 .close_ {

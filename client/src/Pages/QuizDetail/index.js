@@ -510,7 +510,7 @@ const QuizDetail = () => {
             <section className={`productDetails ${cx('section')}`}>
                 <div className="container">
                     <div className="row">
-                        <div className="col-md-8 ps-5">
+                        <div className={`col-md-8 ps-5 ${cx('detailsInfo')}`}>
                             <h3 className="hd text-capitalize">{quizData?.title}</h3>
                             <ul className="list list-inline dFlexAli-center">
                                 <li className="list-inline-item">
@@ -835,7 +835,7 @@ const QuizDetail = () => {
 
                                         <div className="col-md-4">
                                             <h4 className="mb-3">Reviews</h4>
-                                            <div className="d-flex mb-3">
+                                            <div className={`d-flex mb-3 ${cx('inputRate')}`}>
                                                 <Rating
                                                     className="me-1"
                                                     name="read-only"
@@ -901,16 +901,13 @@ const QuizDetail = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <a href="#" className="font-xs text-muted">
-                                                How are ratings calculated?
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             )}
 
                             {activeTabs === 1 && (
-                                <div className="tabQuizList">
+                                <div className={cx('tabQuizList')}>
                                     {quizList?.length === 0 ? (
                                         <span>No questions available for this quiz.</span>
                                     ) : (
@@ -931,9 +928,9 @@ const QuizDetail = () => {
                             )}
 
                             {activeTabs === 2 && (
-                                <div className="tabContent">
+                                <div className={cx('tabContent')}>
                                     <div className="table-responsive">
-                                        <table className="table">
+                                        <table className="table mb-0">
                                             <thead>
                                                 <tr>
                                                     <th>Completion Date</th>
