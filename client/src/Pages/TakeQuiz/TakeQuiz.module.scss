@@ -1,112 +1,11 @@
-.quizItem {
-    ul {
-        li {
-            display: flex;
-            align-items: center;
-
-            input {
-                width: 16px;
-                height: 16px;
-                cursor: pointer;
-            }
-
-            span {
-                margin-left: 5px;
-                font-size: 16px;
-            }
-        }
-    }
-}
-
-.infoProcess {
-    position: sticky;
-    top: 30px;
-}
-
-.listQuiz {
-    display: flex;
-    flex-wrap: wrap;
-    padding-left: 7px;
-    max-height: 210px;
-    overflow-y: scroll;
-
-    & .listItem {
-        display: inline-flex;
-        border-radius: 5px;
-        border: 1px solid rgba(0, 0, 0, 0.5);
-        font-weight: 600;
-        margin-right: 7px;
-        margin-bottom: 8px;
-        width: 28px;
-        height: 28px;
-        font-size: 11px;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-
-        &.check {
-            background: #b4ebff;
-            border: 1px solid #00aeef;
-        }
-
-        &.mark {
-            background: yellow !important;
-            border: 1px solid red;
-        }
-
-        &.correct {
-            background-color: #d4edda !important;
-            border-color: #28a745 !important;
-            color: #155724;
-        }
-
-        &.incorrect {
-            background-color: #f8d7da !important;
-            border-color: #dc3545 !important;
-            color: #721c24;
-        }
-
-        &.skip {
-            background-color: #e2e3e5 !important;
-            border-color: #6c757d !important;
-        }
-    }
-}
-
-.modal {
-    padding: 25px 10px;
-}
-
-.modalBtn {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.quizNumber {
-    background: #f0f0f0;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-weight: bold;
-    flex-shrink: 0;
-}
-
-.text-red {
-    color: #e43a45;
-}
-
-.fz17 {
-    font-size: 17px;
-}
-
 .historyWrapper {
     background-color: #f8f9fa;
     padding: 40px 0;
     min-height: 100vh;
+
+    :global(body.dark) & {
+        background-color: #071739;
+    }
 
     .loadingCenter {
         display: flex;
@@ -117,12 +16,13 @@
 }
 
 .questionCard {
-    background: #fff;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 2px solid #e0e0e0;
     border-left: 6px solid #e0e0e0;
+
+    :global(body.dark) & {
+        border: 2px solid var(--white-color);
+        border-left: 6px solid var(--white-color);
+    }
 
     &.correct {
         border-left-color: #4caf50;
@@ -141,6 +41,10 @@
             color: #666;
             font-size: 0.9rem;
             text-transform: uppercase;
+
+            :global(body.dark) & {
+                color: var(--white-color);
+            }
         }
     }
 }
@@ -157,6 +61,11 @@
         border-radius: 10px;
         transition: all 0.2s;
         background: #fafafa;
+
+        :global(body.dark) & {
+            background-color: #233763;
+            color: var(--white-color);
+        }
 
         &.correctOption {
             background: #e8f5e9;
@@ -197,9 +106,14 @@
     background: #fff;
     padding: 24px;
     border-radius: 16px;
+    border: 1px solid #e0e0e0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     position: sticky;
     top: 20px;
+
+    :global(body.dark) & {
+        background-color: #1b2b4d;
+    }
 
     .scoreBox {
         text-align: center;
@@ -213,6 +127,16 @@
             font-size: 2rem;
             font-weight: 800;
             margin: 0;
+
+            :global(body.dark) & {
+                color: var(--white-color) !important;
+            }
+        }
+
+        p {
+            :global(body.dark) & {
+                color: var(--white-color) !important;
+            }
         }
     }
 }
@@ -226,6 +150,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
+
         svg {
             font-size: 20px;
         }
@@ -233,10 +158,18 @@
             font-size: 0.8rem;
             color: #777;
             display: block;
+
+            :global(body.dark) & {
+                color: var(--white-color);
+            }
         }
         strong {
             font-size: 1rem;
             color: #333;
+
+            :global(body.dark) & {
+                color: #fffc;
+            }
         }
     }
 }
@@ -277,6 +210,10 @@
     background: #f4f7fe;
     padding: 30px 0 60px;
     min-height: 100vh;
+
+    :global(body.dark) & {
+        background-color: #071739;
+    }
 }
 
 .quizHeader {
@@ -288,6 +225,10 @@
     position: sticky;
     top: 10px;
     z-index: 100;
+
+    :global(body.dark) & {
+        background-color: #1b2b4d;
+    }
 
     .timerBadge {
         background: #e3f2fd;
@@ -328,6 +269,10 @@
     margin-bottom: 25px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 
+    :global(body.dark) & {
+        background-color: #1b2b4d;
+    }
+
     .qBadge {
         background: #f0f2f5;
         padding: 5px 12px;
@@ -361,9 +306,19 @@
         transition: all 0.2s ease;
         background: #fff;
 
+        :global(body.dark) & {
+            background-color: #233763;
+            color: var(--white-color);
+        }
+
         &:hover {
             border-color: #cbd5e0;
             background: #f8fafc;
+
+            :global(body.dark) & {
+                background-color: #1b1a44;
+                color: var(--white-color);
+            }
         }
 
         &.selected {
@@ -386,17 +341,16 @@
             margin-right: 15px;
             position: relative;
             transition: all 0.2s;
-            flex-shrink: 0; // Đảm bảo không bị bóp méo khi text dài
+            flex-shrink: 0;
         }
 
-        // --- Style cho câu chọn MỘT (Hình tròn) ---
         &.singleChoice {
             .customCheck {
-                border-radius: 50%; // Bo tròn
+                border-radius: 50%;
             }
             &.selected .customCheck {
                 border-color: #1976d2;
-                background: #fff; // Giữ nền trắng
+                background: #fff;
                 &::after {
                     content: '';
                     width: 10px;
@@ -411,16 +365,15 @@
             }
         }
 
-        // --- Style cho câu chọn NHIỀU (Hình vuông) ---
         &.multiChoice {
             .customCheck {
-                border-radius: 4px; // Hình vuông bo góc nhẹ
+                border-radius: 4px;
             }
             &.selected .customCheck {
                 border-color: #1976d2;
-                background: #1976d2; // Nền xanh hoàn toàn
+                background: #1976d2;
                 &::after {
-                    content: '✓'; // Dấu tích cho checkbox
+                    content: '✓';
                     color: white;
                     font-size: 14px;
                     font-weight: bold;
@@ -432,7 +385,6 @@
             }
         }
 
-        // Hiệu ứng Hover
         &:hover:not(.selected) {
             border-color: #cbd5e0;
             background: #f1f5f9;
@@ -453,12 +405,43 @@
     padding: 25px;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border: 2px solid #e0e0e0;
+
+    :global(body.dark) & {
+        background-color: #1b2b4d;
+    }
 
     .statRow {
         display: flex;
         justify-content: space-between;
         margin-bottom: 10px;
         color: #666;
+
+        :global(body.dark) & {
+            color: var(--white-color);
+        }
+    }
+}
+
+.circle {
+    margin-top: 10px;
+    color: var(--black-color);
+    min-width: 80px !important;
+    height: 30px !important;
+    width: 80px !important;
+    border-radius: 10px !important;
+    border: 2px solid rgba(0, 0, 0, 0.2) !important;
+
+    :global(body.dark) & {
+        border: 2px solid white !important;
+    }
+
+    & svg {
+        font-size: 20px;
+
+        :global(body.dark) & {
+            color: white;
+        }
     }
 }
 
@@ -477,6 +460,10 @@
         border-radius: 8px;
         font-size: 0.85rem;
         cursor: default;
+
+        :global(body.dark) & {
+            color: var(--white-color);
+        }
 
         &.answered {
             background: #1976d2;

@@ -10,6 +10,10 @@ body.dark .card {
     border: 2px solid #ffffff !important;
 }
 
+.form-select {
+    cursor: pointer;
+}
+
 body.dark .form-select {
     background: #132345 !important;
     color: var(--white-color) !important;
@@ -308,6 +312,20 @@ body.dark .dropdown_list li.MuiButtonBase-root:hover {
     font-weight: 600;
 }
 
+/* Dashboard */
+body.dark .MuiChartsLabel-root.MuiChartsLegend-label {
+    color: var(--white-color) !important;
+}
+
+body.dark .MuiChartsAxis-tickLabel {
+    fill: var(--white-color) !important;
+}
+
+body.dark .MuiChartsAxis-line,
+body.dark .MuiChartsAxis-tick {
+    stroke: var(--white-color) !important;
+}
+
 /* Sidebar */
 .main .sidebarWrapper {
     width: 20%;
@@ -594,7 +612,7 @@ body.dark .main .sidebarWrapper .sidebar ul li button.act .arrow svg {
 .dashboardBoxWrapper .dashboardBox .icon svg {
     color: #fff;
     font-size: 36px;
-    opacity: 0.4;
+    opacity: 0.9;
 }
 
 .toggleIcon {

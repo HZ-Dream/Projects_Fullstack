@@ -58,9 +58,7 @@ const Header = () => {
             <div className={cx('headerWrapper')}>
                 <div className={`${cx('top-strip')} bg-blue`}>
                     <div className="container">
-                        <p className="mb-0 mt-0 text-center">
-                            Always 1% better than yesterday, Always 365% better than last year
-                        </p>
+                        <p className="mb-0 mt-0 text-center">Improve 1% each day, so you’re 365% better each year!</p>
                     </div>
                 </div>
             </div>
@@ -99,7 +97,7 @@ const Header = () => {
                                                 <span>Profile</span>
                                             </Link>
 
-                                            <Link to="/dashboard" onClick={handleClose}>
+                                            <Link to={`/dashboard/${context.userData.userId}`} onClick={handleClose}>
                                                 <MdDashboard />
                                                 <span>Dashboard</span>
                                             </Link>

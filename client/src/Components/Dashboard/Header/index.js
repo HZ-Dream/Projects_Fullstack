@@ -68,7 +68,7 @@ const HeaderDashboard = () => {
                     <div className="row dFlexAli-center">
                         {/* Logo Wrapper */}
                         <div className="part1 col-sm-3 ps-4">
-                            <Link to="/dashboard" className="dFlexAli-center logo">
+                            <Link to={`/dashboard/${context.userData?.userId}`} className="dFlexAli-center logo">
                                 <img src={Logo} alt="Logo" />
                                 <span className="ms-2">Dream</span>
                             </Link>

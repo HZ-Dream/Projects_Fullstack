@@ -182,7 +182,7 @@ function App() {
                     </Route>
 
                     <Route element={<DashboardLayout />}>
-                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/dashboard/:userId" element={<Dashboard />} />
                         <Route path="/dashboard/quizList/:userId" element={<QuizList />} />
                         <Route path="/dashboard/quizCreate" element={<CreateQuiz />} />
                         <Route path="/dashboard/quizEdit/:quizId" element={<EditQuiz />} />

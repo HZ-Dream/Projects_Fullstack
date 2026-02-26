@@ -10,10 +10,11 @@ import {
     IoTimeOutline,
     IoBookmarkOutline,
     IoBookmark,
-    IoCheckmarkCircle,
+    IoSunnyOutline,
     IoSendOutline,
     IoAlertCircleOutline,
 } from 'react-icons/io5';
+import { FaMoon } from 'react-icons/fa';
 
 // API
 import { fetchDataFromApi, postData } from '../../utils/api';
@@ -241,14 +242,23 @@ const TakeQuiz = () => {
                                     <span>Answered:</span>
                                     <strong className="text-primary">{answeredCount}</strong>
                                 </div>
+
                                 <div className={cx('statRow')}>
                                     <span>Marked:</span>
                                     <strong className="text-warning">{markedQuestions.length}</strong>
                                 </div>
+
                                 <div className={cx('statRow')}>
                                     <span>Remaining:</span>
                                     <strong>{unansweredCount}</strong>
                                 </div>
+
+                                <Button
+                                    className={`${cx('circle')} d-flex align-items-center ms-auto`}
+                                    onClick={() => context.setDarkMode(!context.darkMode)}
+                                >
+                                    {context.darkMode === false ? <IoSunnyOutline /> : <FaMoon />}
+                                </Button>
 
                                 <Divider className="my-3" />
 

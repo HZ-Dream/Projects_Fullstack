@@ -21,6 +21,9 @@ router.post('/uploadImage', upload.single('imageAvatarUser'), UserController.upl
 router.post('/signUp', UserController.signUp);
 router.post('/signIn', UserController.signIn);
 
+router.get('/getTotalData/:userId', UserController.getTotalData);
+router.get('/getDashboardChart/:userId', UserController.getDashboardChart);
+
 router.get('/getAllUser', UserController.getAllUser);
 router.get('/getAccount', UserController.getAccount);
 router.get('/getUser/:userId', UserController.getUser);

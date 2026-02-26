@@ -1,6 +1,10 @@
 const User = require('../models/User');
+const Quiz = require('../models/Quiz');
+const TakeQuiz = require('../models/TakeQuiz');
+const QuizReview = require('../models/QuizReview');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const fs = require('fs');
 const cloudinary = require('../utils/cloudinary');
@@ -46,6 +50,30 @@ const confirmImages = async (urls) => {
             console.error('Lỗi khi gỡ tag trên Cloudinary:', e);
         }
     }
+};
+
+const fillMissingMonths = (quizData, attemptData, rateData, months) => {
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+
+    const monthList = [];
+    for (let i = months - 1; i >= 0; i--) {
+        let m = currentMonth - i;
+        if (m <= 0) m += 12;
+        monthList.push(m);
+    }
+
+    const mapQuiz = Object.fromEntries(quizData.map((i) => [i._id, i.totalQuiz]));
+
+    const mapAttempt = Object.fromEntries(attemptData.map((i) => [i._id, i.totalAttempts]));
+
+    const mapRate = Object.fromEntries(rateData.map((i) => [i._id, i.totalRates]));
+
+    return {
+        quizzes: monthList.map((m) => mapQuiz[m] || 0),
+        attempts: monthList.map((m) => mapAttempt[m] || 0),
+        rates: monthList.map((m) => mapRate[m] || 0),
+    };
 };
 
 class UserController {
@@ -145,6 +173,94 @@ class UserController {
         } catch (error) {
             console.log(error);
             res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
+    // [GET] /user/getTotalData/:userId
+    async getTotalData(req, res) {
+        const userId = req.params.userId;
+        try {
+            const quizzes = await Quiz.find({ userId });
+
+            const totalAttempts = quizzes.reduce((total, quiz) => total + quiz.attempts, 0);
+
+            const totalRates = quizzes.reduce((total, quiz) => total + quiz.totalRate, 0);
+
+            res.status(200).json({ totalQuiz: quizzes.length, totalAttempts, totalRates });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
+    // [GET] /user/getDashboardChart/:userId?months=number
+    async getDashboardChart(req, res) {
+        try {
+            const { userId } = req.params;
+            const months = Number(req.query.months) || 3;
+
+            if (!mongoose.Types.ObjectId.isValid(userId)) {
+                return res.status(400).json({ message: 'Invalid userId' });
+            }
+
+            const now = new Date();
+            const startDate = new Date(now.getFullYear(), now.getMonth() - (months - 1), 1);
+
+            const userQuizzes = await Quiz.find({ userId }, { _id: 1 }).lean();
+
+            const quizIds = userQuizzes.map((q) => q._id.toString());
+
+            const quizStats = await Quiz.aggregate([
+                {
+                    $match: {
+                        userId: new mongoose.Types.ObjectId(userId),
+                        createdAt: { $gte: startDate },
+                    },
+                },
+                {
+                    $group: {
+                        _id: { $month: '$createdAt' },
+                        totalQuiz: { $sum: 1 },
+                    },
+                },
+            ]);
+
+            const attemptStats = await TakeQuiz.aggregate([
+                {
+                    $match: {
+                        quizId: { $in: quizIds },
+                        createdAt: { $gte: startDate },
+                    },
+                },
+                {
+                    $group: {
+                        _id: { $month: '$createdAt' },
+                        totalAttempts: { $sum: 1 },
+                    },
+                },
+            ]);
+
+            const rateStats = await QuizReview.aggregate([
+                {
+                    $match: {
+                        quizId: { $in: quizIds },
+                        createdAt: { $gte: startDate },
+                    },
+                },
+                {
+                    $group: {
+                        _id: { $month: '$createdAt' },
+                        totalRates: { $sum: 1 },
+                    },
+                },
+            ]);
+
+            const result = fillMissingMonths(quizStats, attemptStats, rateStats, months);
+
+            res.json(result);
+        } catch (err) {
+            console.error('DashboardChart error:', err);
+            res.status(500).json({ message: err.message });
         }
     }
 

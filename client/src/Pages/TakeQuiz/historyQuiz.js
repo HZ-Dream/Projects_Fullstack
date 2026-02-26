@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button, CircularProgress, Chip, Divider, Tooltip } from '@mui/material';
 import {
     IoTimeOutline,
     IoCheckmarkCircleOutline,
+    IoSunnyOutline,
     IoCloseCircleOutline,
     IoAlertCircleOutline,
     IoArrowBack,
 } from 'react-icons/io5';
+import { FaMoon } from 'react-icons/fa';
+
 import classNames from 'classnames/bind';
 import styles from './TakeQuiz.module.scss';
 import { fetchDataFromApi } from '../../utils/api';
 
+// Context
+import { MyContext } from '../../App';
+
 const cx = classNames.bind(styles);
 
 const HistoryQuiz = () => {
+    const context = useContext(MyContext);
     const { quizId } = useParams();
     const [quizData, setQuizData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -167,6 +174,12 @@ const HistoryQuiz = () => {
                                     </div>
                                 </div>
                             </div>
+                            <Button
+                                className={`${cx('circle')} d-flex align-items-center ms-auto mt-2`}
+                                onClick={() => context.setDarkMode(!context.darkMode)}
+                            >
+                                {context.darkMode === false ? <IoSunnyOutline /> : <FaMoon />}
+                            </Button>
 
                             <Divider className="my-3" />
 

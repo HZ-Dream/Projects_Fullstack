@@ -36,7 +36,7 @@ const Sidebar = () => {
             <div className="sidebar">
                 <ul>
                     <li>
-                        <Link to="/dashboard">
+                        <Link to={`/dashboard/${context.userData?.userId}`}>
                             <Button className={`w-100 ${actClass === 1 ? 'act' : ''}`} onClick={() => setAct(1)}>
                                 <span className="icon">
                                     <MdDashboard />
@@ -73,17 +73,6 @@ const Sidebar = () => {
                         </div>
                     </li>
                     <li>
-                        <Button className={`w-100 ${actClass === 3 ? 'act' : ''}`} onClick={() => setAct(3)}>
-                            <span className="icon">
-                                <FaCartArrowDown />
-                            </span>
-                            <span className="name">Orders</span>
-                            <span className="arrow">
-                                <FaAngleRight />
-                            </span>
-                        </Button>
-                    </li>
-                    <li>
                         <Link to="/">
                             <Button className={`w-100 ${actClass === 4 ? 'act' : ''}`} onClick={() => setAct(4)}>
                                 <span className="icon">
@@ -104,12 +93,12 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/">
+                        <Link to={`/profile/${context.userData?.userId}`}>
                             <Button className={`w-100 ${actClass === 6 ? 'act' : ''}`} onClick={() => setAct(6)}>
                                 <span className="icon">
                                     <IoIosSettings />
                                 </span>
-                                <span className="name">Settings</span>
+                                <span className="name">Profile</span>
                             </Button>
                         </Link>
                     </li>

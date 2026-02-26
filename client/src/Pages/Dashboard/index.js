@@ -1,481 +1,142 @@
 // Icons
 import { FaUserCircle } from 'react-icons/fa';
-import { FaShoppingCart } from 'react-icons/fa';
-import { FaBagShopping } from 'react-icons/fa6';
-import { GiStarsStack } from 'react-icons/gi';
-import { HiDotsHorizontal } from 'react-icons/hi';
-import { IoIosTimer } from 'react-icons/io';
-import { FaEye } from 'react-icons/fa';
-import { MdEdit } from 'react-icons/md';
-import { FaTrash } from 'react-icons/fa';
+import { MdQuiz } from 'react-icons/md';
+import { MdRateReview } from 'react-icons/md';
 
 // Material UI
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
-import Select from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
-import Pagination from '@mui/material/Pagination';
+import { BarChart } from '@mui/x-charts/BarChart';
 
 // React
-import { useState } from 'react';
-import { Chart } from 'react-google-charts';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 // Components
 import DashboardBox from './components/dashboardBox';
 
-const data = [
-    ['Task', 'Hours per Day'],
-    ['Work', 9],
-    ['Eat', 2],
-    ['Commute', 2],
-    ['Watch TV', 2],
-    ['Sleep', 7],
-];
-
-const options = {
-    backgroundColor: 'transparent',
-    chartArea: {
-        width: '100%',
-        height: '90%',
-    },
-};
+// API
+import { fetchDataFromApi } from '../../utils/api';
 
 const Dashboard = () => {
-    const [showBy, setShowBy] = useState('');
-    const [catBy, setCatBy] = useState('');
-    const [anchorEl, setAnchorEl] = useState(null);
+    let { userId } = useParams();
+    const [totalData, setTotalData] = useState({
+        totalQuiz: 0,
+        totalAttempts: 0,
+        totalRates: 0,
+    });
 
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+    const [monthRange, setMonthRange] = useState(3);
+    const [chartData, setChartData] = useState({
+        quizzes: [],
+        attempts: [],
+        rates: [],
+    });
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+
+        fetchDataFromApi(`/api/user/getTotalData/${userId}`).then((res) => {
+            setTotalData(res);
+        });
+    }, [userId]);
+
+    useEffect(() => {
+        fetchDataFromApi(`/api/user/getDashboardChart/${userId}?months=${monthRange}`)
+            .then((res) => {
+                setChartData(res);
+            })
+            .catch(() => {
+                setChartData({
+                    quizzes: [],
+                    attempts: [],
+                    rates: [],
+                });
+            });
+    }, [userId, monthRange]);
+
+    const getLastMonths = (numMonths) => {
+        const now = new Date();
+        const labels = [];
+
+        for (let i = numMonths - 1; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+
+            const label = d.toLocaleString('en-US', {
+                month: 'short',
+                year: 'numeric',
+            });
+
+            labels.push(label);
+        }
+
+        return labels;
     };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+
+    const monthLabels = getLastMonths(monthRange);
 
     return (
         <>
             <section className="right-content w-100">
                 <div className="row dashboardBoxWrapperRow">
-                    <div className="col-md-8">
+                    <div className="col-md-12 list">
                         <div className="dashboardBoxWrapper d-flex">
                             <DashboardBox
-                                color={['rgb(29, 162, 86)', 'rgb(72, 212, 131)']}
+                                color={['rgb(28, 94, 56)', 'rgb(72, 212, 131)']}
+                                title="Total Quizzes"
+                                data={totalData.totalQuiz}
+                                icon={<MdQuiz />}
+                                chart={true}
+                            />
+                            <DashboardBox
+                                color={['rgb(115, 33, 131)', 'rgb(235, 100, 254)']}
+                                title="Total Attempts"
+                                data={totalData.totalAttempts}
                                 icon={<FaUserCircle />}
-                                chart={true}
-                            />
-                            <DashboardBox
-                                color={['rgb(192, 18, 226)', 'rgb(235, 100, 254)']}
-                                icon={<FaShoppingCart />}
                                 chart={false}
                             />
                             <DashboardBox
-                                color={['rgb(44, 120, 229)', 'rgb(96, 175, 245)']}
-                                icon={<FaBagShopping />}
+                                color={['rgb(32, 79, 145)', 'rgb(96, 175, 245)']}
+                                title="Total Rates"
+                                data={totalData.totalRates}
+                                icon={<MdRateReview />}
                                 chart={false}
                             />
-                            <DashboardBox
-                                color={['rgb(225, 149, 14)', 'rgb(243, 205, 41)']}
-                                icon={<GiStarsStack />}
-                                chart={true}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="col-md-4 ps-0">
-                        <div className="box graphBox">
-                            <div className="dFlexAli-center bottomEle w-100">
-                                <h6 className="text-white mb-0">Total Sales</h6>
-                                <IconButton className="ms-auto text-white fw-bold" size="medium" onClick={handleClick}>
-                                    <HiDotsHorizontal />
-                                </IconButton>
-
-                                <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                                    <MenuItem onClick={handleClose}>
-                                        <IoIosTimer className="me-1" /> Last Day
-                                    </MenuItem>
-                                    <MenuItem onClick={handleClose}>
-                                        <IoIosTimer className="me-1" /> Last Week
-                                    </MenuItem>
-                                    <MenuItem onClick={handleClose}>
-                                        <IoIosTimer className="me-1" /> Last Month
-                                    </MenuItem>
-                                    <MenuItem onClick={handleClose}>
-                                        <IoIosTimer className="me-1" /> Last Year
-                                    </MenuItem>
-                                </Menu>
-                            </div>
-                            <h3 className="text-white fw-bold">$3,787,681.00</h3>
-                            <p>$3,578.90 in last month</p>
-
-                            <Chart chartType="PieChart" data={data} options={options} width={'100%'} height={'170px'} />
                         </div>
                     </div>
                 </div>
 
                 <div className="card shadow border-0 p-3 mt-4">
-                    <h3 className="hd">Best Selling Products</h3>
+                    <div className="dFlexAli-center">
+                        <h3 className="hd">Chart</h3>
 
-                    <div className="row cardFilters mt-3">
-                        <div className="col-md-3">
-                            <h4>SHOW BY</h4>
-                            <FormControl size="small" className="w-100">
-                                <Select
-                                    className="w-100"
-                                    value={showBy}
-                                    onChange={(e) => setShowBy(e.target.value)}
-                                    displayEmpty
-                                    inputProps={{ 'aria-label': 'Without label' }}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </div>
-
-                        <div className="col-md-3">
-                            <h4>CATEGORY BY</h4>
-                            <FormControl size="small" className="w-100">
-                                <Select
-                                    className="w-100"
-                                    value={catBy}
-                                    onChange={(e) => setCatBy(e.target.value)}
-                                    displayEmpty
-                                    inputProps={{ 'aria-label': 'Without label' }}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </div>
+                        <select
+                            className="form-select form-select-sm w-auto ms-auto"
+                            value={monthRange}
+                            onChange={(e) => setMonthRange(Number(e.target.value))}
+                        >
+                            <option value="3">3 months</option>
+                            <option value="6">6 months</option>
+                            <option value="12">12 months</option>
+                        </select>
                     </div>
-
-                    <div className="table-responsive mt-3">
-                        <table className="table table-bordered v-align">
-                            <thead className="theadDesign">
-                                <tr>
-                                    <th>UID</th>
-                                    <th>PRODUCT</th>
-                                    <th>CATEGORY</th>
-                                    <th>BRAND</th>
-                                    <th>PRICE</th>
-                                    <th>STOCK</th>
-                                    <th>RATING</th>
-                                    <th>ORDER</th>
-                                    <th>SALES</th>
-                                    <th>ACTIONS</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr>
-                                    <td>#1</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#2</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#3</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#4</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#5</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>#6</td>
-                                    <td>
-                                        <div className="dFlexAli-center productBox">
-                                            <div className="imgWrapper">
-                                                <div className="img card m-0">
-                                                    <img
-                                                        className="w-100"
-                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg"
-                                                        alt="Image"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="info ps-2">
-                                                <h6>Tops and skirt set for Female</h6>
-                                                <p>
-                                                    Women's exclusive summer Tops and skirt set for Female Tops and
-                                                    skirt set
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Womans</td>
-                                    <td>Richman</td>
-                                    <td>
-                                        <del className="old">$23.00</del>
-                                        <span className="new text-danger">$21.00</span>
-                                    </td>
-                                    <td>23</td>
-                                    <td>4.9 (15)</td>
-                                    <td>355</td>
-                                    <td>$38K</td>
-                                    <td>
-                                        <div className="actions dFlexAli-center justify-content-around">
-                                            <Button className="detail">
-                                                <FaEye />
-                                            </Button>
-                                            <Button className="edit">
-                                                <MdEdit />
-                                            </Button>
-                                            <Button className="delete">
-                                                <FaTrash />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div className="dFlexAli-center tableFooter pt-1">
-                            <p className="mb-0 me-auto">
-                                showing <b>6</b> of <b>60</b> results
-                            </p>
-
-                            <Pagination count={10} color="primary" showFirstButton showLastButton />
-                        </div>
-                    </div>
+                    <BarChart
+                        height={300}
+                        xAxis={[{ data: monthLabels }]}
+                        yAxis={[{ width: 50 }]}
+                        series={[
+                            {
+                                data: chartData.quizzes?.length ? chartData.quizzes : new Array(monthRange).fill(0),
+                                label: 'quizzes label',
+                            },
+                            {
+                                data: chartData.attempts?.length ? chartData.attempts : new Array(monthRange).fill(0),
+                                label: 'attempts label',
+                            },
+                            {
+                                data: chartData.rates?.length ? chartData.rates : new Array(monthRange).fill(0),
+                                label: 'rates label',
+                            },
+                        ]}
+                    />
                 </div>
             </section>
         </>
