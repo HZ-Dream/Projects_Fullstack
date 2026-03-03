@@ -8,6 +8,7 @@ import { FaBell } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
 import { BiLogOut } from 'react-icons/bi';
 import { RiAccountCircleFill } from 'react-icons/ri';
+import { RiSurveyFill } from 'react-icons/ri';
 
 // Material UI
 import Button from '@mui/material/Button';
@@ -23,7 +24,7 @@ import { MyContext } from '../../App';
 const Sidebar = () => {
     const context = useContext(MyContext);
     const navigate = useNavigate();
-    const [actClass, setActClass] = useState();
+    const [actClass, setActClass] = useState('');
     const [isLoad, setIsLoad] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const [adminId, setAdminId] = useState('');
@@ -65,7 +66,10 @@ const Sidebar = () => {
                 <ul>
                     <li>
                         <Link to="/dashboard">
-                            <Button className={`w-100 ${actClass === 1 ? 'act' : ''}`} onClick={() => setAct(1)}>
+                            <Button
+                                className={`w-100 ${actClass === 'dashboard' ? 'act' : ''}`}
+                                onClick={() => setAct('dashboard')}
+                            >
                                 <span className="icon">
                                     <MdDashboard />
                                 </span>
@@ -75,7 +79,10 @@ const Sidebar = () => {
                     </li>
                     {isAdmin === true ? (
                         <li>
-                            <Button className={`w-100 ${actClass === 2 ? 'act' : ''}`} onClick={() => setAct(2)}>
+                            <Button
+                                className={`w-100 ${actClass === 'field' ? 'act' : ''}`}
+                                onClick={() => setAct('field')}
+                            >
                                 <span className="icon">
                                     <MdCategory />
                                 </span>
@@ -84,7 +91,7 @@ const Sidebar = () => {
                                     <FaAngleRight />
                                 </span>
                             </Button>
-                            <div className={`submenuWrapper ${actClass === 2 ? 'open' : ''}`}>
+                            <div className={`submenuWrapper ${actClass === 'field' ? 'open' : ''}`}>
                                 <ul className="submenu">
                                     <li>
                                         <Link to="/field/list">Field List</Link>
@@ -99,7 +106,7 @@ const Sidebar = () => {
                         ''
                     )}
                     <li>
-                        <Button className={`w-100 ${actClass === 3 ? 'act' : ''}`} onClick={() => setAct(3)}>
+                        <Button className={`w-100 ${actClass === 'quiz' ? 'act' : ''}`} onClick={() => setAct('quiz')}>
                             <span className="icon">
                                 <MdQuiz />
                             </span>
@@ -108,7 +115,7 @@ const Sidebar = () => {
                                 <FaAngleRight />
                             </span>
                         </Button>
-                        <div className={`submenuWrapper ${actClass === 3 ? 'open' : ''}`}>
+                        <div className={`submenuWrapper ${actClass === 'quiz' ? 'open' : ''}`}>
                             <ul className="submenu">
                                 <li>
                                     <Link to="/quiz/list">Quiz List</Link>
@@ -121,7 +128,10 @@ const Sidebar = () => {
                     </li>
                     {isAdmin === true ? (
                         <li>
-                            <Button className={`w-100 ${actClass === 4 ? 'act' : ''}`} onClick={() => setAct(4)}>
+                            <Button
+                                className={`w-100 ${actClass === 'account' ? 'act' : ''}`}
+                                onClick={() => setAct('account')}
+                            >
                                 <span className="icon">
                                     <RiAccountCircleFill />
                                 </span>
@@ -130,7 +140,7 @@ const Sidebar = () => {
                                     <FaAngleRight />
                                 </span>
                             </Button>
-                            <div className={`submenuWrapper ${actClass === 4 ? 'open' : ''}`}>
+                            <div className={`submenuWrapper ${actClass === 'account' ? 'open' : ''}`}>
                                 <ul className="submenu">
                                     <li>
                                         <Link to="/account/list">Account List</Link>
@@ -145,8 +155,32 @@ const Sidebar = () => {
                         ''
                     )}
                     <li>
+                        <Button
+                            className={`w-100 ${actClass === 'survey' ? 'act' : ''}`}
+                            onClick={() => setAct('survey')}
+                        >
+                            <span className="icon">
+                                <RiSurveyFill />
+                            </span>
+                            <span className="name">Surveys</span>
+                            <span className="arrow">
+                                <FaAngleRight />
+                            </span>
+                        </Button>
+                        <div className={`submenuWrapper ${actClass === 'survey' ? 'open' : ''}`}>
+                            <ul className="submenu">
+                                <li>
+                                    <Link to="/survey/uploadText">Upload Text by AI</Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 5 ? 'act' : ''}`} onClick={() => setAct(5)}>
+                            <Button
+                                className={`w-100 ${actClass === 'message' ? 'act' : ''}`}
+                                onClick={() => setAct('message')}
+                            >
                                 <span className="icon">
                                     <MdMessage />
                                 </span>
@@ -156,7 +190,10 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 6 ? 'act' : ''}`} onClick={() => setAct(6)}>
+                            <Button
+                                className={`w-100 ${actClass === 'notification' ? 'act' : ''}`}
+                                onClick={() => setAct(6)}
+                            >
                                 <span className="icon">
                                     <FaBell />
                                 </span>
@@ -165,7 +202,10 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li>
-                        <Button className={`w-100 ${actClass === 7 ? 'act' : ''}`} onClick={() => setAct(7)}>
+                        <Button
+                            className={`w-100 ${actClass === 'setting' ? 'act' : ''}`}
+                            onClick={() => setAct('setting')}
+                        >
                             <span className="icon">
                                 <IoIosSettings />
                             </span>
@@ -174,7 +214,7 @@ const Sidebar = () => {
                                 <FaAngleRight />
                             </span>
                         </Button>
-                        <div className={`submenuWrapper ${actClass === 7 ? 'open' : ''}`}>
+                        <div className={`submenuWrapper ${actClass === 'setting' ? 'open' : ''}`}>
                             <ul className="submenu">
                                 <li>
                                     <Link to={`/setting/profile/${adminId}`}>Change Profile</Link>

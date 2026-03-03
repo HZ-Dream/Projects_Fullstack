@@ -1339,3 +1339,83 @@ body.dark .createQuiz .inputAnswer {
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     background: #fafafa !important;
 }
+
+/* ===== Survey Detail Dialog ===== */
+
+.survey-detail-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* header */
+.survey-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 18px 20px;
+    font-weight: 700;
+    font-size: 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* body */
+.survey-detail-body {
+    padding: 20px;
+}
+
+.survey-detail-block {
+    margin-bottom: 18px;
+}
+
+.survey-detail-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* description box */
+.survey-detail-desc {
+    padding: 12px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+/* link */
+.survey-detail-link {
+    color: #6366f1;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.survey-detail-link:hover {
+    text-decoration: underline;
+}
+
+/* footer */
+.survey-detail-footer {
+    padding: 16px;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ===== Dark mode ===== */
+
+body.dark .survey-detail-header,
+body.dark .survey-detail-footer {
+    color: var(--white-color);
+    border-color: #374151;
+}
+
+body.dark .survey-detail-desc {
+    background: #343a42;
+    color: #f9fafb;
+}
+
+body.dark .survey-detail-label {
+    color: var(--white-color);
+}

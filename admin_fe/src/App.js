@@ -28,6 +28,7 @@ import CreateAccount from './Pages/Account/createAccount';
 import ChangeProfile from './Pages/Setting/changeProfile';
 import ChangePassword from './Pages/Setting/changePassword';
 import SignIn from './Pages/SignIn';
+import UploadText from './Pages/Survey/uploadText';
 
 const MyContext = createContext();
 
@@ -104,6 +105,9 @@ function App() {
                         {/* Account */}
                         <Route path="/account/list" element={<Account />} />
                         <Route path="/account/create" element={<CreateAccount />} />
+
+                        {/* Survey */}
+                        <Route path="/survey/uploadText" element={<UploadText />} />
 
                         {/* Setting */}
                         <Route path="/setting/profile/:adminId" element={<ChangeProfile />} />

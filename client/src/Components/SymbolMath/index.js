@@ -185,7 +185,7 @@ const SymbolMath = ({ isOpen, closeModal, onInsert }) => {
             </Button>
 
             <h2 className={cx('title')}>
-                <SiLibreofficemath /> <span className="mb-0">Math Symbols Latex</span>
+                <SiLibreofficemath /> <span className="mb-0 ms-2">Math Symbols Latex</span>
             </h2>
 
             <div className={cx('grid')}>

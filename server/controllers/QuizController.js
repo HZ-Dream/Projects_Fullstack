@@ -344,7 +344,7 @@ class QuizController {
                 quiz,
             });
 
-            const savedQuiz = await newQuiz.save();
+            await newQuiz.save();
 
             const imagesToConfirm = [];
             if (image) imagesToConfirm.push(image);
@@ -363,6 +363,7 @@ class QuizController {
 
             res.status(200).json({
                 success: true,
+                quizId: newQuiz._id,
                 message: 'Quiz created successfully!',
             });
         } catch (error) {

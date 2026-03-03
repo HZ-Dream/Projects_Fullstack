@@ -22,6 +22,7 @@ import { fetchDataFromApi, postData } from '../../../utils/api';
 
 import { MyContext } from '../../../App';
 import SymbolMath from '../../../Components/SymbolMath';
+import SurveyAI from '../../../Components/SurveyAI';
 
 // Images
 var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1768789459/exam-01_jab5xy.webp';
@@ -33,6 +34,8 @@ const CreateQuiz = () => {
     const location = useLocation();
     const { formGenerate, dataAI } = location.state || {};
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [surveyModal, setSurveyModal] = useState(false);
+    const [quizId, setQuizId] = useState(null);
 
     const [isLoad, setIsLoad] = useState(false);
     const [loadImg, setLoadImg] = useState(false);
@@ -105,6 +108,10 @@ const CreateQuiz = () => {
 
     const closeModal = () => {
         setIsOpenModal(false);
+    };
+
+    const closeSurveyModal = () => {
+        setSurveyModal(false);
     };
 
     // Image Quiz
@@ -351,8 +358,13 @@ const CreateQuiz = () => {
 
             postData('/api/quiz/createQuiz', finalFormField)
                 .then((res) => {
-                    setIsLoad(false);
                     context.handleClickVariant('Create quiz success!', 'success');
+                    setIsLoad(false);
+
+                    if (dataAI || formGenerate) {
+                        setSurveyModal(true);
+                        setQuizId(res.quizId);
+                    }
 
                     setFormField({
                         title: '',
@@ -391,6 +403,7 @@ const CreateQuiz = () => {
             return;
         }
     };
+
     return (
         <section className="right-content w-100 createQuiz">
             <form onSubmit={createQuiz} className="form">
@@ -719,6 +732,7 @@ const CreateQuiz = () => {
             </form>
 
             {isOpenModal && <SymbolMath isOpen={isOpenModal} closeModal={closeModal} />}
+            {surveyModal && <SurveyAI isOpenSurvey={surveyModal} closeSurvey={closeSurveyModal} quizId={quizId} />}
         </section>
     );
 };

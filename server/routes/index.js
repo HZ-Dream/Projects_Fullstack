@@ -7,10 +7,12 @@ const fieldRouter = require('./field');
 const geminiRouter = require('./gemini');
 const searchRouter = require('./search');
 const adminRouter = require('./admin');
+const surveyAIRouter = require('./surveyAI');
 
 function route(app) {
     app.use('/api/gemini', geminiRouter);
     app.use('/api/search', searchRouter);
+    app.use('/api/surveyAI', surveyAIRouter);
 
     app.use('/api/admin', adminRouter);
 

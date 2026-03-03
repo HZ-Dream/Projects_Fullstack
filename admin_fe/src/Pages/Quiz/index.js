@@ -5,15 +5,9 @@ import { FaTrash } from 'react-icons/fa';
 // Material UI
 import Button from '@mui/material/Button';
 import Pagination from '@mui/material/Pagination';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import CircularProgress from '@mui/material/CircularProgress';
 
 // React
-import { useState, useEffect, useContext, use } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 // Others

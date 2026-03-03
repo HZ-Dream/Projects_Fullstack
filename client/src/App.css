@@ -32,6 +32,9 @@ a {
     --primary-color: #7a55c1;
     --second-color: #6d4aae;
     --footer-color: #f7f8fd;
+
+    --survey-card-bg: #f9fafb;
+    --border-color: #e5e7eb;
 }
 
 ::-webkit-scrollbar {
