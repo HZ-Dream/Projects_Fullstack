@@ -20,6 +20,9 @@ router.post('/uploadImage', upload.single('imageAvatarAdmin'), AdminController.u
 
 router.post('/signIn', AdminController.signIn);
 
+router.get('/getTotalData', AdminController.getTotalData);
+router.get('/getDashboardChart', AdminController.getDashboardChart);
+
 router.get('/getAccount', AdminController.getAccount);
 router.get('/getInfo/:adminId', AdminController.getInfo);
 router.post('/createAccount', AdminController.createAccount);

@@ -1,4 +1,7 @@
 const Admin = require('../models/Admin');
+const User = require('../models/User');
+const Quiz = require('../models/Quiz');
+const QuizReview = require('../models/QuizReview');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -46,6 +49,28 @@ const confirmImages = async (urls) => {
             console.error('Lỗi khi gỡ tag trên Cloudinary:', e);
         }
     }
+};
+
+const fillMissingMonths = (userData, quizData, reviewData, months) => {
+    const now = new Date();
+    const monthList = [];
+
+    for (let i = months - 1; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        monthList.push(key);
+    }
+
+    const mapUser = Object.fromEntries(userData.map((i) => [i._id, i.totalUsers]));
+    const mapQuiz = Object.fromEntries(quizData.map((i) => [i._id, i.totalQuiz]));
+    const mapReview = Object.fromEntries(reviewData.map((i) => [i._id, i.totalReviews]));
+
+    return {
+        users: monthList.map((m) => mapUser[m] || 0),
+        quizzes: monthList.map((m) => mapQuiz[m] || 0),
+        reviews: monthList.map((m) => mapReview[m] || 0),
+        labels: monthList,
+    };
 };
 
 class AdminController {
@@ -110,6 +135,87 @@ class AdminController {
         } catch (error) {
             console.log(error);
             res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
+    // [GET] /admin/getTotalData
+    async getTotalData(req, res) {
+        try {
+            const totalUsers = await User.countDocuments();
+
+            const totalQuizzes = await Quiz.countDocuments();
+
+            const totalReviews = await QuizReview.countDocuments();
+
+            res.status(200).json({ totalUsers, totalQuizzes, totalReviews });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
+    // [GET] /admin/getDashboardChart?months=number
+    async getDashboardChart(req, res) {
+        try {
+            const months = Number(req.query.months) || 3;
+
+            const now = new Date();
+            const startDate = new Date(now.getFullYear(), now.getMonth() - (months - 1), 1);
+
+            const userStats = await User.aggregate([
+                {
+                    $match: {
+                        createdAt: { $gte: startDate },
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: { format: '%Y-%m', date: '$createdAt' },
+                        },
+                        totalUsers: { $sum: 1 },
+                    },
+                },
+            ]);
+
+            const quizStats = await Quiz.aggregate([
+                {
+                    $match: {
+                        createdAt: { $gte: startDate },
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: { format: '%Y-%m', date: '$createdAt' },
+                        },
+                        totalQuiz: { $sum: 1 },
+                    },
+                },
+            ]);
+
+            const reviewStats = await QuizReview.aggregate([
+                {
+                    $match: {
+                        createdAt: { $gte: startDate },
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: { format: '%Y-%m', date: '$createdAt' },
+                        },
+                        totalReviews: { $sum: 1 },
+                    },
+                },
+            ]);
+
+            const result = fillMissingMonths(userStats, quizStats, reviewStats, months);
+
+            res.json(result);
+        } catch (err) {
+            console.error('DashboardChart error:', err);
+            res.status(500).json({ message: err.message });
         }
     }
 

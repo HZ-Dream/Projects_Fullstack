@@ -607,7 +607,7 @@ body.dark .main .sidebarWrapper .sidebar ul .submenu li:hover {
 .dashboardBoxWrapper .dashboardBox .icon svg {
     color: #fff;
     font-size: 36px;
-    opacity: 0.4;
+    opacity: 0.9;
 }
 
 .toggleIcon {
@@ -1418,4 +1418,27 @@ body.dark .survey-detail-desc {
 
 body.dark .survey-detail-label {
     color: var(--white-color);
+}
+
+/* Dashboard */
+.form-select {
+    cursor: pointer;
+}
+
+body.dark .form-select {
+    background: #132345 !important;
+    color: var(--white-color) !important;
+}
+
+body.dark .MuiChartsLabel-root.MuiChartsLegend-label {
+    color: var(--white-color) !important;
+}
+
+body.dark .MuiChartsAxis-tickLabel {
+    fill: var(--white-color) !important;
+}
+
+body.dark .MuiChartsAxis-line,
+body.dark .MuiChartsAxis-tick {
+    stroke: var(--white-color) !important;
 }
