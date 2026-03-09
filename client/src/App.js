@@ -20,6 +20,7 @@ import SignUp from './Pages/Account/SignUp';
 import TakeQuiz from './Pages/TakeQuiz/index';
 import HistoryQuiz from './Pages/TakeQuiz/historyQuiz';
 import Profile from './Pages/Profile';
+import Token from './Pages/Token/Token';
 
 // Components Dashboard
 import Dashboard from './Pages/Dashboard/index';
@@ -170,6 +171,7 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/quiz/:quizId" element={<QuizDetail />} />
+                        <Route path="/token" element={<Token />} />
                         <Route path="/profile/:userId" element={<Profile />} />
                     </Route>
 

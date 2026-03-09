@@ -13,8 +13,8 @@ const QuestionSchema = new Schema({
 // Take Quiz
 const TakeQuizSchema = new Schema(
     {
-        quizId: { type: String, required: true },
-        userId: { type: String, required: true },
+        quizId: { type: mongoose.Schema.Types.ObjectId, ref: 'quizzes', required: true },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
         correct: { type: Number, required: true },
         incorrect: { type: Number, required: true },
         skip: { type: Number, required: true },

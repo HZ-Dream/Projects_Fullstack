@@ -172,6 +172,10 @@ const CreateQuiz = () => {
     };
 
     const handleReset = () => {
+        setFormField((prev) => ({
+            ...prev,
+            image: null,
+        }));
         setSelectedImg(null);
     };
 

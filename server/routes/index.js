@@ -4,6 +4,7 @@ const takeQuizRouter = require('./takeQuiz');
 const quizReviewRouter = require('./quizReview');
 const replyRouter = require('./reply');
 const fieldRouter = require('./field');
+const tokenRouter = require('./token');
 const geminiRouter = require('./gemini');
 const searchRouter = require('./search');
 const adminRouter = require('./admin');
@@ -17,6 +18,8 @@ function route(app) {
     app.use('/api/admin', adminRouter);
 
     app.use('/api/user', userRouter);
+
+    app.use('/api/token', tokenRouter);
 
     app.use('/api/quiz', quizRouter);
     app.use('/api/takeQuiz', takeQuizRouter);

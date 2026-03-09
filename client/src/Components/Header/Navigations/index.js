@@ -122,6 +122,11 @@ const Navigation = () => {
                                 </Link>
                             </li>
                             <li className="list-inline-item mx-3">
+                                <Link to="/token">
+                                    <Button>Token</Button>
+                                </Link>
+                            </li>
+                            <li className="list-inline-item mx-3">
                                 <Link to="/">
                                     <Button>Blog</Button>
                                 </Link>

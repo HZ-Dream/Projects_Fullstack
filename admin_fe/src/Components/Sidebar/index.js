@@ -3,6 +3,7 @@ import { FaAngleRight } from 'react-icons/fa6';
 import { MdDashboard } from 'react-icons/md';
 import { MdCategory } from 'react-icons/md';
 import { MdQuiz } from 'react-icons/md';
+import { MdGeneratingTokens } from 'react-icons/md';
 import { MdMessage } from 'react-icons/md';
 import { FaBell } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
@@ -126,6 +127,34 @@ const Sidebar = () => {
                             </ul>
                         </div>
                     </li>
+                    {isAdmin === true ? (
+                        <li>
+                            <Button
+                                className={`w-100 ${actClass === 'token' ? 'act' : ''}`}
+                                onClick={() => setAct('token')}
+                            >
+                                <span className="icon">
+                                    <MdGeneratingTokens />
+                                </span>
+                                <span className="name">Tokens</span>
+                                <span className="arrow">
+                                    <FaAngleRight />
+                                </span>
+                            </Button>
+                            <div className={`submenuWrapper ${actClass === 'token' ? 'open' : ''}`}>
+                                <ul className="submenu">
+                                    <li>
+                                        <Link to="/token/list">Token List</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/token/create">Token Create</Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    ) : (
+                        ''
+                    )}
                     {isAdmin === true ? (
                         <li>
                             <Button

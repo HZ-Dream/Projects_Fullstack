@@ -1,0 +1,131 @@
+.token-shop {
+    padding: 40px;
+    max-width: 1200px;
+    margin: auto;
+
+    .token-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+
+        h1 {
+            font-size: 32px;
+        }
+
+        select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+    }
+
+    .token-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 24px;
+    }
+}
+
+.token-card {
+    border: 2px solid #000;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+
+    &:hover {
+        transform: translateY(-6px);
+
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    :global(body.dark) & {
+        border: 2px solid #fff;
+        background-color: #293856;
+    }
+
+    h3 {
+        margin: 10px 0;
+    }
+
+    .token-amount {
+        font-size: 20px;
+        font-weight: bold;
+        color: #1976d2;
+
+        margin-bottom: 10px;
+    }
+
+    .token-price {
+        .old-price {
+            text-decoration: line-through;
+            color: #888;
+            margin-right: 8px;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e53935;
+        }
+    }
+}
+
+.imagePack {
+    img {
+        width: 100%;
+        height: 50%;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+}
+
+.token-dialog {
+    padding: 30px;
+
+    img {
+        width: 100px;
+        margin-bottom: 15px;
+    }
+
+    span {
+        font-size: 20px;
+
+        :global(body.dark) & {
+            color: #fff;
+        }
+    }
+
+    .title {
+        color: #555;
+        :global(body.dark) & {
+            color: #d4d4d4;
+        }
+    }
+
+    .token {
+        margin-left: 5px;
+        svg {
+            color: #f1f500;
+        }
+    }
+
+    .dialog-price {
+        .old-price {
+            text-decoration: line-through;
+            margin-right: 8px;
+        }
+
+        .price {
+            color: #e53935;
+            font-weight: bold;
+        }
+    }
+}

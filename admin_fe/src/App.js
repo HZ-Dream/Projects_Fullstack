@@ -19,10 +19,13 @@ import NoneLayout from './Layouts/NoneLayout';
 // Pages
 import Dashboard from './Pages/Dashboard';
 import FieldList from './Pages/Field/index';
+import CreateField from './Pages/Field/createField';
 import QuizList from './Pages/Quiz/index';
 import QuizApprove from './Pages/Quiz/quizApprove';
+import TokenList from './Pages/Token/index';
+import CreateToken from './Pages/Token/createToken';
+import EditToken from './Pages/Token/editToken';
 import DetailQuiz from './Pages/Quiz/detailQuiz';
-import CreateField from './Pages/Field/createField';
 import Account from './Pages/Account/index';
 import CreateAccount from './Pages/Account/createAccount';
 import ChangeProfile from './Pages/Setting/changeProfile';
@@ -101,6 +104,11 @@ function App() {
                         <Route path="/quiz/list" element={<QuizList />} />
                         <Route path="/quiz/approve" element={<QuizApprove />} />
                         <Route path="/quiz/detail/:quizId" element={<DetailQuiz />} />
+
+                        {/* Token */}
+                        <Route path="/token/list" element={<TokenList />} />
+                        <Route path="/token/create" element={<CreateToken />} />
+                        <Route path="/token/edit/:id" element={<EditToken />} />
 
                         {/* Account */}
                         <Route path="/account/list" element={<Account />} />
