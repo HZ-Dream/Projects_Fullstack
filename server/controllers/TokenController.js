@@ -111,7 +111,7 @@ class FieldController {
             const exitToken = await Token.findById(id);
 
             if (!exitToken) {
-                res.status(400).json({ msg: 'Field not found!' });
+                res.status(400).json({ msg: 'Token not found!' });
                 return;
             }
 
@@ -139,8 +139,6 @@ class FieldController {
                     new: true,
                 },
             );
-
-            console.log(3);
 
             if (!updateToken) {
                 return res.status(404).json({ msg: 'Can not update!' });

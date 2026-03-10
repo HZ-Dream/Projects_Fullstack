@@ -180,7 +180,7 @@ const GenerateQuiz = () => {
 
                                 <Button disabled={load} type="submit" className="mt-2 btn-blue w-100 btn-big">
                                     <SiGooglegemini className="me-2" />
-                                    <span className="me-2">Generate</span>
+                                    <span className="me-2">Generate ( fee: 30 Tokens )</span>
                                     {load === true && <CircularProgress className="loader" color="inherit" />}
                                 </Button>
                             </div>

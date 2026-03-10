@@ -1,5 +1,6 @@
 // Icons
 import { IoMdCloudUpload } from 'react-icons/io';
+import { MdGeneratingTokens } from 'react-icons/md';
 
 // Image
 import defaultAvatar from '../../assets/images/default.jpg';
@@ -30,6 +31,7 @@ const Profile = () => {
     const [isLoad, setIsLoad] = useState(false);
     const [value, setValue] = useState('1');
     const [loadImg, setLoadImg] = useState(false);
+    const [userToken, setUserToken] = useState(0);
 
     const [formFields, setFormFields] = useState({
         name: '',
@@ -49,6 +51,7 @@ const Profile = () => {
 
         if (userId) {
             fetchDataFromApi(`/api/user/getUser/${userId}`).then((res) => {
+                setUserToken(res.token);
                 setFormFields({
                     name: res.name,
                     email: res.email,
@@ -184,6 +187,9 @@ const Profile = () => {
     return (
         <section className="section myAccountPage">
             <div className="container">
+                <h2 className="hd text-capitalize mb-3 text-center">
+                    Your Token: {userToken} <MdGeneratingTokens />
+                </h2>
                 <h2 className="hd text-capitalize mb-3">My Profile</h2>
                 <Box className="myAccBox card" sx={{ width: '100%', typography: 'body1' }}>
                     <TabContext value={value}>

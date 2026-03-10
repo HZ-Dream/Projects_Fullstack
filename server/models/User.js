@@ -11,6 +11,7 @@ const UserSchema = new Schema(
         image: { type: String, default: '' },
         quizCreated: { type: Number, default: 0, min: 0 },
         wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'quizzes' }],
+        token: { type: Number, default: 0 },
     },
     {
         timestamps: true,

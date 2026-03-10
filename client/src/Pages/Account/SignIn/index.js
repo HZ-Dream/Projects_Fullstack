@@ -66,6 +66,7 @@ const SignIn = () => {
                         userId: res.user?.id,
                         userImage: res.user?.image,
                         wishlist: res.user?.wishlist,
+                        token: res.user?.token,
                     };
 
                     localStorage.setItem('user', JSON.stringify(user));

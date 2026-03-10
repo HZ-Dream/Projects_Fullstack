@@ -1,12 +1,14 @@
 // React
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
+
+import { MyContext } from '../../App';
 
 // Components
 import TokenCard from './TokenCard';
 import TokenDialog from './TokenDialog';
 
 // API
-import { fetchDataFromApi } from '../../utils/api';
+import { fetchDataFromApi, postData } from '../../utils/api';
 
 // Styles
 import classNames from 'classnames/bind';
@@ -15,6 +17,8 @@ import styles from './Token.module.scss';
 const cx = classNames.bind(styles);
 
 const Token = () => {
+    const context = useContext(MyContext);
+    const didRun = useRef(false);
     const [tokens, setTokens] = useState([]);
     const [filter, setFilter] = useState('default');
 
@@ -23,6 +27,22 @@ const Token = () => {
 
     useEffect(() => {
         fetchTokens();
+
+        if (didRun.current) return;
+
+        didRun.current = true;
+
+        const params = new URLSearchParams(window.location.search);
+
+        const payment = params.get('payment');
+
+        if (payment === 'success') {
+            context.handleClickVariant('Payment success!', 'success');
+        }
+
+        if (payment === 'failed') {
+            context.handleClickVariant('Payment failed!', 'error');
+        }
     }, []);
 
     const fetchTokens = async () => {
@@ -50,6 +70,26 @@ const Token = () => {
         return 0;
     });
 
+    const handleVNPay = (pack) => {
+        if (!context.userData.userId) {
+            context.handleClickVariant('You need to log in!', 'warning');
+            return;
+        }
+
+        const pricePack = pack.priceDiscount > 0 ? pack.priceDiscount : pack.priceInit;
+
+        const formVNPay = {
+            userId: context.userData.userId,
+            namePack: pack.name,
+            pricePack: pricePack,
+            tokenPack: pack.token,
+        };
+
+        postData('/api/vnpay/create', formVNPay).then((res) => {
+            window.location.href = res;
+        });
+    };
+
     return (
         <div className={cx('token-shop')}>
             <div className={cx('token-header')}>
@@ -68,7 +108,7 @@ const Token = () => {
                 ))}
             </div>
 
-            <TokenDialog open={open} handleClose={handleClose} token={selectedToken} />
+            <TokenDialog open={open} handleClose={handleClose} token={selectedToken} handleVNPay={handleVNPay} />
         </div>
     );
 };

@@ -399,8 +399,18 @@ body.dark .borderRight {
     margin-bottom: 25px;
 }
 
+.css-quhxjy-MuiInputBase-root-MuiOutlinedInput-root {
+    border-radius: 10px !important;
+}
+
 .myAccBox .form-group .MuiOutlinedInput-input {
     background: #f1f1f1 !important;
+    border-radius: 10px;
+}
+
+body.dark .myAccBox .form-group .MuiOutlinedInput-input {
+    background: #000000 !important;
+    border-radius: 10px;
 }
 
 .MuiCircularProgress-root.loader {

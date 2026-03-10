@@ -11,7 +11,7 @@ import styles from './Token.module.scss';
 
 const cx = classNames.bind(styles);
 
-const TokenDialog = ({ open, handleClose, token }) => {
+const TokenDialog = ({ open, handleClose, token, handleVNPay }) => {
     if (!token) return null;
 
     const price = token.priceDiscount > 0 ? token.priceDiscount : token.priceInit;
@@ -35,14 +35,24 @@ const TokenDialog = ({ open, handleClose, token }) => {
 
                 <div className={cx('dialog-price')}>
                     <span>Price: </span>
-                    {token.priceDiscount > 0 && <span className={cx('old-price')}>${token.priceInit}</span>}
+                    {token.priceDiscount > 0 && <span className={cx('old-price')}>{token.priceInit}</span>}
 
-                    <span className={cx('price')}>${price}</span>
+                    <span className={cx('price')}>{price} VND</span>
                 </div>
 
-                <Button className="mt-2" variant="contained" fullWidth size="large">
-                    Buy Now
-                </Button>
+                <div className="dFlexAli-center">
+                    <Button
+                        onClick={() => handleClose()}
+                        className="mt-2 btn-red me-2 text-capitalize"
+                        fullWidth
+                        size="large"
+                    >
+                        Cancel
+                    </Button>
+                    <Button onClick={() => handleVNPay(token)} className="mt-2 btn-primary" fullWidth size="large">
+                        VNPay
+                    </Button>
+                </div>
             </div>
         </Dialog>
     );
