@@ -11,7 +11,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 // Others
-import { fetchDataFromApi, editData, deleteData } from '../../utils/api';
+import { fetchDataFromApi } from '../../utils/api';
 
 // Context
 import { MyContext } from '../../App';

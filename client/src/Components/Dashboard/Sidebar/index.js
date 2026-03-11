@@ -1,8 +1,7 @@
 // Icons
 import { FaAngleRight } from 'react-icons/fa6';
 import { MdDashboard } from 'react-icons/md';
-import { FaProductHunt } from 'react-icons/fa6';
-import { FaCartArrowDown } from 'react-icons/fa';
+import { FaMoneyCheckDollar } from 'react-icons/fa6';
 import { MdMessage } from 'react-icons/md';
 import { FaBell } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
@@ -21,7 +20,7 @@ import { MyContext } from '../../../App';
 
 const Sidebar = () => {
     const context = useContext(MyContext);
-    const [actClass, setActClass] = useState();
+    const [actClass, setActClass] = useState('');
 
     const setAct = (index) => {
         if (index === actClass) {
@@ -37,7 +36,10 @@ const Sidebar = () => {
                 <ul>
                     <li>
                         <Link to={`/dashboard/${context.userData?.userId}`}>
-                            <Button className={`w-100 ${actClass === 1 ? 'act' : ''}`} onClick={() => setAct(1)}>
+                            <Button
+                                className={`w-100 ${actClass === 'dashboard' ? 'act' : ''}`}
+                                onClick={() => setAct('dashboard')}
+                            >
                                 <span className="icon">
                                     <MdDashboard />
                                 </span>
@@ -46,7 +48,7 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li>
-                        <Button className={`w-100 ${actClass === 2 ? 'act' : ''}`} onClick={() => setAct(2)}>
+                        <Button className={`w-100 ${actClass === 'quiz' ? 'act' : ''}`} onClick={() => setAct('quiz')}>
                             <span className="icon">
                                 <MdQuiz />
                             </span>
@@ -55,7 +57,7 @@ const Sidebar = () => {
                                 <FaAngleRight />
                             </span>
                         </Button>
-                        <div className={`submenuWrapper ${actClass === 2 ? 'open' : ''}`}>
+                        <div className={`submenuWrapper ${actClass === 'quiz' ? 'open' : ''}`}>
                             <ul className="submenu">
                                 <li>
                                     <Link to={`/dashboard/quizList/${context.userData?.userId}`}>Quiz List</Link>
@@ -73,8 +75,29 @@ const Sidebar = () => {
                         </div>
                     </li>
                     <li>
+                        <Button className={`w-100 ${actClass === 'bill' ? 'act' : ''}`} onClick={() => setAct('bill')}>
+                            <span className="icon">
+                                <FaMoneyCheckDollar />
+                            </span>
+                            <span className="name">Bills</span>
+                            <span className="arrow">
+                                <FaAngleRight />
+                            </span>
+                        </Button>
+                        <div className={`submenuWrapper ${actClass === 'bill' ? 'open' : ''}`}>
+                            <ul className="submenu">
+                                <li>
+                                    <Link to={`/dashboard/billList/${context.userData?.userId}`}>Bill List</Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 4 ? 'act' : ''}`} onClick={() => setAct(4)}>
+                            <Button
+                                className={`w-100 ${actClass === 'message' ? 'act' : ''}`}
+                                onClick={() => setAct('message')}
+                            >
                                 <span className="icon">
                                     <MdMessage />
                                 </span>
@@ -84,7 +107,10 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link to="/">
-                            <Button className={`w-100 ${actClass === 5 ? 'act' : ''}`} onClick={() => setAct(5)}>
+                            <Button
+                                className={`w-100 ${actClass === 'notification' ? 'act' : ''}`}
+                                onClick={() => setAct('notification')}
+                            >
                                 <span className="icon">
                                     <FaBell />
                                 </span>
@@ -94,7 +120,10 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link to={`/profile/${context.userData?.userId}`}>
-                            <Button className={`w-100 ${actClass === 6 ? 'act' : ''}`} onClick={() => setAct(6)}>
+                            <Button
+                                className={`w-100 ${actClass === 'profile' ? 'act' : ''}`}
+                                onClick={() => setAct('profile')}
+                            >
                                 <span className="icon">
                                     <IoIosSettings />
                                 </span>

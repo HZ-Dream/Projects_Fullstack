@@ -29,6 +29,7 @@ import CreateQuiz from './Pages/Dashboard/ManageQuiz/CreateQuiz';
 import EditQuiz from './Pages/Dashboard/ManageQuiz/EditQuiz';
 import GenerateQuiz from './Pages/Dashboard/ManageQuiz/GenerateQuiz';
 import UploadText from './Pages/Dashboard/ManageQuiz/UploadText';
+import BillList from './Pages/Bill/BillList';
 
 // Layouts
 import MainLayout from './Layouts/MainLayout';
@@ -190,6 +191,8 @@ function App() {
                         <Route path="/dashboard/quizEdit/:quizId" element={<EditQuiz />} />
                         <Route path="/dashboard/quizGenerate" element={<GenerateQuiz />} />
                         <Route path="/dashboard/uploadText" element={<UploadText />} />
+
+                        <Route path="/dashboard/billList/:userId" element={<BillList />} />
                     </Route>
                 </Routes>
             </MyContext.Provider>

@@ -20,8 +20,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 // Utils
 import { fetchDataFromApi, postData, editData } from '../../utils/api';
 
-import { MyContext } from '../../App';
+// Components
 import MyQuizzes from './myQuizzes';
+
+// CSS
+import styles from './Profile.module.scss';
+import classNames from 'classnames/bind';
+
+import { MyContext } from '../../App';
+const cx = classNames.bind(styles);
 
 const Profile = () => {
     const context = useContext(MyContext);
@@ -187,9 +194,10 @@ const Profile = () => {
     return (
         <section className="section myAccountPage">
             <div className="container">
-                <h2 className="hd text-capitalize mb-3 text-center">
+                <h2 className={`hd text-capitalize ${cx('titleToken')}`}>
                     Your Token: {userToken} <MdGeneratingTokens />
                 </h2>
+
                 <h2 className="hd text-capitalize mb-3">My Profile</h2>
                 <Box className="myAccBox card" sx={{ width: '100%', typography: 'body1' }}>
                     <TabContext value={value}>

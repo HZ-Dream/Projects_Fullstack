@@ -32,6 +32,7 @@ import ChangeProfile from './Pages/Setting/changeProfile';
 import ChangePassword from './Pages/Setting/changePassword';
 import SignIn from './Pages/SignIn';
 import UploadText from './Pages/Survey/uploadText';
+import BillList from './Pages/Bill/BillList';
 
 const MyContext = createContext();
 
@@ -109,6 +110,9 @@ function App() {
                         <Route path="/token/list" element={<TokenList />} />
                         <Route path="/token/create" element={<CreateToken />} />
                         <Route path="/token/edit/:id" element={<EditToken />} />
+
+                        {/* Bill */}
+                        <Route path="/bill/list" element={<BillList />} />
 
                         {/* Account */}
                         <Route path="/account/list" element={<Account />} />

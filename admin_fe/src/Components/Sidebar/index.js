@@ -10,6 +10,7 @@ import { IoIosSettings } from 'react-icons/io';
 import { BiLogOut } from 'react-icons/bi';
 import { RiAccountCircleFill } from 'react-icons/ri';
 import { RiSurveyFill } from 'react-icons/ri';
+import { FaMoneyCheckDollar } from 'react-icons/fa6';
 
 // Material UI
 import Button from '@mui/material/Button';
@@ -148,6 +149,31 @@ const Sidebar = () => {
                                     </li>
                                     <li>
                                         <Link to="/token/create">Token Create</Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    ) : (
+                        ''
+                    )}
+                    {isAdmin === true ? (
+                        <li>
+                            <Button
+                                className={`w-100 ${actClass === 'bill' ? 'act' : ''}`}
+                                onClick={() => setAct('bill')}
+                            >
+                                <span className="icon">
+                                    <FaMoneyCheckDollar />
+                                </span>
+                                <span className="name">Bills</span>
+                                <span className="arrow">
+                                    <FaAngleRight />
+                                </span>
+                            </Button>
+                            <div className={`submenuWrapper ${actClass === 'bill' ? 'open' : ''}`}>
+                                <ul className="submenu">
+                                    <li>
+                                        <Link to="/bill/list">Bill List</Link>
                                     </li>
                                 </ul>
                             </div>
