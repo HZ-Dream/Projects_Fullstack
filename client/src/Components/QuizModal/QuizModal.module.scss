@@ -8,6 +8,12 @@
         color: rgba(0, 0, 0, 0.7) !important;
     }
 
+    span {
+        :global(body.dark) & {
+            color: var(--white-color);
+        }
+    }
+
     & .fieldQuiz {
         padding: 0 24px;
         border-left: 1px solid rgba(0, 0, 0, 0.1);

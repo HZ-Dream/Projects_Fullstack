@@ -1,0 +1,69 @@
+.profileCard {
+    width: 420px;
+    margin: auto;
+    padding: 35px;
+    text-align: center;
+
+    border-radius: 16px;
+    background: white;
+    border: 2px solid #000;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+    :global(body.dark) & {
+        background-color: #1b2b4d;
+        border: 2px solid #ffffff;
+    }
+}
+
+.avatarBox {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #eee;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.userName {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.infoBox {
+    width: 100%;
+}
+
+.infoItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    font-size: 15px;
+    margin-bottom: 8px;
+
+    :global(body.dark) & {
+        color: #ffffff;
+    }
+
+    svg {
+        color: #1976d2;
+    }
+}
+
+.chatBtn {
+    margin-top: 15px;
+    padding: 10px 25px !important;
+    font-weight: 600 !important;
+}

@@ -21,6 +21,7 @@ import styles from './HomeCat.module.scss';
 import classNames from 'classnames/bind';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -53,9 +54,11 @@ const HomeCat = () => {
                         return (
                             <SwiperSlide key={item.id || index}>
                                 <div className={`${cx('item')} text-center cursor`}>
-                                    <img src={item.image} alt="HomeCat" />
-                                    <h6 className="textOne_line mt-1 mb-0">{item.name}</h6>
-                                    <h6>{item.quizCreated} Q</h6>
+                                    <Link to={`/pageUser/${item.id}`}>
+                                        <img src={item.image} alt="HomeCat" />
+                                        <h6 className="textOne_line mt-1 mb-0">{item.name}</h6>
+                                        <h6>{item.quizCreated} Q</h6>
+                                    </Link>
                                 </div>
                             </SwiperSlide>
                         );

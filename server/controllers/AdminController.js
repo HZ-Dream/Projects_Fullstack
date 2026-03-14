@@ -138,6 +138,18 @@ class AdminController {
         }
     }
 
+    // [GET] /admin/allAccount
+    async allAccount(req, res) {
+        try {
+            const totalAccounts = await Admin.find();
+
+            res.status(200).json(totalAccounts);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
     // [GET] /admin/getTotalData
     async getTotalData(req, res) {
         try {

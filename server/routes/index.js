@@ -10,11 +10,17 @@ const geminiRouter = require('./gemini');
 const searchRouter = require('./search');
 const adminRouter = require('./admin');
 const surveyAIRouter = require('./surveyAI');
+const chatRouter = require('./chat/chat');
+const messageRouter = require('./chat/message');
 
 // Payment
 const vnpayRouter = require('./vnpay');
 
 function route(app) {
+    // chat
+    app.use('/api/chat', chatRouter);
+    app.use('/api/message', messageRouter);
+
     app.use('/api/vnpay', vnpayRouter);
 
     app.use('/api/gemini', geminiRouter);

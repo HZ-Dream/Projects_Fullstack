@@ -121,10 +121,12 @@ const QuizItem = (props) => {
                         </span>
                     </div>
 
-                    <div className="d-flex align-items-center">
-                        <img className={cx('imgAvatar')} src={quizData?.userId?.image} alt="Avatar" />
-                        <span className="textOne_line">{quizData?.userId?.name}</span>
-                    </div>
+                    <Link to={`/pageUser/${quizData?.userId?._id}`}>
+                        <div className="d-flex align-items-center">
+                            <img className={cx('imgAvatar')} src={quizData?.userId?.image} alt="Avatar" />
+                            <span className="textOne_line">{quizData?.userId?.name}</span>
+                        </div>
+                    </Link>
                 </div>
             </Link>
 

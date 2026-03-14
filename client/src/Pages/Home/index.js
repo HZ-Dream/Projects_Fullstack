@@ -6,8 +6,6 @@ import Button from '@mui/material/Button';
 // Img
 import banner1 from '../../assets/images/banner1.png';
 import banner2 from '../../assets/images/banner2.png';
-import banner3 from '../../assets/images/banner3.png';
-import banner4 from '../../assets/images/banner4.png';
 import couponImg from '../../assets/images/coupon.png';
 
 // React

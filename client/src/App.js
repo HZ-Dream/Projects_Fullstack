@@ -21,6 +21,7 @@ import TakeQuiz from './Pages/TakeQuiz/index';
 import HistoryQuiz from './Pages/TakeQuiz/historyQuiz';
 import Profile from './Pages/Profile';
 import Token from './Pages/Token/Token';
+import PageUser from './Pages/PageUser';
 
 // Components Dashboard
 import Dashboard from './Pages/Dashboard/index';
@@ -30,6 +31,7 @@ import EditQuiz from './Pages/Dashboard/ManageQuiz/EditQuiz';
 import GenerateQuiz from './Pages/Dashboard/ManageQuiz/GenerateQuiz';
 import UploadText from './Pages/Dashboard/ManageQuiz/UploadText';
 import BillList from './Pages/Bill/BillList';
+import Message from './Pages/Message';
 
 // Layouts
 import MainLayout from './Layouts/MainLayout';
@@ -174,6 +176,7 @@ function App() {
                         <Route path="/quiz/:quizId" element={<QuizDetail />} />
                         <Route path="/token" element={<Token />} />
                         <Route path="/profile/:userId" element={<Profile />} />
+                        <Route path="/pageUser/:userId" element={<PageUser />} />
                     </Route>
 
                     <Route element={<NoneLayout />}>
@@ -193,6 +196,9 @@ function App() {
                         <Route path="/dashboard/uploadText" element={<UploadText />} />
 
                         <Route path="/dashboard/billList/:userId" element={<BillList />} />
+
+                        <Route path="/dashboard/message" element={<Message />} />
+                        <Route path="/dashboard/message/:userId" element={<Message />} />
                     </Route>
                 </Routes>
             </MyContext.Provider>

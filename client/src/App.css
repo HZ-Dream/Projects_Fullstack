@@ -110,6 +110,11 @@ a {
     -webkit-box-orient: vertical;
 }
 
+/* Margin */
+.maginRight10 {
+    margin-right: 10px;
+}
+
 /* Button css */
 .quizNumber {
     display: flex;

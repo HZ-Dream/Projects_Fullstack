@@ -20,6 +20,8 @@ router.post('/uploadImage', upload.single('imageAvatarAdmin'), AdminController.u
 
 router.post('/signIn', AdminController.signIn);
 
+router.get('/allAccount', AdminController.allAccount);
+
 router.get('/getTotalData', AdminController.getTotalData);
 router.get('/getDashboardChart', AdminController.getDashboardChart);
 
