@@ -208,7 +208,8 @@ class UserController {
 
             const userQuizzes = await Quiz.find({ userId }, { _id: 1 }).lean();
 
-            const quizIds = userQuizzes.map((q) => q._id.toString());
+            const quizObjectIds = userQuizzes.map((q) => q._id);
+            const quizStringIds = userQuizzes.map((q) => q._id.toString());
 
             const quizStats = await Quiz.aggregate([
                 {
@@ -228,7 +229,7 @@ class UserController {
             const attemptStats = await TakeQuiz.aggregate([
                 {
                     $match: {
-                        quizId: { $in: quizIds },
+                        quizId: { $in: quizObjectIds },
                         createdAt: { $gte: startDate },
                     },
                 },
@@ -243,7 +244,7 @@ class UserController {
             const rateStats = await QuizReview.aggregate([
                 {
                     $match: {
-                        quizId: { $in: quizIds },
+                        quizId: { $in: quizStringIds },
                         createdAt: { $gte: startDate },
                     },
                 },

@@ -33,6 +33,7 @@ import ChangePassword from './Pages/Setting/changePassword';
 import SignIn from './Pages/SignIn';
 import UploadText from './Pages/Survey/uploadText';
 import BillList from './Pages/Bill/BillList';
+import Message from './Pages/Message';
 
 const MyContext = createContext();
 
@@ -120,6 +121,10 @@ function App() {
 
                         {/* Survey */}
                         <Route path="/survey/uploadText" element={<UploadText />} />
+
+                        {/* Message */}
+                        <Route path="/message" element={<Message />} />
+                        <Route path="/message/:userId" element={<Message />} />
 
                         {/* Setting */}
                         <Route path="/setting/profile/:adminId" element={<ChangeProfile />} />

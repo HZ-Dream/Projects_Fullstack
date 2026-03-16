@@ -5,51 +5,98 @@ const Admin = require('../../models/Admin');
 class ChatController {
     // [POST] /accessChat
     async accessChat(req, res) {
-        const { userId, myId, isAdmin } = req.body;
+        const { userId, myId } = req.body;
 
         try {
             if (!userId || !myId) {
                 return res.status(400).json({ msg: 'Both userId and myId are required' });
             }
 
-            let isChat;
-            if (isAdmin) {
-                isChat = await Chat.find({
+            const meIsAdmin = await Admin.exists({ _id: myId });
+            const targetIsAdmin = await Admin.exists({ _id: userId });
+
+            let chat;
+
+            // admin - admin
+            if (meIsAdmin && targetIsAdmin) {
+                chat = await Chat.findOne({
+                    admins: { $all: [myId, userId] },
                     isGroupChat: false,
-                    $and: [{ admins: { $elemMatch: { $eq: myId } } }, { admins: { $elemMatch: { $eq: userId } } }],
-                })
+                });
+            }
+
+            // admin - user
+            else if (meIsAdmin || targetIsAdmin) {
+                chat = await Chat.findOne({
+                    admins: { $in: [myId, userId] },
+                    users: { $in: [myId, userId] },
+                    isGroupChat: false,
+                });
+            }
+
+            // user - user
+            else {
+                chat = await Chat.findOne({
+                    users: { $all: [myId, userId] },
+                    isGroupChat: false,
+                });
+            }
+
+            if (chat) {
+                const fullChat = await Chat.findById(chat._id)
                     .populate('users', '-password')
                     .populate('admins', '-password')
                     .populate('latestMessage');
+
+                return res.json(fullChat);
+            }
+
+            // Create new chat
+            let chatData;
+
+            if (meIsAdmin && targetIsAdmin) {
+                chatData = {
+                    chatName: 'sender',
+                    isGroupChat: false,
+                    admins: [myId, userId],
+                    users: [],
+                };
+            } else if (meIsAdmin || targetIsAdmin) {
+                chatData = {
+                    chatName: 'sender',
+                    isGroupChat: false,
+                    admins: meIsAdmin ? [myId] : [userId],
+                    users: meIsAdmin ? [userId] : [myId],
+                };
             } else {
-                isChat = await Chat.find({
+                chatData = {
+                    chatName: 'sender',
                     isGroupChat: false,
-                    $and: [{ users: { $elemMatch: { $eq: myId } } }, { users: { $elemMatch: { $eq: userId } } }],
-                })
-                    .populate('users', '-password')
-                    .populate('admins', '-password')
-                    .populate('latestMessage');
+                    admins: [],
+                    users: [myId, userId],
+                };
             }
-
-            if (isChat.length > 0) {
-                return res.json(isChat[0]);
-            }
-
-            const chatData = {
-                chatName: 'sender',
-                isGroupChat: false,
-                users: !isAdmin ? [myId, userId] : [],
-                admins: isAdmin ? [myId, userId] : [],
-            };
 
             const createdChat = await Chat.create(chatData);
+
             const fullChat = await Chat.findById(createdChat._id)
                 .populate('users', '-password')
                 .populate('admins', '-password');
 
+            // Realtime open chat in Admin
+            const io = req.app.get('io');
+
+            const allParticipants = [...(fullChat.admins || []), ...(fullChat.users || [])];
+
+            allParticipants.forEach((p) => {
+                if (String(p._id) === String(myId)) return;
+
+                io.to(p._id.toString()).emit('chat accessed', fullChat);
+            });
+
             res.status(200).json(fullChat);
         } catch (err) {
-            console.error('Lỗi tại accessChat:', err);
+            console.error(err);
             res.status(500).json({ msg: 'Something went wrong!', error: err.message });
         }
     }

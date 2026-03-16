@@ -120,6 +120,8 @@ class QuizController {
             let listSort = {};
             if (most === 'rated') {
                 listSort = { rate: -1 };
+            } else if (most === 'taken') {
+                listSort = { attempts: -1 };
             }
 
             if (sort === 'latest') {

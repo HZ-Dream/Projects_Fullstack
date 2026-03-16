@@ -115,6 +115,18 @@ a {
     color: var(--white-color) !important;
 }
 
+.btn-primary {
+    background: linear-gradient(90.57deg, rgb(62, 101, 254) 0%, rgb(210, 60, 255) 100%) !important;
+    color: var(--white-color) !important;
+    text-transform: capitalize !important;
+    font-weight: 700 !important;
+}
+
+/* Margin */
+.maginRight10 {
+    margin-right: 10px;
+}
+
 .slick-slide::before {
     outline: none !important;
 }

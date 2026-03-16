@@ -109,12 +109,6 @@ const Sidebar = ({ className, filters, onFilterChange }) => {
                             control={<Radio size="small" />}
                             label="Most Taken"
                         />
-                        <FormControlLabel
-                            onClick={handleMostChange}
-                            value="favorited"
-                            control={<Radio size="small" />}
-                            label="Most Favorited"
-                        />
                     </RadioGroup>
                 </div>
 

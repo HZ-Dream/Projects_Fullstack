@@ -9,7 +9,7 @@ const AdminSchema = new Schema(
         phone: { type: String },
         password: { type: String, required: true },
         image: { type: String, default: '' },
-        isAdmin: { type: Boolean, default: false },
+        isAdmin: { type: Boolean, default: false }, // true: admin, false: manager
     },
     {
         timestamps: true,

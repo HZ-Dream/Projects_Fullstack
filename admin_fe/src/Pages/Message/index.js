@@ -21,14 +21,14 @@ const cx = classNames.bind(styles);
 const ENDPOINT = 'http://localhost:4000';
 
 let socket;
+let selectedChatCompare;
 
 const Message = () => {
     const context = useContext(MyContext);
     const { userId } = useParams();
     const navigate = useNavigate();
-    const location = useLocation();
 
-    const myId = context.userData?.userId || localStorage.getItem('userId');
+    const myId = context.adminInfo?._id || context.adminInfo?.id;
 
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
@@ -36,19 +36,14 @@ const Message = () => {
     const [newMessage, setNewMessage] = useState('');
     const [checked, setChecked] = useState(false);
     const [adminList, setAdminList] = useState([]);
-    const [socketConnected, setSocketConnected] = useState(false);
 
     const messagesEndRef = useRef(null);
     const selectedChatRef = useRef(null);
-
-    const queryParams = new URLSearchParams(location.search);
-    const isAdminQuery = queryParams.get('isAdmin') === 'true';
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // load sidebar chats
     const loadMyChats = () => {
         if (myId) {
             fetchDataFromApi(`/api/chat/fetchChat/${myId}`).then((res) => {
@@ -57,7 +52,7 @@ const Message = () => {
         }
     };
 
-    // socket setup
+    // SOCKET SETUP
     useEffect(() => {
         if (!myId) return;
 
@@ -67,7 +62,18 @@ const Message = () => {
 
         socket.emit('setup', { id: myId });
 
-        socket.on('connected', () => setSocketConnected(true));
+        socket.on('chat accessed', (chat) => {
+            setChats((prev) => {
+                const exists = prev.find((c) => c._id === chat._id);
+                if (exists) return prev;
+
+                return [chat, ...prev];
+            });
+
+            fetchMessages(chat._id);
+
+            socket.emit('join chat', chat._id);
+        });
 
         socket.on('message received', (msg) => {
             setChats((prev) => {
@@ -98,21 +104,16 @@ const Message = () => {
         return () => socket.disconnect();
     }, [myId]);
 
-    // load initial data
+    // LOAD INIT
     useEffect(() => {
         loadMyChats();
         fetchDataFromApi('/api/admin/allAccount').then((res) => setAdminList(res || []));
     }, [myId]);
 
-    // open chat from URL
+    // OPEN CHAT FROM URL
     useEffect(() => {
         if (userId && myId) {
-            const body = {
-                userId: userId,
-                myId: myId,
-            };
-
-            postData('/api/chat/accessChat', body).then((res) => {
+            postData('/api/chat/accessChat', { userId, myId }).then((res) => {
                 setSelectedChat(res);
                 selectedChatRef.current = res;
 
@@ -123,69 +124,51 @@ const Message = () => {
                 loadMyChats();
             });
         }
-    }, [userId, myId, isAdminQuery]);
+    }, [userId, myId]);
 
     const fetchMessages = async (chatId) => {
-        try {
-            const res = await fetchDataFromApi(`/api/message/allMessages/${chatId}`);
-
-            setMessages(res || []);
-
-            scrollToBottom();
-        } catch (error) {
-            console.error('Error fetching messages', error);
-        }
+        const res = await fetchDataFromApi(`/api/message/allMessages/${chatId}`);
+        setMessages(res || []);
+        scrollToBottom();
     };
 
     const handleSendMessage = async () => {
-        if (newMessage.trim() === '' || !selectedChat || !myId) return;
+        if (!newMessage.trim() || !selectedChat) return;
 
-        const body = {
+        const res = await postData('/api/message/sendMessage', {
             content: newMessage,
             chatId: selectedChat._id,
             senderId: myId,
-            isAdmin: false,
-        };
+            isAdmin: true,
+        });
 
-        try {
-            const res = await postData('/api/message/sendMessage', body);
+        socket.emit('new message', res);
 
-            socket.emit('new message', res);
+        setMessages((prev) => [...prev, res]);
 
-            setMessages((prev) => [...prev, res]);
+        setNewMessage('');
 
-            setNewMessage('');
-
-            loadMyChats();
-        } catch (error) {
-            console.error('Send failed', error);
-        }
+        loadMyChats();
     };
 
     const getChatParticipant = (chat) => {
-        if (!chat || chat.isGroupChat) return null;
+        const currentId = String(myId);
 
-        return chat.users?.find((u) => u._id !== myId) || chat.admins?.find((a) => a._id !== myId);
+        return (
+            chat.users?.find((u) => String(u._id || u) !== currentId) ||
+            chat.admins?.find((a) => String(a._id || a) !== currentId)
+        );
     };
 
     const getChatName = (chat) => {
-        if (!chat) return '';
-
         if (chat.isGroupChat) return chat.chatName;
-
-        const participant = getChatParticipant(chat);
-
-        return participant ? participant.name : 'Unknown User';
+        const p = getChatParticipant(chat);
+        return p?.name || 'Unknown';
     };
 
     const getChatImage = (chat) => {
-        if (!chat) return '';
-
         if (chat.isGroupChat) return avatar_group;
-
-        const participant = getChatParticipant(chat);
-
-        return participant?.image;
+        return getChatParticipant(chat)?.image;
     };
 
     const isMyMessage = (msg) => {
@@ -194,9 +177,7 @@ const Message = () => {
         return String(senderId) === String(myId);
     };
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+    useEffect(scrollToBottom, [messages]);
 
     return (
         <section className="right-content w-100">
@@ -209,19 +190,18 @@ const Message = () => {
 
                         <div className={cx('message-list')}>
                             {messages.map((msg) => {
-                                const isMe = isMyMessage(msg);
+                                const senderId =
+                                    msg.senderUser?._id || msg.senderUser || msg.senderAdmin?._id || msg.senderAdmin;
+                                const isMe = senderId?.toString() === myId?.toString();
 
                                 const sender = isMe ? 'me' : 'other';
-
                                 const avatar = msg.senderUser?.image || msg.senderAdmin?.image;
 
                                 return (
                                     <div key={msg._id} className={cx('message-item', sender)}>
                                         {!isMe && <img src={avatar} className={cx('avatarMess')} alt="avatar" />}
-
                                         <div className={cx('bubble')}>
                                             <p>{msg.content}</p>
-
                                             <span className={cx('time')}>
                                                 {new Date(msg.createdAt).toLocaleTimeString([], {
                                                     hour: '2-digit',
@@ -232,7 +212,6 @@ const Message = () => {
                                     </div>
                                 );
                             })}
-
                             <div ref={messagesEndRef} />
                         </div>
 
@@ -245,7 +224,6 @@ const Message = () => {
                                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                                 placeholder="Type a message..."
                             />
-
                             <button className="btn btn-primary" onClick={handleSendMessage}>
                                 Send
                             </button>
@@ -261,15 +239,12 @@ const Message = () => {
                     <div className={cx('sidebar-header')}>
                         <div className="d-flex justify-content-around align-items-center">
                             <h5 className="mb-0">List Chat</h5>
-
                             <Button className="btn-primary" size="small">
                                 Create Group
                             </Button>
                         </div>
-
                         <div className="d-flex align-items-center mt-2 justify-content-end me-2">
                             <Switch checked={checked} onChange={() => setChecked(!checked)} />
-
                             <h6 className="mb-0">{checked ? 'Admins' : 'All Users'}</h6>
                         </div>
                     </div>
@@ -282,21 +257,16 @@ const Message = () => {
                                       className={cx('user-item', selectedChat?._id === chat._id && 'active')}
                                       onClick={() => {
                                           setSelectedChat(chat);
-
                                           selectedChatRef.current = chat;
-
                                           fetchMessages(chat._id);
-
                                           socket.emit('join chat', chat._id);
                                       }}
                                   >
                                       <div className={cx('avatar-wrapper')}>
                                           <img src={getChatImage(chat)} className={cx('avatar')} alt="" />
                                       </div>
-
                                       <div className={cx('user-info')}>
                                           <span className={cx('user-name')}>{getChatName(chat)}</span>
-
                                           <small className={cx('last-msg')}>
                                               {isMyMessage(chat.latestMessage)
                                                   ? `You: ${chat.latestMessage?.content}`
@@ -305,21 +275,22 @@ const Message = () => {
                                       </div>
                                   </div>
                               ))
-                            : adminList.map((admin) => (
-                                  <div
-                                      key={admin._id}
-                                      className={cx('user-item')}
-                                      onClick={() => navigate(`/dashboard/message/${admin._id}`)}
-                                  >
-                                      <div className={cx('avatar-wrapper')}>
-                                          <img src={admin.image} className={cx('avatar')} alt="" />
+                            : adminList
+                                  .filter((admin) => admin._id !== myId)
+                                  .map((admin) => (
+                                      <div
+                                          key={admin._id}
+                                          className={cx('user-item')}
+                                          onClick={() => navigate(`/message/${admin._id}`)}
+                                      >
+                                          <div className={cx('avatar-wrapper')}>
+                                              <img src={admin.image} className={cx('avatar')} alt="" />
+                                          </div>
+                                          <div className={cx('user-info')}>
+                                              <span className={cx('user-name')}>{admin.name}</span>
+                                          </div>
                                       </div>
-
-                                      <div className={cx('user-info')}>
-                                          <span className={cx('user-name')}>{admin.name}</span>
-                                      </div>
-                                  </div>
-                              ))}
+                                  ))}
                     </div>
                 </div>
             </div>

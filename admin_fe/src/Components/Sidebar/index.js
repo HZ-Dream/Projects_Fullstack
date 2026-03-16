@@ -231,7 +231,7 @@ const Sidebar = () => {
                         </div>
                     </li>
                     <li>
-                        <Link to="/">
+                        <Link to="/message">
                             <Button
                                 className={`w-100 ${actClass === 'message' ? 'act' : ''}`}
                                 onClick={() => setAct('message')}
