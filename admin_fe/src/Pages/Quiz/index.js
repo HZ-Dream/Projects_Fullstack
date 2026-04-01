@@ -42,6 +42,17 @@ const QuizList = () => {
         });
     }, []);
 
+    const convertStatus = (status) => {
+        switch (status) {
+            case '1':
+                return 'Private';
+            case '2':
+                return 'Public';
+            default:
+                return '';
+        }
+    };
+
     return (
         <>
             <section className="right-content w-100">
@@ -56,6 +67,7 @@ const QuizList = () => {
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
+                                    <th>Status</th>
                                     <th>Attempts</th>
                                     <th>Rates</th>
                                     <th>Actions</th>
@@ -71,6 +83,13 @@ const QuizList = () => {
                                                 <div className="dFlexAli-center productBox">
                                                     <div className="info ps-2">
                                                         <h6>{item.title}</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="dFlexAli-center productBox">
+                                                    <div className="info ps-2">
+                                                        <h6>{convertStatus(item.status)}</h6>
                                                     </div>
                                                 </div>
                                             </td>

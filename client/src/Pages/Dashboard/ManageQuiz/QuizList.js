@@ -106,6 +106,23 @@ const QuizList = () => {
         fetchQuizzes(1);
     }, [fieldVal, levelVal]);
 
+    const convertStatus = (status) => {
+        switch (status) {
+            case '0':
+                return 'Pending';
+            case '1':
+                return 'Private';
+            case '2':
+                return 'Public';
+            case '3':
+                return 'Draft';
+            case '4':
+                return 'Reject';
+            default:
+                return '';
+        }
+    };
+
     const deleteQuiz = (e) => {
         e.preventDefault();
         isLoad(true);
@@ -226,7 +243,7 @@ const QuizList = () => {
                                             </td>
                                             <td>{quiz.field.name}</td>
                                             <td>{quiz.level}</td>
-                                            <td>{quiz.status}</td>
+                                            <td>{convertStatus(quiz.status)}</td>
                                             <td title="rate (totalRate)">{`${quiz.rate} (${quiz.totalRate})`}</td>
                                             <td>{quiz.quiz.length}</td>
                                             <td>{quiz.duration}'</td>

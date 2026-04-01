@@ -59,18 +59,21 @@ const Sidebar = () => {
                         </Button>
                         <div className={`submenuWrapper ${actClass === 'quiz' ? 'open' : ''}`}>
                             <ul className="submenu">
-                                <li>
-                                    <Link to={`/dashboard/quizList/${context.userData?.userId}`}>Quiz List</Link>
-                                </li>
-                                <li>
-                                    <Link to="/dashboard/quizCreate">Create Quiz</Link>
-                                </li>
-                                <li>
-                                    <Link to="/dashboard/quizGenerate">Generate Quiz</Link>
-                                </li>
-                                <li>
-                                    <Link to="/dashboard/uploadText">Upload Text</Link>
-                                </li>
+                                <Link to={`/dashboard/quizList/${context.userData?.userId}`}>
+                                    <li>Quiz List</li>
+                                </Link>
+
+                                <Link to="/dashboard/quizCreate">
+                                    <li>Create Quiz</li>
+                                </Link>
+
+                                <Link to="/dashboard/quizGenerate">
+                                    <li>Generate Quiz</li>
+                                </Link>
+
+                                <Link to="/dashboard/uploadText">
+                                    <li>Upload Text</li>
+                                </Link>
                             </ul>
                         </div>
                     </li>
@@ -86,9 +89,9 @@ const Sidebar = () => {
                         </Button>
                         <div className={`submenuWrapper ${actClass === 'bill' ? 'open' : ''}`}>
                             <ul className="submenu">
-                                <li>
-                                    <Link to={`/dashboard/billList/${context.userData?.userId}`}>Bill List</Link>
-                                </li>
+                                <Link to={`/dashboard/billList/${context.userData?.userId}`}>
+                                    <li>Bill List</li>
+                                </Link>
                             </ul>
                         </div>
                     </li>

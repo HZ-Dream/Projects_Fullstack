@@ -23,9 +23,9 @@ import { fetchDataFromApi, editData, postData } from '../../../utils/api';
 import { MyContext } from '../../../App';
 
 // Images
-var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1768789459/exam-01_jab5xy.webp';
+var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1774107744/exam-01_iyni3v.webp';
 var TempImg2 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1771985605/exam-02_xiyynw.avif';
-var TempImg3 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1759457781/exam-03_dcwayo.webp';
+var TempImg3 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1774107743/exam-03_ys0lsk.webp';
 
 const EditQuiz = () => {
     const context = useContext(MyContext);

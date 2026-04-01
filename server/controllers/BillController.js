@@ -14,6 +14,13 @@ const totalProfitBill = (arr) => {
     }, 0);
 };
 
+const totalToken = (arr) => {
+    return arr.reduce((total, bill) => {
+        total += bill.tokenPack;
+        return total;
+    }, 0);
+};
+
 class BillController {
     // [GET] /bill/list?page=N*
     async list(req, res) {

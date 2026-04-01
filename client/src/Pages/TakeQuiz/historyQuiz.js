@@ -1,6 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
+// React
+import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
+
+// MUI
 import { Button, CircularProgress, Chip, Divider, Tooltip } from '@mui/material';
+
+// Icons
 import {
     IoTimeOutline,
     IoCheckmarkCircleOutline,
@@ -11,9 +16,15 @@ import {
 } from 'react-icons/io5';
 import { FaMoon } from 'react-icons/fa';
 
+// CSS
 import classNames from 'classnames/bind';
 import styles from './TakeQuiz.module.scss';
+
+// API
 import { fetchDataFromApi } from '../../utils/api';
+
+// Format
+import MathText from '../../Format/MathText';
 
 // Context
 import { MyContext } from '../../App';
@@ -95,7 +106,9 @@ const HistoryQuiz = () => {
                                         )}
                                     </div>
 
-                                    <h5 className="mt-3 mb-4">{q.questionText}</h5>
+                                    <h5 className="my-4 fw-semibold">
+                                        <MathText text={q.questionText} />
+                                    </h5>
 
                                     {q.questionImage && (
                                         <div className={cx('questionImageWrapper', 'mb-4')}>
@@ -123,7 +136,7 @@ const HistoryQuiz = () => {
                                                         />
                                                     </div>
                                                     <div className={cx('optionText')}>
-                                                        {option}
+                                                        {<MathText text={option} />}
                                                         {isRightAns && (
                                                             <span className={cx('ansLabel')}>Correct Answer</span>
                                                         )}

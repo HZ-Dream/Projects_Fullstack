@@ -56,6 +56,19 @@ const UploadText = () => {
         });
     }, [page, sort]);
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${hours}:${minutes} ${day}/${month}/${year}`;
+    };
+
     return (
         <>
             <section className="right-content w-100">
@@ -82,6 +95,7 @@ const UploadText = () => {
                                     <th>#</th>
                                     <th>Name</th>
                                     <th>Rates</th>
+                                    <th>Date</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -106,6 +120,13 @@ const UploadText = () => {
                                                 </div>
                                             </td>
                                             <td>
+                                                <div className="dFlexAli-center productBox">
+                                                    <div className="info ps-2">
+                                                        <h6>{formatDate(item.createdAt)}</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
                                                 <div className="actions dFlexAliJus-center">
                                                     <Button className="edit">
                                                         <Link to={`/quiz/detail/${item.quizId._id}`}>
@@ -121,9 +142,6 @@ const UploadText = () => {
                                                     >
                                                         <FaEye />
                                                     </Button>
-                                                    {/* <Button className="delete">
-                                                        <FaTrash />
-                                                    </Button> */}
                                                 </div>
                                             </td>
                                         </tr>

@@ -95,12 +95,13 @@ const Sidebar = () => {
                             </Button>
                             <div className={`submenuWrapper ${actClass === 'field' ? 'open' : ''}`}>
                                 <ul className="submenu">
-                                    <li>
-                                        <Link to="/field/list">Field List</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/field/create">Field Create</Link>
-                                    </li>
+                                    <Link to="/field/list">
+                                        <li>Field List</li>
+                                    </Link>
+
+                                    <Link to="/field/create">
+                                        <li>Field Create</li>
+                                    </Link>
                                 </ul>
                             </div>
                         </li>
@@ -119,12 +120,13 @@ const Sidebar = () => {
                         </Button>
                         <div className={`submenuWrapper ${actClass === 'quiz' ? 'open' : ''}`}>
                             <ul className="submenu">
-                                <li>
-                                    <Link to="/quiz/list">Quiz List</Link>
-                                </li>
-                                <li>
-                                    <Link to="/quiz/approve">Quiz Approve</Link>
-                                </li>
+                                <Link to="/quiz/list">
+                                    <li>Quiz List</li>
+                                </Link>
+
+                                <Link to="/quiz/approve">
+                                    <li>Quiz Approve</li>
+                                </Link>
                             </ul>
                         </div>
                     </li>
@@ -144,12 +146,13 @@ const Sidebar = () => {
                             </Button>
                             <div className={`submenuWrapper ${actClass === 'token' ? 'open' : ''}`}>
                                 <ul className="submenu">
-                                    <li>
-                                        <Link to="/token/list">Token List</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/token/create">Token Create</Link>
-                                    </li>
+                                    <Link to="/token/list">
+                                        <li>Token List</li>
+                                    </Link>
+
+                                    <Link to="/token/create">
+                                        <li>Token Create</li>
+                                    </Link>
                                 </ul>
                             </div>
                         </li>
@@ -172,9 +175,9 @@ const Sidebar = () => {
                             </Button>
                             <div className={`submenuWrapper ${actClass === 'bill' ? 'open' : ''}`}>
                                 <ul className="submenu">
-                                    <li>
-                                        <Link to="/bill/list">Bill List</Link>
-                                    </li>
+                                    <Link to="/bill/list">
+                                        <li>Bill List</li>
+                                    </Link>
                                 </ul>
                             </div>
                         </li>
@@ -197,12 +200,13 @@ const Sidebar = () => {
                             </Button>
                             <div className={`submenuWrapper ${actClass === 'account' ? 'open' : ''}`}>
                                 <ul className="submenu">
-                                    <li>
-                                        <Link to="/account/list">Account List</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/account/create">Account Create</Link>
-                                    </li>
+                                    <Link to="/account/list">
+                                        <li>Account List</li>
+                                    </Link>
+
+                                    <Link to="/account/create">
+                                        <li>Account Create</li>
+                                    </Link>
                                 </ul>
                             </div>
                         </li>
@@ -224,9 +228,9 @@ const Sidebar = () => {
                         </Button>
                         <div className={`submenuWrapper ${actClass === 'survey' ? 'open' : ''}`}>
                             <ul className="submenu">
-                                <li>
-                                    <Link to="/survey/uploadText">Upload Text by AI</Link>
-                                </li>
+                                <Link to="/survey/uploadText">
+                                    <li>Upload Text by AI</li>
+                                </Link>
                             </ul>
                         </div>
                     </li>
@@ -271,12 +275,13 @@ const Sidebar = () => {
                         </Button>
                         <div className={`submenuWrapper ${actClass === 'setting' ? 'open' : ''}`}>
                             <ul className="submenu">
-                                <li>
-                                    <Link to={`/setting/profile/${adminId}`}>Change Profile</Link>
-                                </li>
-                                <li>
-                                    <Link to={`/setting/password/${adminId}`}>Change Password</Link>
-                                </li>
+                                <Link to={`/setting/profile/${adminId}`}>
+                                    <li>Change Profile</li>
+                                </Link>
+
+                                <Link to={`/setting/password/${adminId}`}>
+                                    <li>Change Password</li>
+                                </Link>
                             </ul>
                         </div>
                     </li>

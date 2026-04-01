@@ -67,7 +67,7 @@ const DetailQuiz = () => {
                 setFormField({
                     title: res.title || '',
                     description: res.description || '',
-                    field: res.field || '',
+                    field: res.field._id || '',
                     level: res.level || '',
                     duration: Number(res.duration) || 0,
                     password: res.password || '',
@@ -84,7 +84,7 @@ const DetailQuiz = () => {
                           }))
                         : [{ questionText: '', options: [{ text: '' }, { text: '' }], correctAnswers: [] }],
                 });
-                setFieldVal(res.field || '');
+                setFieldVal(res.field._id || '');
                 setLevelVal(res.level || '');
             })
             .catch((err) => {
@@ -156,7 +156,7 @@ const DetailQuiz = () => {
             }
 
             const adminFormData = {
-                status: '3',
+                status: '4',
                 adminId: adminId,
             };
 

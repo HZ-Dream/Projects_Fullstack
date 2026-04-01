@@ -161,9 +161,13 @@ class QuizController {
         const skip = (page - 1) * limit;
 
         try {
-            const totalQuizzes = await Quiz.countDocuments();
+            const totalQuizzes = await Quiz.find({ status: { $in: ['1', '2'] } }).countDocuments();
 
-            const quizzes = await Quiz.find().populate('field').populate('userId').skip(skip).limit(limit);
+            const quizzes = await Quiz.find({ status: { $in: ['1', '2'] } })
+                .populate('field')
+                .populate('userId')
+                .skip(skip)
+                .limit(limit);
             res.status(200).json({
                 quizzes,
                 totalPages: Math.ceil(totalQuizzes / limit),
