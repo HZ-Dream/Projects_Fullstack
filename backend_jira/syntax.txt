@@ -1,0 +1,7 @@
+# Run app
+npm run dev
+
+# Run migration
+npx prisma migrate dev --name init-schema
+
+npx prisma generate

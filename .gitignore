@@ -1,0 +1,11 @@
+# Root
+
+# FE
+/frontend_jira/node_modules
+/frontend_jira/.env
+
+# BE
+/backend_jira/node_modules
+/backend_jira/.env
+
+# Open check file ignore success: "Ctrl + ," -> "ignore" -> "Exclude Git Ignore" -> Tick
