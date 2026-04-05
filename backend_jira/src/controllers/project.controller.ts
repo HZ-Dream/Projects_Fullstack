@@ -6,7 +6,16 @@ const projectController = {
     // GET /api/project/
     async showProject(req: Request, res: Response) {
         try {
-            const project = await prisma.project.findMany();
+            const project = await prisma.project.findMany({
+                include: {
+                    creator: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                },
+            });
 
             return res.status(201).json({ project });
         } catch (error) {

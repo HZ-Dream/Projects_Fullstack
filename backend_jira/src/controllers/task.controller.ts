@@ -8,10 +8,22 @@ const taskController = {
         try {
             const task = await prisma.task.findMany({
                 include: {
+                    project: {
+                        select: {
+                            id: true,
+                            name: true,
+                        }
+                    },
                     assignees: {
                         select: {
                             id: true,
                             email: true,
+                        },
+                    },
+                    creator: {
+                        select: {
+                            id: true,
+                            name: true,
                         },
                     },
                 },

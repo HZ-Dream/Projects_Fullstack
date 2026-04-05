@@ -4,9 +4,19 @@ import prisma from '../lib/prisma.js';
 import jwt from 'jsonwebtoken';
 
 const authController = {
+    async showUser(req: Request, res: Response) {
+        try {
+            const user = await prisma.user.findMany();
+
+            res.status(201).json({ user });
+        } catch (error) {
+            res.status(400).json({ message: 'User already exists or invalid data' });
+        }
+    },
+
     async register(req: Request, res: Response) {
         try {
-            const { email, password } = req.body;
+            const { email, name, password } = req.body;
 
             // Hash password
             const hashedPassword = await bcrypt.hash(password, 10);
@@ -15,6 +25,7 @@ const authController = {
             const user = await prisma.user.create({
                 data: {
                     email,
+                    name,
                     password: hashedPassword,
                 },
             });
