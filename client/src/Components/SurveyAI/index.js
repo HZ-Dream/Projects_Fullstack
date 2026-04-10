@@ -20,7 +20,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const SurveyAI = ({ isOpenSurvey, closeSurvey, quizId }) => {
+const SurveyAI = ({ isOpenSurvey, closeSurvey, quizId, formFile }) => {
     const context = useContext(MyContext);
 
     const [isLoad, setIsLoad] = useState(false);
@@ -141,21 +141,30 @@ const SurveyAI = ({ isOpenSurvey, closeSurvey, quizId }) => {
                     </div>
                 </div>
 
-                <div className={cx('card')}>
-                    <div className={cx('label')}>Upload Word file (if you rate &lt; 3)</div>
+                {formFile === true ? (
+                    ''
+                ) : (
+                    <div className={cx('card')}>
+                        <div className={cx('label')}>Upload Word file (if you rate &lt; 4)</div>
 
-                    <label className={cx('uploadBox')}>
-                        <input className={cx('fileInput')} type="file" accept=".doc,.docx" onChange={onChangeFile} />
+                        <label className={cx('uploadBox')}>
+                            <input
+                                className={cx('fileInput')}
+                                type="file"
+                                accept=".doc,.docx"
+                                onChange={onChangeFile}
+                            />
 
-                        {isUploading ? (
-                            <CircularProgress size={22} />
-                        ) : formField.linkFile ? (
-                            <span>✅ File uploaded</span>
-                        ) : (
-                            <span>📄 Click to upload Word file</span>
-                        )}
-                    </label>
-                </div>
+                            {isUploading ? (
+                                <CircularProgress size={22} />
+                            ) : formField.linkFile ? (
+                                <span>✅ File uploaded</span>
+                            ) : (
+                                <span>📄 Click to upload Word file</span>
+                            )}
+                        </label>
+                    </div>
+                )}
 
                 <div className={cx('card')}>
                     <div className={cx('label')}>Your feedback</div>

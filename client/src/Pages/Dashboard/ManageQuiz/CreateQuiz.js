@@ -736,7 +736,14 @@ const CreateQuiz = () => {
             </form>
 
             {isOpenModal && <SymbolMath isOpen={isOpenModal} closeModal={closeModal} />}
-            {surveyModal && <SurveyAI isOpenSurvey={surveyModal} closeSurvey={closeSurveyModal} quizId={quizId} />}
+            {surveyModal && (
+                <SurveyAI
+                    isOpenSurvey={surveyModal}
+                    closeSurvey={closeSurveyModal}
+                    quizId={quizId}
+                    formFile={formGenerate?.fieldId !== '' ? true : false}
+                />
+            )}
         </section>
     );
 };

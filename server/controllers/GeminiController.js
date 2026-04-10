@@ -4,6 +4,7 @@ const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
 const multer = require('multer');
+const User = require('../models/User.js');
 
 // Config Multer
 const upload = multer({
@@ -37,9 +38,11 @@ class GeminiController {
     // [POST] /api/gemini/generate
     async generate(req, res) {
         try {
-            const { fieldName, levelName, numberOfQuestions, multipleCorrect } = req.body;
+            const { userId, fieldName, levelName, numberOfQuestions, multipleCorrect } = req.body;
 
             const quizData = await generateQuizAI(fieldName, levelName, numberOfQuestions, multipleCorrect);
+
+            await User.findByIdAndUpdate(userId, { $inc: { token: -30 } });
 
             return res.status(200).json(quizData);
         } catch (error) {
@@ -51,8 +54,9 @@ class GeminiController {
         }
     }
 
-    // [POST] /api/gemini/convertText
+    // [POST] /api/gemini/convertText/:userId
     async convertText(req, res) {
+        const { userId } = req.params;
         upload.single('wordFile')(req, res, async (err) => {
             if (err) {
                 return res.status(400).json({ msg: err.message || 'Lỗi upload file' });
@@ -101,6 +105,8 @@ class GeminiController {
                         const jsonMatch = stdoutData.trim().match(/\{[\s\S]*\}/);
                         if (jsonMatch) {
                             const quizData = JSON.parse(jsonMatch[0]);
+
+                            await User.findByIdAndUpdate(userId, { $inc: { token: -50 } });
                             return res.status(200).json(quizData);
                         } else {
                             return res.status(500).json({ msg: 'Không tìm thấy JSON từ AI', raw: stdoutData });

@@ -22,8 +22,6 @@ const UploadText = () => {
     const [load, isLoad] = useState(false);
     const [loadFile, isLoadFile] = useState(false);
 
-    const [fileName, setFileName] = useState('');
-
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -49,11 +47,26 @@ const UploadText = () => {
 
         isLoad(true);
 
+        const userId = context.userData.userId;
+
+        if (userId) {
+            // Check token
+            fetchDataFromApi(`/api/user/getUser/${userId}`).then((res) => {
+                if (res.token < 50) {
+                    context.handleClickVariant('Not enough tokens! Please top up.', 'warning');
+                    isLoad(false);
+                    return;
+                }
+            });
+        } else {
+            context.handleClickVariant('User not found. Please log in again.', 'warning');
+        }
+
         const formData = new FormData();
         formData.append('wordFile', file);
 
         try {
-            const res = await postData('/api/gemini/convertText', formData, {
+            const res = await postData(`/api/gemini/convertText/${userId}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 
@@ -88,7 +101,7 @@ const UploadText = () => {
                                 </div>
                                 <input
                                     disabled={load}
-                                    className="mb-3"
+                                    className="mb-3 inputUpload"
                                     type="file"
                                     accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                                     name="file"

@@ -4,7 +4,7 @@ import { IoIosArrowForward } from 'react-icons/io';
 import Button from '@mui/material/Button';
 
 // Img
-import UserImg from '../../assets/images/dmm.jpg';
+import defaultAvatar from '../../assets/images/default.jpg';
 
 // React
 import { useState, useRef, useEffect } from 'react';
@@ -55,7 +55,7 @@ const HomeCat = () => {
                             <SwiperSlide key={item.id || index}>
                                 <div className={`${cx('item')} text-center cursor`}>
                                     <Link to={`/pageUser/${item.id}`}>
-                                        <img src={item.image} alt="HomeCat" />
+                                        <img src={item.image === '' ? defaultAvatar : item.image} alt="HomeCat" />
                                         <h6 className="textOne_line mt-1 mb-0">{item.name}</h6>
                                         <h6>{item.quizCreated} Q</h6>
                                     </Link>

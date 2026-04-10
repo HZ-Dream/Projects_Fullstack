@@ -908,8 +908,8 @@ const QuizDetail = () => {
 
                             {activeTabs === 1 && (
                                 <div className={cx('tabQuizList')}>
-                                    {quizList?.length === 0 ? (
-                                        <span>No questions available for this quiz.</span>
+                                    {quizData?.status === '1' ? (
+                                        <span>This is a private quiz, you cannot preview it.</span>
                                     ) : (
                                         quizList.map((quizItem, index) => (
                                             <div key={index} className={`${cx('tabQuizItem')} mt-2`}>

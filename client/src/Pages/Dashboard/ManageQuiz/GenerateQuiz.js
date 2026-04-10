@@ -30,6 +30,7 @@ const GenerateQuiz = () => {
     ];
 
     const [formFields, setFormFields] = useState({
+        userId: '',
         fieldId: '',
         fieldName: '',
         levelId: '',
@@ -67,6 +68,23 @@ const GenerateQuiz = () => {
         }
         isLoad(true);
         console.log(formFields);
+
+        const userId = context.userData.userId;
+
+        if (userId) {
+            // Check token
+            fetchDataFromApi(`/api/user/getUser/${userId}`).then((res) => {
+                if (res.token < 30) {
+                    context.handleClickVariant('Not enough tokens! Please top up.', 'warning');
+                    isLoad(false);
+                    return;
+                }
+            });
+        } else {
+            context.handleClickVariant('User not found. Please log in again.', 'warning');
+        }
+
+        formFields.userId = userId;
 
         postData('/api/gemini/generate', formFields)
             .then((res) => {

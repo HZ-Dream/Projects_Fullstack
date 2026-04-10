@@ -114,8 +114,8 @@ const QuizModal = (props) => {
 
                     <div className="quizList mt-2">
                         <h4 className="text-center pb-2">Question Preview</h4>
-                        {quizData.quiz?.length === 0 ? (
-                            <span>No questions available for this quiz.</span>
+                        {quizData?.status === '1' ? (
+                            <span>This is a private quiz, you cannot preview it.</span>
                         ) : (
                             quizData.quiz.map((quizItem, index) => (
                                 <div key={index} className={`${cx('tabQuizItem')} mt-2`}>

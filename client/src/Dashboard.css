@@ -496,6 +496,10 @@ body.dark .main .sidebarWrapper .sidebar ul li button.act .arrow svg {
     padding-bottom: 0px !important;
 }
 
+body.dark .main .sidebarWrapper .sidebar ul .submenu li {
+    color: var(--white-color);
+}
+
 .main .sidebarWrapper .sidebar ul .submenu li a {
     color: #5e5d72 !important;
     transform: all 0.3s;
@@ -1336,4 +1340,8 @@ body.dark .createQuiz .inputAnswer {
     height: 20px;
     border-radius: 5px;
     font-size: 14px;
+}
+
+body.dark .inputUpload {
+    color: var(--white-color) !important;
 }

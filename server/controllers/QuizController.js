@@ -103,7 +103,7 @@ class QuizController {
     // [GET] /quiz/quizList?page=num
     async getQuizList(req, res) {
         const page = parseInt(req.query.page) || 1;
-        const limit = 5;
+        const limit = 8;
         const skip = (page - 1) * limit;
         const { field, most, sort } = req.query;
 
@@ -240,12 +240,28 @@ class QuizController {
         }
     }
 
+    // [GET] /quiz/getStats/:userId
+    async getStats(req, res) {
+        const { userId } = req.params;
+
+        try {
+            const pendQuiz = await Quiz.countDocuments({ userId, status: 0 });
+            const acceptQuiz = await Quiz.countDocuments({ userId, status: { $in: [1, 2] } });
+            const rejectQuiz = await Quiz.countDocuments({ userId, status: 4 });
+
+            res.status(200).json({ acceptQuiz, rejectQuiz, pendQuiz });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ msg: 'Something went wrong!' });
+        }
+    }
+
     // [GET] /quiz/getQuizDashboard/:userId
     async getQuizDashboard(req, res) {
         const page = parseInt(req.query.page) || 1;
         const limit = 5;
         const skip = (page - 1) * limit;
-        const { field, level } = req.query;
+        const { field, level, status } = req.query;
         const { userId } = req.params;
 
         try {
@@ -263,6 +279,11 @@ class QuizController {
             // Filter by level
             if (level) {
                 query.level = level;
+            }
+
+            // Filter by status
+            if (status) {
+                query.status = status;
             }
 
             const totalQuizzes = await Quiz.countDocuments(query);

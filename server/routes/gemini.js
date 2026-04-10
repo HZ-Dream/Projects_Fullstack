@@ -4,6 +4,6 @@ const GeminiController = require('../controllers/GeminiController');
 
 // Routers for GeminiController
 router.post('/generate', GeminiController.generate);
-router.post('/convertText', GeminiController.convertText);
+router.post('/convertText/:userId', GeminiController.convertText);
 
 module.exports = router;

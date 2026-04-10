@@ -25,6 +25,7 @@ router.put('/approveQuiz/:quizId', QuizController.approveQuiz);
 
 router.get('/getAllQuizzes', QuizController.getAllQuizzes);
 router.get('/quizList', QuizController.getQuizList);
+router.get('/getStats/:userId', QuizController.getStats);
 router.get('/getQuizDashboard/:userId', QuizController.getQuizDashboard);
 router.get('/getQuiz/:userId', QuizController.getQuiz);
 router.get('/getQuizDetail/:quizId', QuizController.getQuizDetail);

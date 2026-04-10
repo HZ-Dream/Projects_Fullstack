@@ -157,14 +157,7 @@ const Quiz = () => {
                         />
 
                         <div className={cx('content_right')}>
-                            <img
-                                className="w-100"
-                                src="https://klbtheme.com/bacola/wp-content/uploads/2021/08/bacola-banner-18.jpg"
-                                alt="Banner"
-                                style={{ borderRadius: '10px' }}
-                            />
-
-                            <div className={`${cx('showBy')} mt-3 mb-3 d-flex align-items-center`}>
+                            <div className={`${cx('showBy')} mb-3 d-flex align-items-center`}>
                                 <div className={`d-flex align-items-center ${cx('btnWrapper')}`}>
                                     <Button
                                         className={quizView === 'one' ? act : ''}

@@ -1,7 +1,7 @@
 // Icons
-import { FaUserCircle } from 'react-icons/fa';
-import { FaShoppingCart } from 'react-icons/fa';
-import { FaBagShopping } from 'react-icons/fa6';
+import { FaCheckCircle } from 'react-icons/fa';
+import { FaCircleXmark } from 'react-icons/fa6';
+import { BiLoaderCircle } from 'react-icons/bi';
 import { FaEye } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
 import { FaTrash } from 'react-icons/fa';
@@ -35,9 +35,16 @@ const QuizList = () => {
     const [fieldData, setFieldData] = useState([]);
     const [fieldVal, setFieldVal] = useState('');
     const [levelVal, setLevelVal] = useState('');
+    const [statusVal, setStatusVal] = useState('');
     const [quizList, setQuizList] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(1);
+    // Stats
+    const [stats, setStats] = useState({
+        acceptQuiz: 0,
+        rejectQuiz: 0,
+        pendQuiz: 0,
+    });
     // Delete Modal
     const [deleteModal, setDeleteModal] = useState(false);
     const [deleteQuizId, setDeleteQuizId] = useState('');
@@ -53,30 +60,15 @@ const QuizList = () => {
             setQuizList(res.quizzes);
             setTotalPages(res.totalPages);
         });
-    }, []);
 
-    useEffect(() => {
-        const params = new URLSearchParams();
-
-        params.append('page', page);
-
-        if (fieldVal !== '') {
-            params.append('field', fieldVal);
-        }
-
-        if (levelVal !== '') {
-            params.append('level', levelVal);
-        }
-
-        fetchDataFromApi(`/api/quiz/getQuizDashboard/${userId}?${params.toString()}`).then((res) => {
-            setQuizList(res.quizzes);
-            setTotalPages(res.totalPages);
-
-            if (fieldVal !== '' || levelVal !== '') {
-                setPage(1);
-            }
+        fetchDataFromApi(`/api/quiz/getStats/${userId}`).then((res) => {
+            setStats({
+                acceptQuiz: res.acceptQuiz,
+                rejectQuiz: res.rejectQuiz,
+                pendQuiz: res.pendQuiz,
+            });
         });
-    }, [page, fieldVal, levelVal]);
+    }, []);
 
     // Delete Quiz
     const deleteQuizModal = (id) => {
@@ -88,12 +80,13 @@ const QuizList = () => {
         setDeleteModal(false);
     };
 
-    const fetchQuizzes = (targetPage = page) => {
+    const fetchQuizzes = (targetPage = 1) => {
         const params = new URLSearchParams();
         params.append('page', targetPage);
 
         if (fieldVal) params.append('field', fieldVal);
         if (levelVal) params.append('level', levelVal);
+        if (statusVal) params.append('status', statusVal);
 
         fetchDataFromApi(`/api/quiz/getQuizDashboard/${userId}?${params.toString()}`).then((res) => {
             setQuizList(res.quizzes);
@@ -103,8 +96,8 @@ const QuizList = () => {
     };
 
     useEffect(() => {
-        fetchQuizzes(1);
-    }, [fieldVal, levelVal]);
+        fetchQuizzes(page);
+    }, [page, fieldVal, levelVal, statusVal]);
 
     const convertStatus = (status) => {
         switch (status) {
@@ -151,18 +144,24 @@ const QuizList = () => {
                     <div className="col-md-12 list">
                         <div className="dashboardBoxWrapper d-flex">
                             <DashboardBox
-                                color={['rgb(29, 162, 86)', 'rgb(72, 212, 131)']}
-                                icon={<FaUserCircle />}
+                                color={['rgb(9, 100, 47)', 'rgb(72, 212, 131)']}
+                                title="Accept Quiz"
+                                data={stats.acceptQuiz}
+                                icon={<FaCheckCircle />}
                                 chart={true}
                             />
                             <DashboardBox
-                                color={['rgb(192, 18, 226)', 'rgb(235, 100, 254)']}
-                                icon={<FaShoppingCart />}
+                                color={['rgb(122, 15, 15)', 'rgb(247, 46, 46)']}
+                                title="Reject Quiz"
+                                data={stats.rejectQuiz}
+                                icon={<FaCircleXmark />}
                                 chart={false}
                             />
                             <DashboardBox
-                                color={['rgb(44, 120, 229)', 'rgb(96, 175, 245)']}
-                                icon={<FaBagShopping />}
+                                color={['rgb(116, 136, 6)', 'rgb(193, 243, 14)']}
+                                title="Pend Quiz"
+                                data={stats.pendQuiz}
+                                icon={<BiLoaderCircle />}
                                 chart={false}
                             />
                         </div>
@@ -203,6 +202,23 @@ const QuizList = () => {
                                 <option value="2">Secondary</option>
                                 <option value="3">High</option>
                                 <option value="4">University</option>
+                            </select>
+                        </div>
+
+                        <div className="col-md-3">
+                            <h4>STATUS</h4>
+                            <select
+                                className="form-select"
+                                value={statusVal}
+                                onChange={(e) => setStatusVal(e.target.value)}
+                                required
+                            >
+                                <option value="">None</option>
+                                <option value="0">Pend</option>
+                                <option value="1">Private</option>
+                                <option value="2">Public</option>
+                                <option value="3">Draft</option>
+                                <option value="4">Reject</option>
                             </select>
                         </div>
                     </div>

@@ -31,7 +31,7 @@ const DashboardBox = (props) => {
         >
             <div className="d-flex w-100">
                 <div className="col1">
-                    <h4 className="text-white mb-0">{props.title || 'Dashboard Box'}</h4>
+                    <h4 className="text-white mb-0 fw-bold">{props.title || 'Dashboard Box'}</h4>
                     <span className="text-white">{props.data || 0}</span>
                 </div>
 
