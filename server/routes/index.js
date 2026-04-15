@@ -6,6 +6,7 @@ const replyRouter = require('./reply');
 const fieldRouter = require('./field');
 const tokenRouter = require('./token');
 const billRouter = require('./bill');
+const reportRouter = require('./report');
 const geminiRouter = require('./gemini');
 const searchRouter = require('./search');
 const adminRouter = require('./admin');
@@ -33,6 +34,8 @@ function route(app) {
 
     app.use('/api/token', tokenRouter);
     app.use('/api/bill', billRouter);
+
+    app.use('/api/report', reportRouter);
 
     app.use('/api/quiz', quizRouter);
     app.use('/api/takeQuiz', takeQuizRouter);

@@ -22,9 +22,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 
-// Components
-import RelatedQuizzes from './RelatedQuizzes';
-
 // Format
 import MathText from '../../Format/MathText';
 
@@ -53,11 +50,13 @@ const QuizDetail = () => {
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [activeTabs, setActiveTabs] = useState(0);
 
+    // Quiz data
     const [quizData, setQuizData] = useState(null);
     const [quizList, setQuizList] = useState(null);
     const [passField, setPassField] = useState('');
     const [takenQuiz, setTakenQuiz] = useState(null);
 
+    // Review data
     const [reviewData, setReviewData] = useState([]);
     const [replyData, setReplyData] = useState([]);
 
@@ -87,10 +86,19 @@ const QuizDetail = () => {
         oneStarPercen: 0,
     });
 
-    // State cho phần reply
+    // State reply
     const [replyText, setReplyText] = useState('');
     const [openReplyForms, setOpenReplyForms] = useState([]);
     const [showReplyInput, setShowReplyInput] = useState(false);
+
+    // State report
+    const [open, setOpen] = useState(false);
+    const [report, setReport] = useState({
+        userId: '',
+        quizId: quizId,
+        title: '',
+        description: '',
+    });
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -505,6 +513,44 @@ const QuizDetail = () => {
         }
     };
 
+    // Handle Report
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const onChangeInputReport = (e) => {
+        setReport(() => ({
+            ...report,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleSubmit = () => {
+        const userId = userData?.userId;
+
+        if (userId) {
+            if (report.title.trim() === '' || report.description.trim() === '') {
+                context.handleClickVariant('Please fill in all the fields report!', 'warning');
+                return;
+            }
+
+            report.userId = userId;
+
+            console.log(report);
+
+            postData('/api/report/create', report).then((res) => {
+                context.handleClickVariant('Submit report success!', 'success');
+                handleClose();
+                setReport({
+                    title: '',
+                    description: '',
+                });
+            });
+        } else {
+            context.handleClickVariant('You need to log in to submit a report!', 'error');
+            return;
+        }
+    };
+
     return (
         <>
             <section className={`productDetails ${cx('section')}`}>
@@ -573,9 +619,54 @@ const QuizDetail = () => {
                                     <span style={changeHeartColor()}>Add Wishlist</span>
                                 </Button>
 
-                                <Button className="btn-gray btn-round text-capitalize btn-sml ms-2" variant="outlined">
-                                    <MdNoteAdd className="me-2" /> Save for Later
+                                <Button
+                                    onClick={handleOpen}
+                                    className="btn-gray btn-round text-capitalize btn-sml ms-2"
+                                    variant="outlined"
+                                >
+                                    <MdNoteAdd className="me-2" /> Report
                                 </Button>
+
+                                {open && (
+                                    <div className={cx('reportOverlay')}>
+                                        <div className={cx('reportModal')}>
+                                            {/* Header */}
+                                            <div className={cx('reportHeader')}>
+                                                <h5>Report Quiz</h5>
+                                                <span onClick={handleClose}>×</span>
+                                            </div>
+
+                                            {/* Body */}
+                                            <div className={cx('reportBody')}>
+                                                <h6>Title</h6>
+                                                <input
+                                                    type="text"
+                                                    name="title"
+                                                    value={report.title}
+                                                    onChange={onChangeInputReport}
+                                                />
+
+                                                <h6>Description</h6>
+                                                <textarea
+                                                    name="description"
+                                                    value={report.description}
+                                                    onChange={onChangeInputReport}
+                                                />
+                                            </div>
+
+                                            {/* Footer */}
+                                            <div className={cx('reportFooter')}>
+                                                <button className="btn-gray btn-round px-3" onClick={handleClose}>
+                                                    Cancel
+                                                </button>
+
+                                                <button className="btn-primary btn-round px-3" onClick={handleSubmit}>
+                                                    Submit Report
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -965,9 +1056,6 @@ const QuizDetail = () => {
                             )}
                         </div>
                     </div>
-
-                    <br />
-                    {/* <RelatedQuizzes /> */}
                 </div>
             </section>
         </>

@@ -7,6 +7,7 @@ import { FaBell } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
 import { BiLogOut } from 'react-icons/bi';
 import { MdQuiz } from 'react-icons/md';
+import { TbReportAnalytics } from 'react-icons/tb';
 
 // Material UI
 import Button from '@mui/material/Button';
@@ -94,6 +95,19 @@ const Sidebar = () => {
                                 </Link>
                             </ul>
                         </div>
+                    </li>
+                    <li>
+                        <Link to={`/dashboard/reportList/${context.userData?.userId}`}>
+                            <Button
+                                className={`w-100 ${actClass === 'report' ? 'act' : ''}`}
+                                onClick={() => setAct('report')}
+                            >
+                                <span className="icon">
+                                    <TbReportAnalytics />
+                                </span>
+                                <span className="name">Reports</span>
+                            </Button>
+                        </Link>
                     </li>
                     <li>
                         <Link to="/dashboard/message">

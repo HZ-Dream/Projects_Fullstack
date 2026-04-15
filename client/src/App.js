@@ -31,6 +31,7 @@ import EditQuiz from './Pages/Dashboard/ManageQuiz/EditQuiz';
 import GenerateQuiz from './Pages/Dashboard/ManageQuiz/GenerateQuiz';
 import UploadText from './Pages/Dashboard/ManageQuiz/UploadText';
 import BillList from './Pages/Bill/BillList';
+import ReportList from './Pages/Report/ReportList';
 import Message from './Pages/Message';
 
 // Layouts
@@ -196,6 +197,7 @@ function App() {
                         <Route path="/dashboard/uploadText" element={<UploadText />} />
 
                         <Route path="/dashboard/billList/:userId" element={<BillList />} />
+                        <Route path="/dashboard/reportList/:userId" element={<ReportList />} />
 
                         <Route path="/dashboard/message" element={<Message />} />
                         <Route path="/dashboard/message/:userId" element={<Message />} />

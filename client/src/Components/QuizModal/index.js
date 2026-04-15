@@ -1,7 +1,6 @@
 // React Icons
 import { IoCloseCircleOutline } from 'react-icons/io5';
 import { FaHeart } from 'react-icons/fa';
-import { MdNoteAdd } from 'react-icons/md';
 import { FaHandPointRight } from 'react-icons/fa';
 
 // MUI
@@ -103,10 +102,6 @@ const QuizModal = (props) => {
                         >
                             <FaHeart className="me-2" style={changeHeartColor()} />
                             <span style={changeHeartColor()}>Add Wishlist</span>
-                        </Button>
-
-                        <Button className="btn-round text-capitalize btn-sml" variant="outlined">
-                            <MdNoteAdd className="me-2" /> Save for Later
                         </Button>
                     </div>
 

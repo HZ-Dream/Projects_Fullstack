@@ -11,6 +11,7 @@ import { BiLogOut } from 'react-icons/bi';
 import { RiAccountCircleFill } from 'react-icons/ri';
 import { RiSurveyFill } from 'react-icons/ri';
 import { FaMoneyCheckDollar } from 'react-icons/fa6';
+import { TbMessageReportFilled } from 'react-icons/tb';
 
 // Material UI
 import Button from '@mui/material/Button';
@@ -233,6 +234,19 @@ const Sidebar = () => {
                                 </Link>
                             </ul>
                         </div>
+                    </li>
+                    <li>
+                        <Link to="/report">
+                            <Button
+                                className={`w-100 ${actClass === 'report' ? 'act' : ''}`}
+                                onClick={() => setAct('report')}
+                            >
+                                <span className="icon">
+                                    <TbMessageReportFilled />
+                                </span>
+                                <span className="name">Report</span>
+                            </Button>
+                        </Link>
                     </li>
                     <li>
                         <Link to="/message">

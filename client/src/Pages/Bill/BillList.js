@@ -21,7 +21,6 @@ const BillList = () => {
     const [billData, setBillData] = useState();
     const [tokenData, setTokenData] = useState(0);
     // Set Page
-    const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     // Sort
     const [sort, setSort] = useState('');
@@ -36,7 +35,6 @@ const BillList = () => {
 
         fetchDataFromApi(`/api/bill/getByUser/${userId}?page=1`).then((res) => {
             setBillData(res);
-            setCurrentPage(res.currentPage);
             setTotalPages(res.totalPages);
         });
     }, []);

@@ -34,6 +34,7 @@ import SignIn from './Pages/SignIn';
 import UploadText from './Pages/Survey/uploadText';
 import BillList from './Pages/Bill/BillList';
 import Message from './Pages/Message';
+import ReportList from './Pages/Report';
 
 const MyContext = createContext();
 
@@ -121,6 +122,9 @@ function App() {
 
                         {/* Survey */}
                         <Route path="/survey/uploadText" element={<UploadText />} />
+
+                        {/* Report */}
+                        <Route path="/report" element={<ReportList />} />
 
                         {/* Message */}
                         <Route path="/message" element={<Message />} />
