@@ -11,6 +11,7 @@ import { BiLogOut } from 'react-icons/bi';
 import { RiAccountCircleFill } from 'react-icons/ri';
 import { RiSurveyFill } from 'react-icons/ri';
 import { FaMoneyCheckDollar } from 'react-icons/fa6';
+import { RiFileWord2Fill } from 'react-icons/ri';
 import { TbMessageReportFilled } from 'react-icons/tb';
 
 // Material UI
@@ -125,8 +126,8 @@ const Sidebar = () => {
                                     <li>Quiz List</li>
                                 </Link>
 
-                                <Link to="/quiz/approve">
-                                    <li>Quiz Approve</li>
+                                <Link to="/quiz/check">
+                                    <li>Check Quiz</li>
                                 </Link>
                             </ul>
                         </div>
@@ -231,6 +232,28 @@ const Sidebar = () => {
                             <ul className="submenu">
                                 <Link to="/survey/uploadText">
                                     <li>Upload Text by AI</li>
+                                </Link>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <Button className={`w-100 ${actClass === 'key' ? 'act' : ''}`} onClick={() => setAct('key')}>
+                            <span className="icon">
+                                <RiFileWord2Fill />
+                            </span>
+                            <span className="name">Keys</span>
+                            <span className="arrow">
+                                <FaAngleRight />
+                            </span>
+                        </Button>
+                        <div className={`submenuWrapper ${actClass === 'key' ? 'open' : ''}`}>
+                            <ul className="submenu">
+                                <Link to="/key/list">
+                                    <li>Key List</li>
+                                </Link>
+
+                                <Link to="/key/create">
+                                    <li>Create Key</li>
                                 </Link>
                             </ul>
                         </div>

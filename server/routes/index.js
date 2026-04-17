@@ -4,6 +4,7 @@ const takeQuizRouter = require('./takeQuiz');
 const quizReviewRouter = require('./quizReview');
 const replyRouter = require('./reply');
 const fieldRouter = require('./field');
+const keyRouter = require('./key');
 const tokenRouter = require('./token');
 const billRouter = require('./bill');
 const reportRouter = require('./report');
@@ -43,6 +44,7 @@ function route(app) {
 
     app.use('/api/reply', replyRouter);
     app.use('/api/field', fieldRouter);
+    app.use('/api/key', keyRouter);
 }
 
 module.exports = route;

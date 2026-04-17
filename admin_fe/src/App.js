@@ -21,7 +21,7 @@ import Dashboard from './Pages/Dashboard';
 import FieldList from './Pages/Field/index';
 import CreateField from './Pages/Field/createField';
 import QuizList from './Pages/Quiz/index';
-import QuizApprove from './Pages/Quiz/quizApprove';
+import CheckQuiz from './Pages/Quiz/checkQuiz';
 import TokenList from './Pages/Token/index';
 import CreateToken from './Pages/Token/createToken';
 import EditToken from './Pages/Token/editToken';
@@ -35,6 +35,8 @@ import UploadText from './Pages/Survey/uploadText';
 import BillList from './Pages/Bill/BillList';
 import Message from './Pages/Message';
 import ReportList from './Pages/Report';
+import KeyList from './Pages/Key';
+import CreateKey from './Pages/Key/createKey';
 
 const MyContext = createContext();
 
@@ -105,7 +107,7 @@ function App() {
 
                         {/* Quiz */}
                         <Route path="/quiz/list" element={<QuizList />} />
-                        <Route path="/quiz/approve" element={<QuizApprove />} />
+                        <Route path="/quiz/check" element={<CheckQuiz />} />
                         <Route path="/quiz/detail/:quizId" element={<DetailQuiz />} />
 
                         {/* Token */}
@@ -119,6 +121,10 @@ function App() {
                         {/* Account */}
                         <Route path="/account/list" element={<Account />} />
                         <Route path="/account/create" element={<CreateAccount />} />
+
+                        {/* Key */}
+                        <Route path="/key/list" element={<KeyList />} />
+                        <Route path="/key/create" element={<CreateKey />} />
 
                         {/* Survey */}
                         <Route path="/survey/uploadText" element={<UploadText />} />

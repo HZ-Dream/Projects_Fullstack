@@ -479,6 +479,10 @@ body.dark .main .sidebarWrapper .sidebar ul li button.act .arrow svg {
     padding-bottom: 15px !important;
 }
 
+body.dark .main .sidebarWrapper .sidebar ul .submenu li {
+    color: white;
+}
+
 .main .sidebarWrapper .sidebar ul .submenu li:hover {
     background: #f5f5f5;
     border-top-right-radius: 10px;
