@@ -280,34 +280,35 @@ const QuizDetail = () => {
     };
 
     // Change Wishlist
-    const changeHeartColor = () => {
-        if (context.userData?.wishlist?.includes(quizId)) {
-            return { color: 'red' };
-        }
-        return { color: 'gray' };
-    };
+    const [liked, setLiked] = useState(context.userData?.wishlist?.includes(quizId));
 
-    const handleHeartClick = (e) => {
-        e.preventDefault();
+    const handleHeartClick = useCallback(
+        async (e) => {
+            e.preventDefault();
 
-        if (!context.userData || !context.userData.userId) {
-            context.handleClickVariant('Please sign in to add to wishlist', 'warning');
-            return;
-        }
+            if (!context.userData?.userId) {
+                context.handleClickVariant('Please sign in to add to wishlist', 'warning');
+                return;
+            }
 
-        const data = {
-            userId: context.userData.userId,
-            quizId: quizId,
-        };
+            setLiked((prev) => !prev);
 
-        postData('/api/user/addToWishlist', data)
-            .then((res) => {
+            try {
+                const data = {
+                    userId: context.userData.userId,
+                    quizId: quizId,
+                };
+
+                const res = await postData('/api/user/addToWishlist', data);
+
                 context.updateWishlist(res.wishlist);
-            })
-            .catch((err) => {
-                context.handleClickVariant('Failed to add quiz to wishlist', 'error');
-            });
-    };
+            } catch (err) {
+                setLiked((prev) => !prev);
+                context.handleClickVariant('Failed to update wishlist', 'error');
+            }
+        },
+        [context, quizId],
+    );
 
     // Handle review
     const onChangeInput = (e) => {
@@ -614,9 +615,12 @@ const QuizDetail = () => {
                                     onClick={handleHeartClick}
                                     className="btn-gray btn-round text-capitalize btn-sml"
                                     variant="outlined"
+                                    disableRipple
                                 >
-                                    <FaHeart className="me-2" style={changeHeartColor()} />
-                                    <span style={changeHeartColor()}>Add Wishlist</span>
+                                    <FaHeart className="me-2" color={liked ? 'red' : 'gray'} />
+                                    <span style={{ color: liked ? 'red' : 'gray' }}>
+                                        {liked ? 'Remove Wishlist' : 'Add Wishlist'}
+                                    </span>
                                 </Button>
 
                                 <Button

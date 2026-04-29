@@ -179,59 +179,22 @@ class QuizController {
         }
     }
 
-    // [GET] /quiz/getQuizListApprove?page=num
-    async getQuizListApprove(req, res) {
-        const page = parseInt(req.query.page) || 1;
-        const limit = 5;
-        const skip = (page - 1) * limit;
-
-        try {
-            const totalQuizzes = await Quiz.countDocuments({ status: '0' });
-
-            const quizzes = await Quiz.find({ status: '0' })
-                .populate('field')
-                .populate('userId')
-                .skip(skip)
-                .limit(limit);
-            res.status(200).json({
-                quizzes,
-                totalPages: Math.ceil(totalQuizzes / limit),
-                currentPage: page,
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ msg: 'Something went wrong!' });
-        }
-    }
-
     // [PUT] /quiz/approveQuiz/:quizId
     async approveQuiz(req, res) {
         const quizId = req.params.quizId;
 
         try {
-            const status = Number(req.body.status);
-            const { adminId } = req.body;
+            const { status, adminId } = req.body;
 
             const quizData = await Quiz.findById(quizId);
             if (!quizData) {
                 return res.status(404).json({ msg: 'Quiz not found!' });
             }
 
-            const isCountedStatus = (s) => s === 1 || s === 2;
-
-            const oldCounted = isCountedStatus(Number(quizData.status));
-            const newCounted = isCountedStatus(status);
-
             await Quiz.findByIdAndUpdate(quizId, {
                 status,
                 approveQuizBy: adminId,
             });
-
-            if (oldCounted !== newCounted) {
-                await User.findByIdAndUpdate(quizData.userId, {
-                    $inc: { quizCreated: newCounted ? 1 : -1 },
-                });
-            }
 
             res.status(200).json({ msg: 'Approve quiz successfully!' });
         } catch (error) {
@@ -346,13 +309,16 @@ class QuizController {
 
     // [POST] /quiz/createQuiz
     async createQuiz(req, res) {
-        const { image, title, description, field, level, duration, password, status, quiz, userId } = req.body;
+        const { image, title, description, field, level, duration, password, quiz, userId } = req.body;
 
         try {
+            let status = '2';
             let encryptedPassword = '';
             if (password) {
                 try {
                     encryptedPassword = encryptWithAES(password);
+
+                    status = '1';
                 } catch (err) {
                     console.log('Encryption failed:', err);
                 }
@@ -387,6 +353,9 @@ class QuizController {
             if (imagesToConfirm.length > 0) {
                 await confirmImages(imagesToConfirm);
             }
+
+            // Increase Quiz Create
+            await User.findByIdAndUpdate(userId, { $inc: { quizCreated: 1 } });
 
             res.status(200).json({
                 success: true,
@@ -461,10 +430,14 @@ class QuizController {
         try {
             const quizData = await Quiz.findById(quizId);
             if (quizData) {
+                // Delete URL Image
                 await deleteImageByUrl(quizData.image);
                 for (const q of quizData.quiz) {
                     if (q.questionImage) await deleteImageByUrl(q.questionImage);
                 }
+
+                // Decrease Quiz Created
+                await User.findByIdAndUpdate(quizData.userId, { $inc: { quizCreated: -1 } });
             }
             await Quiz.findByIdAndDelete(quizId);
             res.status(200).json({ msg: 'Quiz deleted successfully!' });

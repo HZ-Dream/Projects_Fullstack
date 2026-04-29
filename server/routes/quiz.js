@@ -20,7 +20,6 @@ router.post('/uploadImage', upload.single('imageQuiz'), QuizController.uploadIma
 
 // Dashboard
 router.get('/getQuizListAdmin', QuizController.getQuizListAdmin);
-router.get('/getQuizListApprove', QuizController.getQuizListApprove);
 router.put('/approveQuiz/:quizId', QuizController.approveQuiz);
 
 router.get('/getAllQuizzes', QuizController.getAllQuizzes);

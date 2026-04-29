@@ -491,9 +491,17 @@ body.dark .main .sidebarWrapper .sidebar ul li button.act .arrow svg {
 .main .sidebarWrapper .sidebar ul .submenu li {
     width: 100%;
     list-style: none;
-    padding-top: 15px;
+    padding-top: 10px;
     padding-left: 20px;
-    padding-bottom: 0px !important;
+    padding-bottom: 10px;
+}
+
+.main .sidebarWrapper .sidebar ul .submenu li:hover {
+    background-color: #e7e7e7;
+}
+
+body.dark .main .sidebarWrapper .sidebar ul .submenu li:hover {
+    background-color: #5f5994;
 }
 
 body.dark .main .sidebarWrapper .sidebar ul .submenu li {

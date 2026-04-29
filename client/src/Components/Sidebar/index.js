@@ -90,15 +90,6 @@ const Sidebar = ({ className, filters, onFilterChange }) => {
                         />
                     </RadioGroup>
                 </div>
-
-                <Link to="#">
-                    <img
-                        className="w-100"
-                        src="https://klbtheme.com/bacola/wp-content/uploads/2021/05/sidebar-banner.gif"
-                        alt="ImgPR"
-                        style={{ borderRadius: '10px' }}
-                    />
-                </Link>
             </div>
         </>
     );

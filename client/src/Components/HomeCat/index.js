@@ -1,6 +1,7 @@
 // Icons, Button
 import { IoIosArrowBack } from 'react-icons/io';
 import { IoIosArrowForward } from 'react-icons/io';
+import { SiQuizlet } from 'react-icons/si';
 import Button from '@mui/material/Button';
 
 // Img
@@ -57,7 +58,9 @@ const HomeCat = () => {
                                     <Link to={`/pageUser/${item.id}`}>
                                         <img src={item.image === '' ? defaultAvatar : item.image} alt="HomeCat" />
                                         <h6 className="textOne_line mt-1 mb-0">{item.name}</h6>
-                                        <h6>{item.quizCreated} Q</h6>
+                                        <h6 className="dFlexAliJus-center">
+                                            {item.quizCreated} <SiQuizlet className="ms-1" />
+                                        </h6>
                                     </Link>
                                 </div>
                             </SwiperSlide>
