@@ -162,9 +162,14 @@ const ReportList = () => {
                                                 <Button onClick={() => setDetailData(report)} className="detail">
                                                     <FaEye />
                                                 </Button>
-                                                <Button onClick={() => openApproveModal(report._id)} className="edit">
-                                                    <MdEdit />
-                                                </Button>
+                                                {report.status !== 'approve' && (
+                                                    <Button
+                                                        onClick={() => openApproveModal(report._id)}
+                                                        className="edit"
+                                                    >
+                                                        <MdEdit />
+                                                    </Button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

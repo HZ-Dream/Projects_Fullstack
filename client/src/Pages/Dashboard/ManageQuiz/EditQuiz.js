@@ -23,7 +23,7 @@ import { fetchDataFromApi, editData, postData } from '../../../utils/api';
 import { MyContext } from '../../../App';
 
 // Images
-var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1774107744/exam-01_iyni3v.webp';
+var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1778244837/exam-01_emwzot.webp';
 var TempImg2 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1771985605/exam-02_xiyynw.avif';
 var TempImg3 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1774107743/exam-03_ys0lsk.webp';
 
@@ -42,6 +42,7 @@ const EditQuiz = () => {
     const [selectedImg, setSelectedImg] = useState(null);
 
     const [formField, setFormField] = useState({
+        draft: false,
         title: '',
         description: '',
         field: '',
@@ -324,15 +325,19 @@ const EditQuiz = () => {
         return true;
     };
 
-    const updateQuiz = (e) => {
-        e.preventDefault();
+    const draftQuiz = (e) => {
+        updateQuiz(true, e);
+    };
 
+    const updateQuiz = (isDraft = false, e) => {
+        e.preventDefault();
         if (!validateSubmit()) return;
         setIsLoad(true);
 
         try {
             const finalFormField = {
                 ...formField,
+                draft: isDraft,
                 userId: context.userData.userId,
                 field: fieldVal,
                 level: levelVal,
@@ -369,7 +374,7 @@ const EditQuiz = () => {
     };
     return (
         <section className="right-content w-100 createQuiz">
-            <form onSubmit={updateQuiz} className="form">
+            <form onSubmit={(e) => updateQuiz(false, e)} className="form">
                 <div className="row">
                     <div className="col-sm-7">
                         <div className="card p-4">
@@ -468,7 +473,7 @@ const EditQuiz = () => {
                                     </Link>
                                 </Button>
 
-                                <Button className="btn-yellow w-100 btn-big text-capitalize ms-2">
+                                <Button onClick={draftQuiz} className="btn-yellow w-100 btn-big text-capitalize ms-2">
                                     <RiDraftFill className="me-2" /> Draft
                                 </Button>
                             </div>

@@ -25,7 +25,7 @@ import SymbolMath from '../../../Components/SymbolMath';
 import SurveyAI from '../../../Components/SurveyAI';
 
 // Images
-var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1774107744/exam-01_iyni3v.webp';
+var TempImg1 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1778244837/exam-01_emwzot.webp';
 var TempImg2 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1771985605/exam-02_xiyynw.avif';
 var TempImg3 = 'https://res.cloudinary.com/davhux6lg/image/upload/v1774107743/exam-03_ys0lsk.webp';
 
@@ -48,6 +48,7 @@ const CreateQuiz = () => {
     const [selectedImg, setSelectedImg] = useState(null);
 
     const [formField, setFormField] = useState({
+        draft: false,
         title: '',
         description: '',
         field: '',
@@ -339,15 +340,19 @@ const CreateQuiz = () => {
         return true;
     };
 
-    const createQuiz = (e) => {
-        e.preventDefault();
+    const draftQuiz = (e) => {
+        createQuiz(true, e);
+    };
 
+    const createQuiz = (isDraft = false, e) => {
+        e.preventDefault();
         if (!validateSubmit()) return;
         setIsLoad(true);
 
         try {
             const finalFormField = {
                 ...formField,
+                draft: isDraft,
                 userId: context.userData.userId,
                 field: fieldVal,
                 level: levelVal,
@@ -371,6 +376,7 @@ const CreateQuiz = () => {
                     }
 
                     setFormField({
+                        draft: false,
                         title: '',
                         description: '',
                         field: '',
@@ -410,7 +416,7 @@ const CreateQuiz = () => {
 
     return (
         <section className="right-content w-100 createQuiz">
-            <form onSubmit={createQuiz} className="form">
+            <form onSubmit={(e) => createQuiz(false, e)} className="form">
                 <div className="row">
                     <div className="col-sm-7">
                         <div className="card p-4">
@@ -513,7 +519,7 @@ const CreateQuiz = () => {
                                     </Link>
                                 </Button>
 
-                                <Button className="btn-yellow w-100 btn-big text-capitalize ms-2">
+                                <Button onClick={draftQuiz} className="btn-yellow w-100 btn-big text-capitalize ms-2">
                                     <RiDraftFill className="me-2" /> Draft
                                 </Button>
                             </div>
@@ -741,7 +747,7 @@ const CreateQuiz = () => {
                     isOpenSurvey={surveyModal}
                     closeSurvey={closeSurveyModal}
                     quizId={quizId}
-                    formFile={formGenerate?.fieldId !== '' ? true : false}
+                    formFile={formGenerate != null ? true : false}
                 />
             )}
         </section>

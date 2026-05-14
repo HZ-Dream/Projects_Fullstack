@@ -91,7 +91,9 @@ class QuizController {
     // [GET] /quiz/getAllQuizzes
     async getAllQuizzes(req, res) {
         try {
-            const quizzes = await Quiz.find().populate('field').populate('userId');
+            const quizzes = await Quiz.find({ status: { $in: ['1', '2'] } })
+                .populate('field')
+                .populate('userId');
 
             res.status(200).json(quizzes);
         } catch (error) {
@@ -134,9 +136,9 @@ class QuizController {
                 listSort = { rate: -1 };
             }
 
-            const totalQuizzes = await Quiz.countDocuments(query);
+            const totalQuizzes = await Quiz.find({ status: { $in: ['1', '2'] } }).countDocuments(query);
 
-            const quizzes = await Quiz.find(query)
+            const quizzes = await Quiz.find({ status: { $in: ['1', '2'] }, ...query })
                 .populate('field')
                 .populate('userId')
                 .sort(listSort)
@@ -309,19 +311,26 @@ class QuizController {
 
     // [POST] /quiz/createQuiz
     async createQuiz(req, res) {
-        const { image, title, description, field, level, duration, password, quiz, userId } = req.body;
+        const { draft, image, title, description, field, level, duration, password, quiz, userId } = req.body;
 
         try {
-            let status = '2';
             let encryptedPassword = '';
             if (password) {
                 try {
                     encryptedPassword = encryptWithAES(password);
-
-                    status = '1';
                 } catch (err) {
                     console.log('Encryption failed:', err);
                 }
+            }
+
+            let statusFinal = '';
+            if (encryptedPassword) {
+                statusFinal = '1';
+            } else {
+                statusFinal = '2';
+            }
+            if (draft) {
+                statusFinal = '3';
             }
 
             const newQuiz = new Quiz({
@@ -332,7 +341,7 @@ class QuizController {
                 level,
                 duration,
                 password: encryptedPassword,
-                status,
+                status: statusFinal,
                 userId,
                 quiz,
             });
@@ -371,7 +380,7 @@ class QuizController {
     // [PUT] /quiz/updateQuiz/:quizId
     async updateQuiz(req, res) {
         const quizId = req.params.quizId;
-        const { image, title, description, field, level, duration, password, quiz, userId } = req.body;
+        const { draft, image, title, description, field, level, duration, password, quiz, userId, status } = req.body;
 
         try {
             const oldQuiz = await Quiz.findById(quizId);
@@ -400,6 +409,17 @@ class QuizController {
 
             let encryptedPassword = password ? encryptWithAES(password) : '';
 
+            let statusFinal = '';
+            if (encryptedPassword) {
+                statusFinal = '1';
+            } else {
+                statusFinal = '2';
+            }
+
+            if (draft) {
+                statusFinal = '3';
+            }
+
             const updatedQuiz = await Quiz.findByIdAndUpdate(
                 quizId,
                 {
@@ -410,7 +430,7 @@ class QuizController {
                     level,
                     duration,
                     password: encryptedPassword,
-                    status: '0',
+                    status: statusFinal,
                     quiz,
                     userId,
                 },
