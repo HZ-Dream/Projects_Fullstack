@@ -6,7 +6,7 @@ class KeyController {
     // [GET] /key/checkContent
     async checkContent(req, res) {
         try {
-            const quizzes = await Quiz.find({ status: '0' });
+            const quizzes = await Quiz.find();
             const keys = await Key.find();
 
             let result = [];
@@ -42,7 +42,7 @@ class KeyController {
                 return res.status(400).json({ msg: 'Text is required' });
             }
 
-            const quizzes = await Quiz.find({ status: '0' });
+            const quizzes = await Quiz.find();
 
             const keyword = text.toLowerCase();
 
